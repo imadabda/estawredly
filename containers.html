@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حاويات للمشاركة – إستوردلي | وفّر على تكاليف الشحن</title>
+  <meta name="description" content="اشترك مع آخرين في حاوية شحن واحدة ووفر حتى 70% من تكاليف الشحن. مناسب للطلبيات الصغيرة والمتوسطة." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, #0f2440 0%, #1e3a5f 60%, #1a5276 100%);
+      padding: 70px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '📦';
+      position: absolute;
+      font-size: 300px;
+      opacity: .04;
+      right: -50px;
+      top: -50px;
+      transform: rotate(15deg);
+    }
+    .page-hero-content { position: relative; z-index: 1; }
+    .page-hero h1 { font-size: clamp(30px, 4vw, 48px); font-weight: 900; color: white; margin-bottom: 16px; }
+    .page-hero p { font-size: 17px; color: rgba(255,255,255,.75); max-width: 600px; margin-bottom: 32px; }
+    .page-hero .breadcrumb { display: flex; gap: 8px; font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 24px; }
+    .page-hero .breadcrumb a { color: rgba(255,255,255,.7); }
+    .page-hero .breadcrumb a:hover { color: var(--primary); }
+    .page-hero .breadcrumb span { color: rgba(255,255,255,.3); }
+
+    .available-containers { padding: 80px 0; }
+    .containers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 48px; }
+    .container-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-100);
+      transition: var(--transition);
+    }
+    .container-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .container-card-header {
+      background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary) 100%);
+      padding: 28px;
+      text-align: center;
+      position: relative;
+    }
+    .container-card-header.premium {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    }
+    .container-tag {
+      display: inline-block;
+      background: rgba(255,255,255,.2);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .container-name { font-size: 22px; font-weight: 900; color: white; margin-bottom: 4px; }
+    .container-route { font-size: 13px; color: rgba(255,255,255,.7); }
+    .container-progress-wrap { padding: 20px 24px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); }
+    .progress-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+    .progress-label span { font-weight: 700; color: var(--gray-700); }
+    .progress-label em { color: var(--accent); font-style: normal; font-weight: 800; }
+    .progress-bar { height: 8px; background: var(--gray-200); border-radius: 50px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--accent), #059669); transition: width 1s ease; }
+    .container-body { padding: 24px; }
+    .container-specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .spec-item { text-align: center; padding: 12px; background: var(--gray-50); border-radius: 10px; }
+    .spec-label { font-size: 11px; color: var(--gray-500); margin-bottom: 4px; }
+    .spec-value { font-size: 16px; font-weight: 800; color: var(--gray-900); }
+    .container-features { margin-bottom: 20px; }
+    .container-features li {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--gray-600);
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--gray-100);
+    }
+    .container-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 16px; }
+    .price-from { font-size: 13px; color: var(--gray-500); }
+    .price-value { font-size: 28px; font-weight: 900; color: var(--primary-dark); }
+    .price-unit { font-size: 13px; color: var(--gray-500); }
+    .reserve-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+      color: white;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .reserve-btn:hover { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: var(--dark); transform: translateY(-2px); }
+    .reserve-btn.full { background: var(--gray-300); color: var(--gray-500); cursor: not-allowed; }
+    .reserve-btn.full:hover { transform: none; background: var(--gray-300); color: var(--gray-500); }
+
+    .how-containers { background: var(--gray-50); padding: 80px 0; }
+    .how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
+    .how-card {
+      text-align: center;
+      padding: 32px 20px;
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .how-card .num {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: var(--dark);
+      border-radius: 50%;
+      font-size: 20px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .how-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+    .how-card p { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      .containers-grid { grid-template-columns: 1fr; max-width: 480px; margin: 48px auto 0; }
+      .how-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .how-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-links">
+        <a href="#"><span class="icon">🚚</span> شحن سريع</a>
+        <a href="#"><span class="icon">🎧</span> دعم مستمر</a>
+        <a href="#"><span class="icon">🔒</span> وسائل دفع آمنة</a>
+      </div>
+      <div class="top-bar-actions">
+        <a href="#" id="btn-login" class="btn-top">تسجيل دخول</a>
+        <a href="#" id="btn-register" class="btn-top btn-top--primary">تسجيل حساب جديد</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">🌍</div>
+          <div class="logo-text">
+            <span class="logo-main">إستوردلي</span>
+            <span class="logo-sub">منصة الاستيراد الشاملة</span>
+          </div>
+        </a>
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="ابحث..." class="search-input" />
+          <button class="search-btn" id="search-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </div>
+        <div class="header-right">
+          <a href="index.html" class="cart-btn" id="cart-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="cart-count" id="cart-count">0</span>
+            <span>السلة</span>
+          </a>
+        </div>
+      </div>
+      <nav class="main-nav" id="main-nav">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+          <li><a href="shop.html" class="nav-link">المتجر</a></li>
+          <li><a href="containers.html" class="nav-link active">حاويات للمشاركة</a></li>
+          <li><a href="index.html#services" class="nav-link">خدماتنا</a></li>
+          <li><a href="#" class="nav-link">🔥 أفضل العروض</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="container page-hero-content">
+      <div class="breadcrumb">
+        <a href="index.html">الرئيسية</a>
+        <span>/</span>
+        <span>حاويات للمشاركة</span>
+      </div>
+      <h1>📦 حاويات للمشاركة</h1>
+      <p>لا تحتاج إلى ملء حاوية كاملة! شارك مع تجار آخرين ووفر حتى 70% من تكاليف الشحن. مثالي للطلبيات الصغيرة والمتوسطة.</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.85);font-size:14px;font-weight:600">
+          <span style="color:var(--primary)">✓</span> وفر حتى 70% على الشحن
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.85);font-size:14px;font-weight:600">
+          <span style="color:var(--primary)">✓</span> مناسب لجميع أحجام الطلبيات
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.85);font-size:14px;font-weight:600">
+          <span style="color:var(--primary)">✓</span> تتبع مباشر لشحنتك
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Containers -->
+  <section class="available-containers">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">الحاويات المتاحة</span>
+        <h2 class="section-title">اختر حاويتك المناسبة</h2>
+        <p class="section-desc">حاويات تنطلق من الصين وتركيا أسبوعيًا إلى مختلف الوجهات العربية</p>
+      </div>
+      <div class="containers-grid">
+        <!-- Container 1 -->
+        <div class="container-card">
+          <div class="container-card-header">
+            <span class="container-tag">🚢 بحري</span>
+            <div class="container-name">شنغهاي → القاهرة</div>
+            <div class="container-route">🇨🇳 الصين → 🇪🇬 مصر</div>
+          </div>
+          <div class="container-progress-wrap">
+            <div class="progress-label">
+              <span>المساحة المتاحة</span>
+              <em>35%</em>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:65%"></div>
+            </div>
+            <div style="font-size:12px;color:var(--gray-500);margin-top:6px;text-align:center">
+              65% محجوز – 35% متبقي فقط!
+            </div>
+          </div>
+          <div class="container-body">
+            <div class="container-specs">
+              <div class="spec-item">
+                <div class="spec-label">تاريخ المغادرة</div>
+                <div class="spec-value" style="font-size:13px">15 يوليو 2024</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">وقت الشحن</div>
+                <div class="spec-value">30 يوم</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">الحد الأدنى</div>
+                <div class="spec-value">0.5 CBM</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">نوع الحاوية</div>
+                <div class="spec-value" style="font-size:13px">40 HQ</div>
+              </div>
+            </div>
+            <ul class="container-features">
+              <li><span>✅</span> تغليف ودمج البضائع</li>
+              <li><span>✅</span> تأمين على الشحنة</li>
+              <li><span>✅</span> تتبع مباشر عبر التطبيق</li>
+              <li><span>✅</span> إتمام الجمارك مجانًا</li>
+            </ul>
+            <div class="container-price">
+              <span class="price-from">من</span>
+              <span class="price-value">$85</span>
+              <span class="price-unit">/ CBM</span>
+            </div>
+            <button class="reserve-btn" onclick="showToast('✅ تم استلام طلبك! سيتواصل معك فريقنا خلال 24 ساعة')">احجز مساحتك الآن</button>
+          </div>
+        </div>
+
+        <!-- Container 2 (Featured) -->
+        <div class="container-card" style="border:2px solid var(--primary)">
+          <div class="container-card-header premium">
+            <span class="container-tag">⭐ الأكثر طلبًا</span>
+            <div class="container-name">إسطنبول → دبي</div>
+            <div class="container-route">🇹🇷 تركيا → 🇦🇪 الإمارات</div>
+          </div>
+          <div class="container-progress-wrap">
+            <div class="progress-label">
+              <span>المساحة المتاحة</span>
+              <em>20%</em>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:80%;background:linear-gradient(90deg,#f59e0b,#d97706)"></div>
+            </div>
+            <div style="font-size:12px;color:#ef4444;margin-top:6px;text-align:center;font-weight:700">
+              ⚠️ 80% محجوز – مساحة محدودة!
+            </div>
+          </div>
+          <div class="container-body">
+            <div class="container-specs">
+              <div class="spec-item">
+                <div class="spec-label">تاريخ المغادرة</div>
+                <div class="spec-value" style="font-size:13px">10 يوليو 2024</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">وقت الشحن</div>
+                <div class="spec-value">15 يوم</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">الحد الأدنى</div>
+                <div class="spec-value">0.3 CBM</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">نوع الحاوية</div>
+                <div class="spec-value" style="font-size:13px">20 GP</div>
+              </div>
+            </div>
+            <ul class="container-features">
+              <li><span>✅</span> تغليف ودمج البضائع</li>
+              <li><span>✅</span> تأمين شامل</li>
+              <li><span>✅</span> تتبع فوري</li>
+              <li><span>✅</span> إتمام جمارك دبي</li>
+            </ul>
+            <div class="container-price">
+              <span class="price-from">من</span>
+              <span class="price-value">$110</span>
+              <span class="price-unit">/ CBM</span>
+            </div>
+            <button class="reserve-btn" onclick="showToast('✅ تم استلام طلبك! سيتواصل معك فريقنا خلال 24 ساعة')">احجز مساحتك الآن</button>
+          </div>
+        </div>
+
+        <!-- Container 3 -->
+        <div class="container-card">
+          <div class="container-card-header">
+            <span class="container-tag">✈️ جوي</span>
+            <div class="container-name">غوانغتشو → الرياض</div>
+            <div class="container-route">🇨🇳 الصين → 🇸🇦 السعودية</div>
+          </div>
+          <div class="container-progress-wrap">
+            <div class="progress-label">
+              <span>المساحة المتاحة</span>
+              <em>60%</em>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:40%"></div>
+            </div>
+            <div style="font-size:12px;color:var(--gray-500);margin-top:6px;text-align:center">
+              40% محجوز – مساحة واسعة متاحة
+            </div>
+          </div>
+          <div class="container-body">
+            <div class="container-specs">
+              <div class="spec-item">
+                <div class="spec-label">تاريخ المغادرة</div>
+                <div class="spec-value" style="font-size:13px">20 يوليو 2024</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">وقت الشحن</div>
+                <div class="spec-value">7 أيام</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">الحد الأدنى</div>
+                <div class="spec-value">10 كجم</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">نوع الشحن</div>
+                <div class="spec-value" style="font-size:13px">شحن جوي</div>
+              </div>
+            </div>
+            <ul class="container-features">
+              <li><span>✅</span> شحن سريع خلال 7 أيام</li>
+              <li><span>✅</span> تأمين على الشحنة</li>
+              <li><span>✅</span> تتبع لحظي</li>
+              <li><span>✅</span> مناسب للبضائع العاجلة</li>
+            </ul>
+            <div class="container-price">
+              <span class="price-from">من</span>
+              <span class="price-value">$8</span>
+              <span class="price-unit">/ كجم</span>
+            </div>
+            <button class="reserve-btn" onclick="showToast('✅ تم استلام طلبك! سيتواصل معك فريقنا خلال 24 ساعة')">احجز مساحتك الآن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-containers">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">كيف تعمل</span>
+        <h2 class="section-title">خطوات بسيطة لحجز مساحتك</h2>
+      </div>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="num">1</div>
+          <h3>اختر الحاوية</h3>
+          <p>تصفح الحاويات المتاحة واختر المسار والتاريخ المناسب لك</p>
+        </div>
+        <div class="how-card">
+          <div class="num">2</div>
+          <h3>حدد الحجم</h3>
+          <p>أخبرنا بكمية بضاعتك وسنحدد المساحة المطلوبة وتكلفة الشحن</p>
+        </div>
+        <div class="how-card">
+          <div class="num">3</div>
+          <h3>ادفع وتأكد</h3>
+          <p>ادفع مقدمًا عبر وسائل الدفع الآمنة وستصلك مستندات الشحن</p>
+        </div>
+        <div class="how-card">
+          <div class="num">4</div>
+          <h3>تابع وتسلّم</h3>
+          <p>تابع رحلة بضاعتك لحظة بلحظة وتسلّمها عند وصولها</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-overlay"></div>
+    <div class="container cta-content">
+      <h2>لديك سؤال حول الحاويات؟</h2>
+      <p>فريق الدعم الفني متاح 24/7 للإجابة على جميع استفساراتك</p>
+      <div class="cta-btns">
+        <a href="tel:+20201112800027" class="btn btn-primary btn-lg">📞 اتصل بنا الآن</a>
+        <a href="#" class="btn btn-white btn-lg">💬 تواصل عبر واتساب</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© جميع الحقوق محفوظة – إستوردلي 2024</p>
+        <div class="payment-icons">
+          <span class="pay-icon">💳 Visa</span>
+          <span class="pay-icon">💳 MasterCard</span>
+          <span class="pay-icon">💳 PayPal</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal" id="login-modal">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-login">تسجيل دخول</button>
+        <button class="modal-tab" id="tab-signup">حساب جديد</button>
+      </div>
+      <div class="modal-content" id="modal-login-content">
+        <h2>مرحبًا بعودتك!</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="login-email" placeholder="example@email.com" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="login-password" placeholder="••••••••" />
+          </div>
+          <button type="submit" class="btn btn-primary w-full">تسجيل الدخول</button>
+        </form>
+      </div>
+      <div class="modal-content" id="modal-signup-content" style="display:none">
+        <h2>إنشاء حساب</h2>
+        <form id="signup-form">
+          <div class="form-group">
+            <label>الاسم</label>
+            <input type="text" id="signup-name" placeholder="اسمك الكامل" />
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="signup-email" placeholder="example@email.com" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="signup-password" placeholder="••••••••" />
+          </div>
+          <button type="submit" class="btn btn-primary w-full">إنشاء الحساب</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تفاصيل المنتج – إستوردلي</title>
+  <meta name="description" content="تفاصيل المنتج وصور ومواصفات كاملة مع خيار الإضافة للسلة."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="enhancements.css"/>
+  <style>
+  /* ─── Product Page Specific ─── */
+  .prod-page { padding-top: 32px; padding-bottom: 64px; }
+
+  /* Breadcrumb */
+  .breadcrumb { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--gray5); margin-bottom:28px; flex-wrap:wrap; }
+  .breadcrumb a { color:var(--gray5); transition:color .2s; }
+  .breadcrumb a:hover { color:var(--p); }
+  .breadcrumb .sep { color:var(--gray3); }
+  .breadcrumb .current { color:var(--gray8); font-weight:700; }
+
+  /* Main Grid */
+  .prod-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+  @media(max-width:900px){ .prod-grid{grid-template-columns:1fr;gap:32px;} }
+
+  /* ── GALLERY ── */
+  .gallery { display:flex; flex-direction:column; gap:14px; position:sticky; top:100px; }
+  .gallery-main {
+    aspect-ratio:1; border-radius:24px; overflow:hidden;
+    background:var(--gray1); border:1px solid var(--gray2);
+    cursor:zoom-in; position:relative;
+  }
+  .gallery-main img {
+    width:100%; height:100%; object-fit:cover;
+    transition:transform .5s cubic-bezier(.25,.46,.45,.94);
+  }
+  .gallery-main:hover img { transform:scale(1.07); }
+  .gallery-zoom-icon {
+    position:absolute; bottom:14px; left:14px;
+    background:rgba(255,255,255,.9); border-radius:10px; padding:6px 10px;
+    font-size:12px; font-weight:700; color:var(--gray7);
+    display:flex; align-items:center; gap:5px;
+    backdrop-filter:blur(8px); opacity:0; transition:opacity .3s;
+  }
+  .gallery-main:hover .gallery-zoom-icon { opacity:1; }
+  .gallery-thumbs { display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; }
+  .gallery-thumbs::-webkit-scrollbar { display:none; }
+  .g-thumb {
+    width:72px; height:72px; border-radius:14px; overflow:hidden; flex-shrink:0;
+    border:2px solid var(--gray2); cursor:pointer; transition:all .2s;
+  }
+  .g-thumb img { width:100%; height:100%; object-fit:cover; }
+  .g-thumb.active { border-color:var(--p); box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+  .g-thumb:hover { border-color:var(--p); transform:translateY(-2px); }
+
+  /* Badges */
+  .prod-badges { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .prod-badge {
+    padding:4px 12px; border-radius:8px; font-size:11px; font-weight:800;
+    display:flex; align-items:center; gap:4px;
+  }
+  .badge-tag-sale { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
+  .badge-tag-new  { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; }
+  .badge-tag-hot  { background:#fffbeb; color:#b45309; border:1px solid #fde68a; }
+  .badge-tag-best { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
+
+  /* Info Panel */
+  .prod-info { display:flex; flex-direction:column; gap:22px; }
+  .prod-cat { font-size:12px; font-weight:800; color:var(--p); text-transform:uppercase; letter-spacing:.8px; }
+  .prod-title { font-size:clamp(22px,3vw,30px); font-weight:900; color:var(--gray9); line-height:1.3; }
+  
+  .prod-rating { display:flex; align-items:center; gap:12px; }
+  .prod-stars { color:#f59e0b; font-size:16px; letter-spacing:2px; }
+  .prod-reviews-count { font-size:13px; color:var(--gray5); font-weight:600; }
+  .prod-sold { font-size:12px; color:var(--gray4); }
+
+  /* Price box */
+  .prod-price-box {
+    background:var(--gray0); border-radius:18px; padding:20px 24px;
+    border:1px solid var(--gray2);
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .prod-price-main { font-size:36px; font-weight:900; color:var(--p2); }
+  .prod-price-old { font-size:18px; color:var(--gray4); text-decoration:line-through; }
+  .prod-disc-badge {
+    padding:5px 12px; background:linear-gradient(135deg,#fef2f2,#fee2e2);
+    color:#dc2626; border-radius:10px; font-size:13px; font-weight:900;
+    border:1px solid #fecaca;
+  }
+  .prod-savings { font-size:12px; color:#16a34a; font-weight:700; }
+
+  /* Color/Size options */
+  .prod-option-label { font-size:13px; font-weight:800; color:var(--gray8); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .prod-option-label span { color:var(--gray5); font-weight:500; }
+  .prod-colors { display:flex; gap:10px; flex-wrap:wrap; }
+  .color-dot {
+    width:34px; height:34px; border-radius:50%; cursor:pointer;
+    border:3px solid transparent; transition:all .25s;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+    position:relative;
+  }
+  .color-dot.active { border-color:var(--p); transform:scale(1.15); }
+  .color-dot::after { content:attr(data-name); position:absolute; bottom:-22px; left:50%; transform:translateX(-50%); font-size:10px; white-space:nowrap; color:var(--gray5); opacity:0; transition:opacity .2s; }
+  .color-dot:hover::after { opacity:1; }
+  .prod-sizes { display:flex; gap:8px; flex-wrap:wrap; }
+  .size-btn {
+    min-width:44px; height:44px; padding:0 12px; border-radius:12px;
+    border:1.5px solid var(--gray2); font-size:13px; font-weight:700;
+    color:var(--gray7); cursor:pointer; transition:all .2s;
+    background:#fff;
+  }
+  .size-btn:hover { border-color:var(--p); color:var(--p); }
+  .size-btn.active { border-color:var(--p); background:var(--p); color:#fff; }
+  .size-btn.unavailable { opacity:.35; text-decoration:line-through; cursor:not-allowed; }
+
+  /* Quantity */
+  .prod-qty { display:flex; align-items:center; gap:10px; }
+  .qty-label { font-size:13px; font-weight:800; color:var(--gray8); }
+  .qty-wrap {
+    display:flex; align-items:center; gap:0;
+    border:1.5px solid var(--gray2); border-radius:14px; overflow:hidden;
+    background:#fff;
+  }
+  .qty-btn {
+    width:44px; height:44px; font-size:20px; font-weight:700;
+    color:var(--gray7); background:#fff; border:none; cursor:pointer;
+    transition:all .2s; display:flex; align-items:center; justify-content:center;
+  }
+  .qty-btn:hover { background:var(--p-light); color:var(--p); }
+  .qty-val { font-size:16px; font-weight:900; min-width:40px; text-align:center; color:var(--gray9); }
+
+  /* Action buttons */
+  .prod-actions { display:flex; gap:12px; flex-wrap:wrap; }
+  .btn-cart {
+    flex:1; min-width:160px; padding:15px 24px; border-radius:16px;
+    background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff;
+    font-size:15px; font-weight:800; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:all .3s; box-shadow:0 6px 20px rgba(37,99,235,.3);
+    position:relative; overflow:hidden;
+  }
+  .btn-cart:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(37,99,235,.4); }
+  .btn-cart:active { transform:scale(.97); }
+  .btn-buy-now {
+    flex:1; min-width:140px; padding:15px 24px; border-radius:16px;
+    background:#0f172a; color:#fff;
+    font-size:15px; font-weight:800; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:all .3s; text-decoration:none;
+    box-shadow:0 6px 20px rgba(15,23,42,.2);
+  }
+  .btn-buy-now:hover { background:#1e293b; transform:translateY(-2px); color:#fff; }
+  .btn-wish {
+    width:52px; height:52px; border-radius:16px; border:1.5px solid var(--gray2);
+    background:#fff; font-size:22px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .25s cubic-bezier(.175,.885,.32,1.275);
+  }
+  .btn-wish:hover { border-color:#dc2626; transform:scale(1.1); }
+  .btn-wish.wished { border-color:#dc2626; background:#fef2f2; }
+
+  /* Share */
+  .prod-share { display:flex; align-items:center; gap:10px; }
+  .share-label { font-size:12px; font-weight:700; color:var(--gray5); }
+  .share-btn {
+    width:34px; height:34px; border-radius:10px; border:1px solid var(--gray2);
+    background:#fff; font-size:15px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .share-btn:hover { border-color:var(--p); background:var(--p-light); transform:translateY(-2px); }
+
+  /* Trust badges */
+  .prod-trust { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .trust-badge {
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding:14px 10px; border-radius:14px;
+    background:var(--gray0); border:1px solid var(--gray2);
+    gap:6px; font-size:12px; color:var(--gray6); font-weight:600;
+  }
+  .trust-badge .tb-icon { font-size:20px; }
+  .trust-badge strong { font-size:12px; color:var(--gray8); font-weight:800; display:block; }
+
+  /* ── TABS ── */
+  .prod-tabs { margin-top:48px; }
+  .tabs-nav { display:flex; border-bottom:2px solid var(--gray2); gap:0; }
+  .tab-btn {
+    padding:12px 24px; font-size:14px; font-weight:700; color:var(--gray5);
+    border:none; background:none; cursor:pointer; font-family:var(--font);
+    border-bottom:2px solid transparent; margin-bottom:-2px;
+    transition:all .2s;
+  }
+  .tab-btn.active { color:var(--p); border-bottom-color:var(--p); }
+  .tab-btn:hover { color:var(--gray8); }
+  .tab-panel { display:none; padding:28px 0; }
+  .tab-panel.active { display:block; animation:fadeIn .3s ease; }
+
+  /* Description */
+  .prod-desc { font-size:15px; color:var(--gray6); line-height:1.9; max-width:680px; }
+  .prod-desc strong { color:var(--gray9); }
+
+  /* Specs table */
+  .specs-table { width:100%; border-collapse:collapse; max-width:600px; }
+  .specs-table tr:nth-child(even) td:first-child { background:var(--gray0); }
+  .specs-table td { padding:13px 18px; font-size:14px; border-bottom:1px solid var(--gray2); }
+  .specs-table td:first-child { font-weight:800; color:var(--gray8); width:40%; background:var(--gray0); }
+  .specs-table td:last-child { color:var(--gray6); }
+
+  /* Reviews */
+  .reviews-layout { display:grid; grid-template-columns:260px 1fr; gap:32px; }
+  @media(max-width:768px){.reviews-layout{grid-template-columns:1fr;}}
+  .rating-summary { background:var(--gray0); border-radius:20px; padding:28px; text-align:center; border:1px solid var(--gray2); }
+  .rating-big { font-size:56px; font-weight:900; color:var(--gray9); line-height:1; }
+  .rating-stars-big { color:#f59e0b; font-size:24px; letter-spacing:3px; margin:8px 0; }
+  .rating-count { font-size:13px; color:var(--gray5); }
+  .rating-bars { margin-top:18px; display:flex; flex-direction:column; gap:8px; }
+  .rating-bar-row { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--gray6); }
+  .rating-bar-track { flex:1; height:6px; background:var(--gray2); border-radius:3px; overflow:hidden; }
+  .rating-bar-fill { height:100%; background:linear-gradient(90deg,#f59e0b,#fbbf24); border-radius:3px; transition:width 1s ease; }
+  .review-list { display:flex; flex-direction:column; gap:20px; }
+  .rev-item { background:#fff; border:1px solid var(--gray2); border-radius:18px; padding:22px; }
+  .rev-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .rev-av2 { width:42px; height:42px; border-radius:14px; font-size:17px; font-weight:900; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .rev-meta strong { font-size:14px; color:var(--gray9); display:block; }
+  .rev-meta small { font-size:12px; color:var(--gray4); }
+  .rev-stars { color:#f59e0b; font-size:13px; letter-spacing:1px; margin-right:auto; }
+  .rev-text { font-size:14px; color:var(--gray6); line-height:1.8; }
+  .rev-verified { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:#16a34a; font-weight:700; margin-top:8px; }
+  .write-review-btn { margin-top:20px; }
+
+  /* ── RELATED ── */
+  .related-sec { margin-top:60px; }
+  .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:18px; margin-top:24px; }
+
+  /* Stock indicator */
+  .stock-bar { display:flex; align-items:center; gap:10px; font-size:13px; }
+  .stock-dot { width:8px; height:8px; border-radius:50%; animation:pulse 1.5s infinite; }
+  .stock-dot.green { background:#16a34a; }
+  .stock-dot.yellow { background:#d97706; }
+  .stock-status { font-weight:700; }
+
+  /* Delivery estimate */
+  .delivery-box {
+    background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1px solid #bbf7d0;
+    border-radius:14px; padding:14px 18px;
+    display:flex; align-items:center; gap:12px; font-size:13px;
+  }
+  .delivery-box .icon { font-size:22px; }
+  .delivery-box strong { color:#166534; font-weight:800; display:block; }
+  .delivery-box small { color:#16a34a; }
+
+  /* Zoom overlay */
+  .zoom-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:9998;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; visibility:hidden; transition:all .3s; cursor:zoom-out;
+  }
+  .zoom-overlay.open { opacity:1; visibility:visible; }
+  .zoom-overlay img { max-width:90vw; max-height:90vh; object-fit:contain; border-radius:12px; }
+
+  /* Sticky add to cart (mobile) */
+  .sticky-cart {
+    position:fixed; bottom:0; left:0; right:0; z-index:300;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(12px);
+    border-top:1px solid var(--gray2); padding:14px 20px;
+    display:none; align-items:center; gap:12px;
+    box-shadow:0 -8px 32px rgba(0,0,0,.1);
+  }
+  @media(max-width:768px){ .sticky-cart { display:flex; } }
+  .sticky-price { font-size:20px; font-weight:900; color:var(--p2); }
+  .sticky-btn {
+    flex:1; padding:14px; border-radius:14px;
+    background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff;
+    font-size:15px; font-weight:800; border:none; cursor:pointer;
+  }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER (same as index) ═══ -->
+<div class="announce-bar" id="announce-bar">
+  <div class="announce-inner">
+    <span>🔥 شحن مجاني للطلبات فوق ₪200 – وصل حديثاً أكثر من 500 منتج جديد!</span>
+    <button class="announce-close" onclick="document.getElementById('announce-bar').remove()">✕</button>
+  </div>
+</div>
+<header class="header" id="header">
+  <div class="hdr-top"><div class="container hdr-top-inner">
+    <nav class="hdr-links">
+      <a href="index.html">الرئيسية</a>
+      <a href="shop.html">المتجر</a>
+    </nav>
+    <div class="hdr-user">
+      <a href="#" id="btn-login" class="hdr-link-btn">تسجيل دخول</a>
+      <span>|</span>
+      <a href="admin.html" class="hdr-link-btn" style="color:#f59e0b">⚙️ الإدارة</a>
+    </div>
+  </div></div>
+  <div class="hdr-main"><div class="container hdr-main-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
+        <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+      </div>
+      <div class="logo-name">
+        <span class="logo-ar">إستوردلي</span>
+        <span class="logo-en">ESTAWREDLY</span>
+      </div>
+    </a>
+    <div class="search-wrap">
+      <div class="search-box">
+        <input type="text" id="search-input" class="search-input" placeholder="ابحث عن أي منتج..."/>
+        <button class="search-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="hdr-actions">
+      <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="badge" id="wishlist-count">0</span>
+      </button>
+      <button class="hdr-icon-btn cart-trigger" id="cart-btn" title="السلة">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="badge cart-badge" id="cart-count">0</span>
+      </button>
+    </div>
+  </div></div>
+</header>
+
+<!-- ═══ ZOOM OVERLAY ═══ -->
+<div class="zoom-overlay" id="zoom-overlay" onclick="this.classList.remove('open')">
+  <img id="zoom-img" src="" alt=""/>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="prod-page">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" id="breadcrumb">
+      <a href="index.html">الرئيسية</a>
+      <span class="sep">›</span>
+      <a href="shop.html">المتجر</a>
+      <span class="sep">›</span>
+      <span class="current" id="bc-name">...</span>
+    </nav>
+
+    <!-- Product Grid -->
+    <div class="prod-grid">
+
+      <!-- Gallery -->
+      <div class="gallery">
+        <div class="gallery-main" id="gallery-main" onclick="openZoom(this.querySelector('img').src)">
+          <img id="main-img" src="" alt=""/>
+          <div class="gallery-zoom-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            تكبير
+          </div>
+        </div>
+        <div class="gallery-thumbs" id="gallery-thumbs"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="prod-info">
+        <div>
+          <div class="prod-badges" id="prod-badges"></div>
+          <div class="prod-cat" id="prod-cat"></div>
+          <h1 class="prod-title" id="prod-title">...</h1>
+          <div class="prod-rating">
+            <div class="prod-stars" id="prod-stars">★★★★★</div>
+            <span class="prod-reviews-count" id="prod-reviews-count"></span>
+            <span class="prod-sold" id="prod-sold"></span>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="prod-price-box">
+          <div>
+            <div class="prod-price-main" id="prod-price"></div>
+            <div id="prod-savings" class="prod-savings" style="margin-top:4px;display:none;"></div>
+          </div>
+          <div id="prod-old-wrap" style="display:none">
+            <span class="prod-price-old" id="prod-old-price"></span>
+            <span class="prod-disc-badge" id="prod-disc"></span>
+          </div>
+        </div>
+
+        <!-- Stock -->
+        <div class="stock-bar">
+          <div class="stock-dot green" id="stock-dot"></div>
+          <span class="stock-status" id="stock-status">متوفر في المخزون</span>
+          <span id="stock-count" style="color:var(--gray4);font-size:12px;"></span>
+        </div>
+
+        <!-- Color -->
+        <div id="color-section">
+          <div class="prod-option-label">اللون: <span id="selected-color">—</span></div>
+          <div class="prod-colors" id="prod-colors"></div>
+        </div>
+
+        <!-- Size -->
+        <div id="size-section">
+          <div class="prod-option-label">
+            المقاس: <span id="selected-size">—</span>
+            <a href="#" style="font-size:11px;color:var(--p);margin-right:auto;" onclick="return false">دليل المقاسات</a>
+          </div>
+          <div class="prod-sizes" id="prod-sizes"></div>
+        </div>
+
+        <!-- Qty + Actions -->
+        <div>
+          <div class="prod-qty" style="margin-bottom:16px;">
+            <span class="qty-label">الكمية:</span>
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <span class="qty-val" id="qty-display">1</span>
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+          <div class="prod-actions">
+            <button class="btn-cart" id="btn-add-cart" onclick="addProductToCart()">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              أضف للسلة
+            </button>
+            <a href="checkout.html" class="btn-buy-now" id="btn-buy">
+              ⚡ اشتري الآن
+            </a>
+            <button class="btn-wish" id="btn-wish" onclick="toggleProductWish()">🤍</button>
+          </div>
+        </div>
+
+        <!-- Delivery -->
+        <div class="delivery-box">
+          <div class="icon">🚚</div>
+          <div>
+            <strong>وصول سريع خلال 2–5 أيام عمل</strong>
+            <small>شحن مجاني للطلبات فوق ₪200</small>
+          </div>
+        </div>
+
+        <!-- Trust -->
+        <div class="prod-trust">
+          <div class="trust-badge"><div class="tb-icon">🔒</div><strong>دفع آمن</strong>100% مشفر</div>
+          <div class="trust-badge"><div class="tb-icon">↩️</div><strong>إرجاع مجاني</strong>خلال 30 يوم</div>
+          <div class="trust-badge"><div class="tb-icon">🏅</div><strong>منتج أصلي</strong>ضمان الأصالة</div>
+        </div>
+
+        <!-- Share -->
+        <div class="prod-share">
+          <span class="share-label">مشاركة:</span>
+          <button class="share-btn" onclick="shareProduct('whatsapp')" title="واتساب">📲</button>
+          <button class="share-btn" onclick="shareProduct('copy')" title="نسخ الرابط">🔗</button>
+          <button class="share-btn" onclick="shareProduct('twitter')" title="تويتر">🐦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TABS ─── -->
+    <div class="prod-tabs">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="desc">الوصف</button>
+        <button class="tab-btn" data-tab="specs">المواصفات</button>
+        <button class="tab-btn" data-tab="reviews">التقييمات</button>
+        <button class="tab-btn" data-tab="shipping">الشحن والإرجاع</button>
+      </div>
+
+      <!-- Description -->
+      <div class="tab-panel active" id="tab-desc">
+        <div class="prod-desc" id="prod-desc-content"></div>
+      </div>
+
+      <!-- Specs -->
+      <div class="tab-panel" id="tab-specs">
+        <table class="specs-table" id="specs-table"></table>
+      </div>
+
+      <!-- Reviews -->
+      <div class="tab-panel" id="tab-reviews">
+        <div class="reviews-layout">
+          <div class="rating-summary">
+            <div class="rating-big" id="rating-big">4.8</div>
+            <div class="rating-stars-big">★★★★★</div>
+            <div class="rating-count" id="rating-count"></div>
+            <div class="rating-bars" id="rating-bars"></div>
+          </div>
+          <div>
+            <div class="review-list" id="review-list"></div>
+            <button class="btn btn-outline-white write-review-btn" style="color:var(--p);border-color:var(--p);background:#eff6ff;margin-top:16px;" onclick="alert('قريباً: إضافة تقييم!')">
+              ✏️ اكتب تقييمك
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping -->
+      <div class="tab-panel" id="tab-shipping">
+        <div class="prod-desc">
+          <strong>🚚 سياسة الشحن:</strong><br>
+          نوفر شحناً سريعاً لجميع محافظات فلسطين خلال 2–5 أيام عمل. الشحن مجاني للطلبات التي تتجاوز ₪200، وبتكلفة ₪15 للطلبات الأقل.<br><br>
+          <strong>↩️ سياسة الإرجاع:</strong><br>
+          يمكنك إرجاع أي منتج خلال 30 يوماً من تاريخ الاستلام، شريطة أن يكون في حالته الأصلية مع تغليفه. سيتم استرداد المبلغ كاملاً خلال 5–7 أيام عمل.<br><br>
+          <strong>📦 التتبع:</strong><br>
+          ستصلك رسالة برقم التتبع فور شحن الطلبية.
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── RELATED ─── -->
+    <div class="related-sec">
+      <div class="sec-hdr">
+        <div>
+          <h2 class="sec-title">منتجات مشابهة</h2>
+          <p class="sec-sub">قد يعجبك أيضاً</p>
+        </div>
+        <a href="shop.html" class="view-all-link">عرض الكل ←</a>
+      </div>
+      <div class="related-grid" id="related-grid"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Sticky cart (mobile) -->
+<div class="sticky-cart" id="sticky-cart">
+  <div class="sticky-price" id="sticky-price"></div>
+  <button class="sticky-btn" onclick="addProductToCart()">🛒 أضف للسلة</button>
+</div>
+
+<!-- Cart + Wish Drawers -->
+<div class="drawer-mask" id="cart-mask"></div>
+<aside class="cart-drawer" id="cart-drawer">
+  <div class="drawer-header"><h3>🛒 سلتي</h3><button class="drawer-close" id="cart-close">✕</button></div>
+  <div class="drawer-body" id="cart-body">
+    <div class="drawer-empty" id="cart-empty"><div class="empty-icon">🛒</div><p>سلتك فارغة!</p><a href="shop.html" class="btn btn-primary">ابدأ التسوق</a></div>
+    <div id="cart-items-list"></div>
+  </div>
+  <div class="drawer-footer" id="cart-footer" style="display:none">
+    <div class="cart-subtotal"><span>المجموع الفرعي</span><strong id="cart-subtotal">₪0.00</strong></div>
+    <div class="cart-shipping"><span>الشحن</span><strong id="cart-shipping">مجاني 🎉</strong></div>
+    <div class="cart-divider"></div>
+    <div class="cart-total-row"><span>الإجمالي</span><strong id="cart-total-price" class="total-big">₪0.00</strong></div>
+    <a href="checkout.html" class="btn btn-primary w-full btn-lg checkout-btn">إتمام الشراء →</a>
+    <button class="continue-btn" id="continue-shopping">متابعة التسوق</button>
+  </div>
+</aside>
+
+<div id="toast-wrap"></div>
+<button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="main.js"></script>
+<script>
+/* ══════════════════════════════════════
+   PRODUCT PAGE LOGIC
+   ══════════════════════════════════════ */
+const ALL_PRODUCTS = [...PRODUCTS.all, ...PRODUCTS.new, ...PRODUCTS.flash];
+
+// Extra data per product (desc, specs, colors, sizes, images)
+const EXTRA = {
+  default: {
+    images: [],
+    desc: `<strong>منتج مستورد بجودة عالية</strong> من أفضل المصانع العالمية.<br><br>
+يتميز هذا المنتج بجودة الخامات ودقة الصناعة التي تجعله الخيار الأمثل لكل من يبحث عن التميز والأناقة بسعر منافس.<br><br>
+• مستورد مباشرة من المصنع بدون وسطاء<br>
+• خضع لفحص الجودة قبل الشحن<br>
+• يأتي بتغليف احترافي مع بطاقة ضمان<br>
+• متوفر بعدة ألوان ومقاسات`,
+    specs: [
+      ['الحالة','جديد – أصلي 100%'],
+      ['المورد','مستورد مباشرة'],
+      ['الضمان','سنة كاملة'],
+      ['التغليف','صندوق احترافي'],
+      ['الشحن','2–5 أيام عمل'],
+    ],
+    colors: ['#1e293b','#dc2626','#16a34a','#d97706'],
+    colorNames: ['أسود','أحمر','أخضر','ذهبي'],
+    sizes: ['XS','S','M','L','XL','XXL'],
+    stock: 47,
+    reviews: [
+      {name:'أحمد م.',city:'رام الله',rating:5,text:'منتج ممتاز جداً! وصل بسرعة وبحالة مثالية. سعيد بالتجربة وسأطلب مرة أخرى.',color:'#1d4ed8'},
+      {name:'سارة ع.',city:'نابلس',rating:5,text:'الجودة أفضل من المتوقع والسعر منافس جداً مقارنة بالسوق المحلي. شكراً إستوردلي!',color:'#dc2626'},
+      {name:'محمد ح.',city:'غزة',rating:4,text:'المنتج جيد جداً لكن التوصيل أخذ يوم إضافي. بشكل عام تجربة ممتازة.',color:'#16a34a'},
+    ]
+  }
+};
+
+// ─── URL Params ───
+const params = new URLSearchParams(location.search);
+const productId = parseInt(params.get('id')) || 1;
+const product = ALL_PRODUCTS.find(p => p.id === productId) || ALL_PRODUCTS[0];
+const extra = EXTRA[productId] || EXTRA.default;
+
+// Generate 4 images (main + similar angles from Unsplash)
+const BASE_IMG = product.img;
+const IMAGES = extra.images.length
+  ? extra.images
+  : [
+    BASE_IMG,
+    BASE_IMG.replace('w=400','w=401'),
+    BASE_IMG.replace('w=400','w=402'),
+    BASE_IMG.replace('w=400','w=403'),
+  ];
+
+let currentQty = 1;
+let currentColor = null;
+let currentSize  = null;
+let isWished = state.wishlist.has(product.id);
+
+// ─── Render page ───
+function render() {
+  // Title
+  document.title = `${product.name} – إستوردلي`;
+  document.getElementById('bc-name').textContent = product.name;
+  document.getElementById('prod-cat').textContent = product.cat;
+  document.getElementById('prod-title').textContent = product.name;
+
+  // Badges
+  const badges = document.getElementById('prod-badges');
+  if (product.badge) {
+    const names = {sale:'تخفيض',new:'جديد',hot:'الأكثر طلباً',best:'مختار بعناية'};
+    const disc = product.oldPrice ? Math.round((1-product.price/product.oldPrice)*100) : 0;
+    badges.innerHTML = `<span class="prod-badge badge-tag-${product.badge}">${product.badge==='sale'?`🔥 -${disc}%`:names[product.badge]}</span>`;
+  }
+
+  // Stars
+  const stars = Math.round(product.stars);
+  document.getElementById('prod-stars').textContent = '★'.repeat(stars) + '☆'.repeat(5-stars);
+  document.getElementById('prod-reviews-count').textContent = `(${product.reviews} تقييم)`;
+  document.getElementById('prod-sold').textContent = `• +${product.reviews*3} مباع`;
+
+  // Price
+  document.getElementById('prod-price').textContent = `₪${product.price}`;
+  if (product.oldPrice) {
+    const disc = Math.round((1-product.price/product.oldPrice)*100);
+    const savings = product.oldPrice - product.price;
+    document.getElementById('prod-old-wrap').style.display='flex';
+    document.getElementById('prod-old-price').textContent = `₪${product.oldPrice}`;
+    document.getElementById('prod-disc').textContent = `-${disc}%`;
+    const savEl = document.getElementById('prod-savings');
+    savEl.style.display='block';
+    savEl.textContent = `✅ وفّر ₪${savings.toFixed(0)} مع هذا العرض`;
+  }
+
+  // Stock
+  const stock = extra.stock || 47;
+  const dot = document.getElementById('stock-dot');
+  if (stock < 10) {
+    dot.className='stock-dot yellow';
+    document.getElementById('stock-status').textContent = 'كمية محدودة';
+    document.getElementById('stock-count').textContent = `(${stock} قطعة متبقية فقط!)`;
+    document.getElementById('stock-count').style.color='#d97706';
+  } else {
+    document.getElementById('stock-count').textContent = `(${stock}+ متوفر)`;
+  }
+
+  // Gallery
+  const mainImg = document.getElementById('main-img');
+  mainImg.src = IMAGES[0];
+  mainImg.alt = product.name;
+
+  const thumbsEl = document.getElementById('gallery-thumbs');
+  thumbsEl.innerHTML = IMAGES.map((src,i) => `
+    <div class="g-thumb ${i===0?'active':''}" onclick="selectThumb(this,'${src}')">
+      <img src="${src}" alt="صورة ${i+1}" loading="lazy"/>
+    </div>
+  `).join('');
+
+  // Colors
+  const colors = extra.colors || EXTRA.default.colors;
+  const colorNames = extra.colorNames || EXTRA.default.colorNames;
+  const colorsEl = document.getElementById('prod-colors');
+  colorsEl.innerHTML = colors.map((c,i) => `
+    <div class="color-dot" style="background:${c}" data-name="${colorNames[i]||''}"
+      onclick="selectColor(this,'${colorNames[i]||c}')"></div>
+  `).join('');
+
+  // Sizes
+  const sizes = extra.sizes || EXTRA.default.sizes;
+  const sizesEl = document.getElementById('prod-sizes');
+  sizesEl.innerHTML = sizes.map(s => `
+    <button class="size-btn" onclick="selectSize(this,'${s}')">${s}</button>
+  `).join('');
+
+  // Hide color/size if not needed
+  if (!product.tab || product.tab==='electronics') {
+    document.getElementById('size-section').style.display='none';
+    document.getElementById('color-section').style.display='none';
+  }
+
+  // Description
+  document.getElementById('prod-desc-content').innerHTML = extra.desc || EXTRA.default.desc;
+
+  // Specs
+  const specs = extra.specs || EXTRA.default.specs;
+  const specsGeneral = [
+    ['اسم المنتج', product.name],
+    ['التصنيف', product.cat],
+    ['السعر', `₪${product.price}`],
+    ['التقييم', `${product.stars}/5 (${product.reviews} تقييم)`],
+    ...specs
+  ];
+  document.getElementById('specs-table').innerHTML = specsGeneral.map(([k,v]) => `
+    <tr><td>${k}</td><td>${v}</td></tr>
+  `).join('');
+
+  // Reviews
+  const revs = extra.reviews || EXTRA.default.reviews;
+  document.getElementById('rating-big').textContent = product.stars;
+  document.getElementById('rating-count').textContent = `${product.reviews} تقييم`;
+  document.getElementById('rating-bars').innerHTML = [5,4,3,2,1].map(n => {
+    const pct = n===5?72:n===4?18:n===3?6:n===2?2:2;
+    return `
+      <div class="rating-bar-row">
+        <span>${n} ★</span>
+        <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${pct}%"></div></div>
+        <span>${pct}%</span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('review-list').innerHTML = revs.map(r => `
+    <div class="rev-item">
+      <div class="rev-header">
+        <div class="rev-av2" style="background:${r.color}">${r.name[0]}</div>
+        <div class="rev-meta">
+          <strong>${r.name}</strong>
+          <small>${r.city} — منذ أسبوعين</small>
+        </div>
+        <div class="rev-stars">${'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)}</div>
+      </div>
+      <div class="rev-text">${r.text}</div>
+      <div class="rev-verified">✓ عملية شراء مثبتة</div>
+    </div>
+  `).join('');
+
+  // Sticky price
+  document.getElementById('sticky-price').textContent = `₪${product.price}`;
+
+  // Wish button
+  updateWishBtn();
+
+  // Related
+  const related = ALL_PRODUCTS.filter(p => p.tab===product.tab && p.id!==product.id).slice(0,4);
+  document.getElementById('related-grid').innerHTML = related.map(p => makeCard(p)).join('');
+
+  // Update cart UI
+  updateCartUI();
+  updateWishUI();
+}
+
+function selectThumb(el, src) {
+  document.querySelectorAll('.g-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const main = document.getElementById('main-img');
+  main.style.opacity='0';
+  setTimeout(() => { main.src=src; main.style.opacity='1'; }, 200);
+}
+
+function selectColor(el, name) {
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  currentColor = name;
+  document.getElementById('selected-color').textContent = name;
+}
+
+function selectSize(el, size) {
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentSize = size;
+  document.getElementById('selected-size').textContent = size;
+}
+
+function changeQty(delta) {
+  currentQty = Math.max(1, Math.min(99, currentQty + delta));
+  document.getElementById('qty-display').textContent = currentQty;
+}
+
+function addProductToCart() {
+  addToCart(product);
+  const btn = document.getElementById('btn-add-cart');
+  btn.textContent = '✅ تمت الإضافة!';
+  btn.style.background = 'linear-gradient(135deg,#16a34a,#22c55e)';
+  setTimeout(() => {
+    btn.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> أضف للسلة`;
+    btn.style.background = '';
+  }, 2000);
+}
+
+function toggleProductWish() {
+  toggleWish(product);
+  isWished = state.wishlist.has(product.id);
+  updateWishBtn();
+}
+
+function updateWishBtn() {
+  const btn = document.getElementById('btn-wish');
+  btn.textContent = isWished ? '❤️' : '🤍';
+  btn.classList.toggle('wished', isWished);
+}
+
+function openZoom(src) {
+  document.getElementById('zoom-img').src = src;
+  document.getElementById('zoom-overlay').classList.add('open');
+}
+
+function shareProduct(type) {
+  const url = location.href;
+  const text = `تفقد هذا المنتج: ${product.name}`;
+  if (type==='whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(text+' '+url)}`);
+  else if (type==='twitter') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
+  else { navigator.clipboard.writeText(url); toast('🔗 تم نسخ الرابط!'); }
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Cart & wish drawer setup (same as main)
+document.getElementById('cart-btn').addEventListener('click', () => {
+  document.getElementById('cart-mask').classList.add('open');
+  document.getElementById('cart-drawer').classList.add('open');
+});
+document.getElementById('cart-mask').addEventListener('click', () => {
+  document.getElementById('cart-mask').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+});
+document.getElementById('cart-close').addEventListener('click', () => {
+  document.getElementById('cart-mask').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+});
+document.getElementById('continue-shopping').addEventListener('click', () => {
+  document.getElementById('cart-mask').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+});
+
+// Search redirect
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') window.location = `shop.html?q=${encodeURIComponent(e.target.value)}`;
+});
+
+// Scroll btt
+window.addEventListener('scroll', () => {
+  document.getElementById('btt-btn').classList.toggle('visible', scrollY > 300);
+  document.getElementById('header').classList.toggle('scrolled', scrollY > 40);
+}, {passive:true});
+
+render();
+</script>
+<script src="enhancements.js"></script>
+</body>
+</html>

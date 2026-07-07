@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المتجر – إستوردلي | آلاف المنتجات بأفضل الأسعار</title>
+  <meta name="description" content="تسوق من آلاف المنتجات المستوردة في جميع الفئات. أفضل الأسعار مع ضمان الجودة والشحن السريع." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="enhancements.css" />
+  <style>
+    /* Shop-specific styles */
+    .shop-hero {
+      background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary) 100%);
+      padding: 50px 0;
+      color: white;
+    }
+    .shop-hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+    .shop-hero p { color: rgba(255,255,255,.7); font-size: 15px; }
+    .breadcrumb { display: flex; gap: 8px; font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 16px; }
+    .breadcrumb a { color: rgba(255,255,255,.7); }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb span { color: rgba(255,255,255,.3); }
+
+    .shop-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      padding: 48px 0 80px;
+    }
+
+    /* Sidebar Filters */
+    .filter-sidebar { position: sticky; top: 120px; height: fit-content; }
+    .filter-section {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-100);
+      margin-bottom: 20px;
+    }
+    .filter-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .filter-title .toggle { font-size: 12px; color: var(--gray-400); }
+    .filter-options { display: flex; flex-direction: column; gap: 10px; }
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .filter-option:hover { color: var(--primary-dark); }
+    .filter-option input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    .filter-count { margin-right: auto; color: var(--gray-400); font-size: 12px; }
+
+    /* Price Range */
+    .price-range { display: flex; gap: 8px; align-items: center; }
+    .price-input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 13px;
+      width: 100%;
+    }
+    .price-input:focus { outline: none; border-color: var(--primary); }
+
+    /* Products area */
+    .shop-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-100);
+      margin-bottom: 24px;
+    }
+    .results-count { font-size: 14px; color: var(--gray-600); }
+    .results-count strong { color: var(--gray-900); }
+    .toolbar-right { display: flex; gap: 10px; align-items: center; }
+    .sort-select {
+      padding: 8px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--gray-700);
+      font-family: var(--font-ar);
+      cursor: pointer;
+    }
+    .sort-select:focus { outline: none; border-color: var(--primary); }
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--gray-200);
+      color: var(--gray-500);
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .view-btn.active, .view-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--dark);
+    }
+
+    /* Category chips */
+    .cat-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .cat-chip {
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 2px solid var(--gray-200);
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .cat-chip.active, .cat-chip:hover {
+      border-color: var(--primary);
+      background: rgba(245,158,11,.1);
+      color: var(--primary-dark);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 48px;
+    }
+    .page-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      border: 2px solid var(--gray-200);
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .page-btn.active, .page-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--dark);
+    }
+
+    @media (max-width: 900px) {
+      .shop-layout { grid-template-columns: 1fr; }
+      .filter-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-links">
+        <a href="#"><span class="icon">🚚</span> شحن سريع</a>
+        <a href="#"><span class="icon">🎧</span> دعم مستمر</a>
+        <a href="#"><span class="icon">🔒</span> وسائل دفع آمنة</a>
+      </div>
+      <div class="top-bar-actions">
+        <a href="#" id="btn-login" class="btn-top">تسجيل دخول</a>
+        <a href="#" id="btn-register" class="btn-top btn-top--primary">تسجيل حساب جديد</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">🌍</div>
+          <div class="logo-text">
+            <span class="logo-main">إستوردلي</span>
+            <span class="logo-sub">منصة الاستيراد الشاملة</span>
+          </div>
+        </a>
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="ابحث عن منتج..." class="search-input" />
+          <button class="search-btn" id="search-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+        </div>
+        <div class="header-right">
+          <a href="index.html" class="cart-btn" id="cart-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="cart-count" id="cart-count">0</span>
+            <span>السلة</span>
+          </a>
+        </div>
+      </div>
+      <nav class="main-nav" id="main-nav">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+          <li><a href="shop.html" class="nav-link active">المتجر</a></li>
+          <li><a href="containers.html" class="nav-link">حاويات للمشاركة</a></li>
+          <li><a href="index.html#services" class="nav-link">خدماتنا</a></li>
+          <li><a href="offers.html" class="nav-link">🔥 أفضل العروض</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Shop Hero -->
+  <div class="shop-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">الرئيسية</a>
+        <span>/</span>
+        <span>المتجر</span>
+      </div>
+      <h1>🛒 المتجر</h1>
+      <p>آلاف المنتجات المستوردة من أفضل الموردين حول العالم</p>
+    </div>
+  </div>
+
+  <!-- Shop Body -->
+  <div class="container">
+    <div class="shop-layout">
+      <!-- Sidebar -->
+      <aside class="filter-sidebar">
+        <div class="filter-section">
+          <div class="filter-title">
+            التصفية حسب الفئة
+            <span class="toggle">▾</span>
+          </div>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="checkbox" checked /> ملابس وموضة <span class="filter-count">5,200</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> إلكترونيات <span class="filter-count">3,800</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> سيارات ومواصلات <span class="filter-count">2,100</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> الأثاث <span class="filter-count">4,500</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> المجوهرات <span class="filter-count">1,900</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> الحقائب <span class="filter-count">2,600</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> البناء والعقارات <span class="filter-count">3,200</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" /> الأمن والحماية <span class="filter-count">950</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-title">
+            نطاق السعر
+            <span class="toggle">▾</span>
+          </div>
+          <div class="price-range">
+            <input type="number" class="price-input" placeholder="من $" min="0" value="0" id="price-min" />
+            <span style="color:var(--gray-400)">–</span>
+            <input type="number" class="price-input" placeholder="إلى $" min="0" value="5000" id="price-max" />
+          </div>
+          <button class="btn btn-primary w-full" style="margin-top:12px;font-size:13px;padding:9px">تطبيق</button>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-title">التقييم <span class="toggle">▾</span></div>
+          <div class="filter-options">
+            <label class="filter-option"><input type="radio" name="rating" /> ⭐⭐⭐⭐⭐ فأكثر</label>
+            <label class="filter-option"><input type="radio" name="rating" checked /> ⭐⭐⭐⭐ فأكثر</label>
+            <label class="filter-option"><input type="radio" name="rating" /> ⭐⭐⭐ فأكثر</label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-title">بلد المنشأ <span class="toggle">▾</span></div>
+          <div class="filter-options">
+            <label class="filter-option"><input type="checkbox" checked /> 🇨🇳 الصين</label>
+            <label class="filter-option"><input type="checkbox" /> 🇹🇷 تركيا</label>
+            <label class="filter-option"><input type="checkbox" /> 🇮🇳 الهند</label>
+            <label class="filter-option"><input type="checkbox" /> 🇰🇷 كوريا الجنوبية</label>
+            <label class="filter-option"><input type="checkbox" /> 🇩🇪 ألمانيا</label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Products Area -->
+      <div class="shop-main">
+        <!-- Category Chips -->
+        <div class="cat-chips">
+          <span class="cat-chip active">الكل</span>
+          <span class="cat-chip">👔 ملابس</span>
+          <span class="cat-chip">📱 إلكترونيات</span>
+          <span class="cat-chip">🚗 سيارات</span>
+          <span class="cat-chip">🛋️ أثاث</span>
+          <span class="cat-chip">💎 مجوهرات</span>
+          <span class="cat-chip">👜 حقائب</span>
+          <span class="cat-chip">🔐 أمن</span>
+          <span class="cat-chip">🏗️ بناء</span>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="shop-toolbar">
+          <div class="results-count">عرض <strong>1-16</strong> من <strong>2,847</strong> منتج</div>
+          <div class="toolbar-right">
+            <select class="sort-select" id="sort-select">
+              <option>الأكثر طلبًا</option>
+              <option>الأرخص أولًا</option>
+              <option>الأغلى أولًا</option>
+              <option>الأحدث</option>
+              <option>الأعلى تقييمًا</option>
+            </select>
+            <div class="view-toggle">
+              <button class="view-btn active" id="grid-view" title="شبكة">⊞</button>
+              <button class="view-btn" id="list-view" title="قائمة">☰</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="products-grid"></div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="page-btn">‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (simplified) -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© جميع الحقوق محفوظة – إستوردلي 2024</p>
+        <div class="payment-icons">
+          <span class="pay-icon">💳 Visa</span>
+          <span class="pay-icon">💳 MasterCard</span>
+          <span class="pay-icon">💳 PayPal</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3>🛒 سلة التسوق</h3>
+        <button class="cart-close" id="cart-close">✕</button>
+      </div>
+      <div class="cart-body" id="cart-body">
+        <div class="cart-empty" id="cart-empty">
+          <span>🛒</span>
+          <p>السلة فارغة</p>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+      </div>
+      <div class="cart-footer" id="cart-footer" style="display:none">
+        <div class="cart-total">
+          <span>الإجمالي:</span>
+          <strong id="cart-total-amount">$0.00</strong>
+        </div>
+        <a href="#" class="btn btn-primary w-full">إتمام الطلب</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal" id="login-modal">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-login">تسجيل دخول</button>
+        <button class="modal-tab" id="tab-signup">حساب جديد</button>
+      </div>
+      <div class="modal-content" id="modal-login-content">
+        <h2>مرحبًا بعودتك!</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="login-email" placeholder="example@email.com" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="login-password" placeholder="••••••••" />
+          </div>
+          <button type="submit" class="btn btn-primary w-full">تسجيل الدخول</button>
+        </form>
+      </div>
+      <div class="modal-content" id="modal-signup-content" style="display:none">
+        <h2>إنشاء حساب</h2>
+        <form id="signup-form">
+          <div class="form-group">
+            <label>الاسم</label>
+            <input type="text" id="signup-name" placeholder="اسمك الكامل" />
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="signup-email" placeholder="example@email.com" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="signup-password" placeholder="••••••••" />
+          </div>
+          <button type="submit" class="btn btn-primary w-full">إنشاء الحساب</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+    // Shop-specific script
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.page-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+<script src="enhancements.js"></script>
+</body>
+</html>

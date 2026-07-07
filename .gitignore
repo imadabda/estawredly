@@ -1,0 +1,30 @@
+# Node
+node_modules/
+npm-debug.log*
+.npm
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local env
+.env
+.env.local
+
+# Build
+dist/
+build/
+.cache/

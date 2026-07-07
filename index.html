@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إستوردلي – تسوق بكل سهولة</title>
+  <meta name="description" content="متجر إلكتروني متنوع بأفضل المنتجات وأسعار لا تُقارن. ملابس، إلكترونيات، أثاث، وأكثر."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="enhancements.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ TOP ANNOUNCEMENT BAR ═══════════════ -->
+<div class="announce-bar" id="announce-bar">
+  <div class="announce-inner">
+    <span>🔥 تخفيضات الصيف حتى 70% – شحن مجاني لكافة محافظات فلسطين للطلبات فوق 200 ₪</span>
+    <button class="announce-close" onclick="document.getElementById('announce-bar').remove()">✕</button>
+  </div>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header class="header" id="header">
+  <div class="hdr-top">
+    <div class="container hdr-top-inner">
+      <nav class="hdr-links">
+        <a href="#">تتبع طلبك</a>
+        <a href="#">التواصل</a>
+        <a href="#">العروض</a>
+      </nav>
+      <div class="hdr-user">
+        <a href="#" id="btn-login" class="hdr-link-btn">تسجيل دخول</a>
+        <span>|</span>
+        <a href="#" id="btn-register" class="hdr-link-btn">حساب جديد</a>
+        <span>|</span>
+        <a href="admin.html" class="hdr-link-btn" style="color:#f59e0b;font-weight:700;" title="لوحة التحكم">⚙️ الإدارة</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hdr-main">
+    <div class="container hdr-main-inner">
+      <!-- Logo -->
+      <a href="index.html" class="logo">
+        <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
+          <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+        </div>
+        <div class="logo-name">
+          <span class="logo-ar">إستوردلي</span>
+          <span class="logo-en">ESTAWREDLY</span>
+        </div>
+      </a>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <input type="text" id="search-input" class="search-input" placeholder="ابحث عن أي منتج..."/>
+          <button class="search-btn" id="search-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </div>
+        <!-- Search Suggestions -->
+        <div class="search-suggestions" id="search-suggestions">
+          <div class="sugg-title">الأكثر بحثًا</div>
+          <div class="sugg-tags">
+            <span class="sugg-tag" onclick="fillSearch(this)">ملابس نسائية</span>
+            <span class="sugg-tag" onclick="fillSearch(this)">هواتف</span>
+            <span class="sugg-tag" onclick="fillSearch(this)">أحذية رياضية</span>
+            <span class="sugg-tag" onclick="fillSearch(this)">أثاث</span>
+            <span class="sugg-tag" onclick="fillSearch(this)">ساعات</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="hdr-actions">
+        <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="badge" id="wishlist-count">0</span>
+        </button>
+        <button class="hdr-icon-btn cart-trigger" id="cart-btn" title="السلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="badge cart-badge" id="cart-count">0</span>
+        </button>
+        <button class="menu-btn" id="menu-btn">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="main-nav" id="main-nav">
+    <div class="container nav-inner">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-a active">الرئيسية</a></li>
+        <li class="nav-dd">
+          <a href="shop.html" class="nav-a">ملابس وموضة ▾</a>
+          <div class="dd-panel">
+            <div class="dd-col"><h5>نساء</h5>
+              <a href="shop.html?cat=women">الملابس النسائية</a>
+              <a href="shop.html?cat=women-dress">فساتين</a>
+              <a href="shop.html?cat=women-sport">ملابس رياضية</a>
+              <a href="shop.html?cat=abayas">عبايات</a>
+            </div>
+            <div class="dd-col"><h5>رجال</h5>
+              <a href="shop.html?cat=men">الملابس الرجالية</a>
+              <a href="shop.html?cat=men-formal">ملابس رسمية</a>
+              <a href="shop.html?cat=men-sport">ملابس رياضية</a>
+            </div>
+            <div class="dd-col"><h5>أطفال</h5>
+              <a href="shop.html?cat=kids">ملابس أطفال</a>
+              <a href="shop.html?cat=baby">ملابس رضع</a>
+              <a href="shop.html?cat=school">ملابس مدرسية</a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-dd">
+          <a href="shop.html" class="nav-a">إلكترونيات ▾</a>
+          <div class="dd-panel">
+            <div class="dd-col"><h5>الأجهزة</h5>
+              <a href="shop.html">هواتف ذكية</a>
+              <a href="shop.html">لابتوب وكمبيوتر</a>
+              <a href="shop.html">تلفزيونات</a>
+              <a href="shop.html">كاميرات</a>
+            </div>
+            <div class="dd-col"><h5>الإكسسوارات</h5>
+              <a href="shop.html">سماعات</a>
+              <a href="shop.html">شواحن</a>
+              <a href="shop.html">ساعات ذكية</a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-dd">
+          <a href="shop.html" class="nav-a">المنزل والأثاث ▾</a>
+          <div class="dd-panel">
+            <div class="dd-col"><h5>الأثاث</h5>
+              <a href="shop.html">غرف المعيشة</a>
+              <a href="shop.html">غرف النوم</a>
+              <a href="shop.html">المطبخ</a>
+            </div>
+            <div class="dd-col"><h5>الديكور</h5>
+              <a href="shop.html">إضاءة</a>
+              <a href="shop.html">سجاد</a>
+              <a href="shop.html">لوحات فنية</a>
+            </div>
+          </div>
+        </li>
+        <li><a href="shop.html" class="nav-a">أحذية وحقائب</a></li>
+        <li><a href="shop.html" class="nav-a">مجوهرات وساعات</a></li>
+        <li><a href="shop.html" class="nav-a nav-a--sale">🔥 تخفيضات</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════ HERO SLIDER ═══════════════ -->
+<section class="hero-slider" id="hero">
+  <div class="slide active" style="background-image:url('hero_fashion.jpg')">
+    <div class="slide-overlay"></div>
+    <div class="container slide-content">
+      <div class="slide-tag">تشكيلة الصيف 2024</div>
+      <h1 class="slide-title">كل ما تحتاجه<br/><em>في مكان واحد</em></h1>
+      <p class="slide-desc">أكثر من 50,000 منتج بأفضل الأسعار مع ضمان الجودة وشحن سريع لكافة محافظات فلسطين</p>
+      <div class="slide-btns">
+        <a href="shop.html" class="btn btn-white btn-lg">تسوق الآن</a>
+        <a href="shop.html?sale=1" class="btn btn-outline-white btn-lg">عروض اليوم</a>
+      </div>
+    </div>
+  </div>
+  <div class="slide" style="background-image:url('hero_electronics.jpg')">
+    <div class="slide-overlay"></div>
+    <div class="container slide-content">
+      <div class="slide-tag">أحدث التقنية</div>
+      <h1 class="slide-title">إلكترونيات<br/><em>بضمان كامل</em></h1>
+      <p class="slide-desc">أحدث الهواتف واللابتوبات والسماعات بأسعار تنافسية</p>
+      <div class="slide-btns">
+        <a href="shop.html" class="btn btn-primary btn-lg">تسوق الإلكترونيات</a>
+      </div>
+    </div>
+  </div>
+  <div class="slide" style="background-image:url('hero_luxury.jpg')">
+    <div class="slide-overlay"></div>
+    <div class="container slide-content">
+      <div class="slide-tag">أناقة ورقي</div>
+      <h1 class="slide-title">موضة راقية<br/><em>بأسعار رائعة</em></h1>
+      <p class="slide-desc">تشكيلة واسعة من الملابس والمجوهرات للرجال والنساء والأطفال</p>
+      <div class="slide-btns">
+        <a href="shop.html" class="btn btn-primary btn-lg">تسوق الآن</a>
+      </div>
+    </div>
+  </div>
+  <!-- Slider Controls -->
+  <button class="slider-prev" onclick="changeSlide(-1)">‹</button>
+  <button class="slider-next" onclick="changeSlide(1)">›</button>
+  <div class="slider-dots" id="slider-dots">
+    <span class="dot active" onclick="goSlide(0)"></span>
+    <span class="dot" onclick="goSlide(1)"></span>
+    <span class="dot" onclick="goSlide(2)"></span>
+  </div>
+</section>
+
+<!-- ═══════════════ CATEGORIES STRIP ═══════════════ -->
+<section class="cats-strip">
+  <div class="container">
+    <div class="cats-scroll">
+      <div class="cat-pill" onclick="window.location='shop.html'">ملابس وموضة</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">إلكترونيات وذكية</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">أحذية رياضية ورسمية</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">حقائب فاخرة</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">مجوهرات وساعات</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">أثاث وديكور</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">رياضة ولياقة</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">أجهزة مطبخ</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">ألعاب الفيديو</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">عناية وجمال</div>
+      <div class="cat-pill" onclick="window.location='shop.html'">أطفال ومواليد</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ IMPORT TICKER ═══════════════ -->
+<div class="import-ticker">
+  <div class="ticker-label">🌍 نستورد من:</div>
+  <div class="ticker-track">
+    <div class="ticker-inner">
+      <span class="tick-item">الصين</span>
+      <span class="tick-item">تركيا</span>
+      <span class="tick-item">الهند</span>
+      <span class="tick-item">ألمانيا</span>
+      <span class="tick-item">أمريكا</span>
+      <span class="tick-item">كوريا</span>
+      <span class="tick-item">اليابان</span>
+      <span class="tick-item">فرنسا</span>
+      <span class="tick-item">إيطاليا</span>
+      <span class="tick-item">بريطانيا</span>
+      <span class="tick-item">إسبانيا</span>
+      <span class="tick-item">بولندا</span>
+      <!-- duplicate -->
+      <span class="tick-item">الصين</span>
+      <span class="tick-item">تركيا</span>
+      <span class="tick-item">الهند</span>
+      <span class="tick-item">ألمانيا</span>
+      <span class="tick-item">أمريكا</span>
+      <span class="tick-item">كوريا</span>
+      <span class="tick-item">اليابان</span>
+      <span class="tick-item">فرنسا</span>
+      <span class="tick-item">إيطاليا</span>
+      <span class="tick-item">بريطانيا</span>
+      <span class="tick-item">إسبانيا</span>
+      <span class="tick-item">بولندا</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FLASH SALE ═══════════════ -->
+<section class="flash-sale">
+  <div class="container">
+    <div class="flash-header">
+      <div class="flash-title">
+        <span class="flash-icon">⚡</span>
+        <h2>عروض اليوم</h2>
+      </div>
+      <div class="flash-timer" id="flash-timer">
+        <div class="timer-unit"><span id="t-h">05</span><small>ساعة</small></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><span id="t-m">30</span><small>دقيقة</small></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><span id="t-s">00</span><small>ثانية</small></div>
+      </div>
+      <a href="shop.html" class="view-all-link">عرض الكل ←</a>
+    </div>
+    <div class="flash-grid" id="flash-grid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CATEGORY BANNERS ═══════════════ -->
+<section class="cat-banners">
+  <div class="container">
+    <div class="banners-grid">
+      <a href="shop.html" class="banner-card big" style="background-image:url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80')">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <span class="banner-tag">تشكيلة جديدة</span>
+          <h3>موضة المرأة</h3>
+          <p>أحدث صيحات الموضة</p>
+          <span class="banner-btn">تسوقي الآن</span>
+        </div>
+      </a>
+      <a href="shop.html" class="banner-card" style="background-image:url('https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&q=80')">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <span class="banner-tag">أحدث التقنية</span>
+          <h3>إلكترونيات</h3>
+          <span class="banner-btn">اكتشف</span>
+        </div>
+      </a>
+      <a href="shop.html" class="banner-card" style="background-image:url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80')">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <span class="banner-tag">ديكور راقي</span>
+          <h3>المنزل والأثاث</h3>
+          <span class="banner-btn">استكشف</span>
+        </div>
+      </a>
+      <a href="shop.html" class="banner-card" style="background-image:url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80')">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <span class="banner-tag">معدات متقدمة</span>
+          <h3>الرياضة واللياقة</h3>
+          <span class="banner-btn">تسوق</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ IMPORT HERO BANNER ═══════════════ -->
+<section class="import-hero-banner">
+  <div class="ihb-bg" style="background-image:url('import_world.jpg')"></div>
+  <div class="ihb-overlay"></div>
+  <div class="container ihb-content">
+    <div class="ihb-text">
+      <div class="ihb-tag">🌐 شبكة استيراد عالمية</div>
+      <h2 class="ihb-title">نجلب لك أفضل المنتجات<br/><span>من كل أنحاء العالم</span></h2>
+      <p class="ihb-desc">منتجاتنا مستوردة مباشرة من أكثر من 50 دولة، بأعلى معايير الجودة وأفضل الأسعار</p>
+      <div class="ihb-stats">
+        <div class="ihb-stat">
+          <span class="ihb-num">50+</span>
+          <span class="ihb-lbl">دولة مصدر</span>
+        </div>
+        <div class="ihb-stat">
+          <span class="ihb-num">500+</span>
+          <span class="ihb-lbl">مورد موثوق</span>
+        </div>
+        <div class="ihb-stat">
+          <span class="ihb-num">50K+</span>
+          <span class="ihb-lbl">منتج مستورد</span>
+        </div>
+      </div>
+    </div>
+    <div class="ihb-cards">
+      <div class="ihb-card glass">
+        <span class="ihb-card-icon">🔍</span>
+        <div>
+          <strong>فحص الجودة</strong>
+          <small>كل منتج مفحوص قبل الإرسال</small>
+        </div>
+      </div>
+      <div class="ihb-card glass">
+        <span class="ihb-card-icon">🚢</span>
+        <div>
+          <strong>شحن دولي</strong>
+          <small>وصول ضمان في 15–30 يوم</small>
+        </div>
+      </div>
+      <div class="ihb-card glass">
+        <span class="ihb-card-icon">🏷️</span>
+        <div>
+          <strong>سعر المصنع</strong>
+          <small>بدون وسطاء – مباشرة لك</small>
+        </div>
+      </div>
+      <div class="ihb-card glass">
+        <span class="ihb-card-icon">🔒</span>
+        <div>
+          <strong>ضمان الأصالة</strong>
+          <small>100% منتجات أصلية مضمونة</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ IMPORT SOURCES ═══════════════ -->
+<section class="import-sources">
+  <div class="container">
+    <div class="sec-hdr">
+      <div>
+        <h2 class="sec-title">نستورد من الأفضل 🌏</h2>
+        <p class="sec-sub">شراكات مع كبرى المصانع والموردين حول العالم</p>
+      </div>
+    </div>
+    <div class="sources-grid">
+      <div class="source-card" data-country="china">
+        <div class="source-flag">🇨🇳</div>
+        <div class="source-name">الصين</div>
+        <div class="source-cats">إلكترونيات • ملابس • بلاستيك</div>
+        <div class="source-badge">الأكثر استيراداً</div>
+      </div>
+      <div class="source-card" data-country="turkey">
+        <div class="source-flag">🇹🇷</div>
+        <div class="source-name">تركيا</div>
+        <div class="source-cats">ملابس • نسيج • أثاث</div>
+        <div class="source-badge">جودة عالية</div>
+      </div>
+      <div class="source-card" data-country="india">
+        <div class="source-flag">🇮🇳</div>
+        <div class="source-name">الهند</div>
+        <div class="source-cats">مجوهرات • توابل • نسيج</div>
+        <div class="source-badge">حرف يدوية</div>
+      </div>
+      <div class="source-card" data-country="germany">
+        <div class="source-flag">🇩🇪</div>
+        <div class="source-name">ألمانيا</div>
+        <div class="source-cats">معدات • سيارات • تقنية</div>
+        <div class="source-badge">دقة ألمانية</div>
+      </div>
+      <div class="source-card" data-country="korea">
+        <div class="source-flag">🇰🇷</div>
+        <div class="source-name">كوريا</div>
+        <div class="source-cats">تجميل • إلكترونيات • غذاء</div>
+        <div class="source-badge">K-Trend</div>
+      </div>
+      <div class="source-card" data-country="italy">
+        <div class="source-flag">🇮🇹</div>
+        <div class="source-name">إيطاليا</div>
+        <div class="source-cats">موضة • جلود • طعام</div>
+        <div class="source-badge">فخامة أوروبية</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ IMPORT PROMO SPLIT ═══════════════ -->
+<section class="import-split">
+  <div class="split-right">
+    <div class="split-img-wrap">
+      <img src="import_boxes.jpg" alt="منتجات مستوردة" class="split-img"/>
+      <div class="split-float-badge">
+        <span>✈️</span>
+        <div>
+          <strong>شحن يومي</strong>
+          <small>من جميع الدول</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="split-left">
+    <span class="ihb-tag">📦 مستورد مباشرة</span>
+    <h2 class="split-title">منتجات أصلية<br/><em>من المصنع لباب بيتك</em></h2>
+    <p class="split-desc">نتخطى كل الوسطاء ونتعامل مباشرة مع المصانع والموردين العالميين لنقدم لك أفضل سعر وأعلى جودة في السوق.</p>
+    <div class="split-features">
+      <div class="split-feat">
+        <div class="sf-icon" style="background:#dbeafe">🌍</div>
+        <div>
+          <strong>50+ دولة مصدر</strong>
+          <small>شبكة موردين معتمدين حول العالم</small>
+        </div>
+      </div>
+      <div class="split-feat">
+        <div class="sf-icon" style="background:#fee2e2">⚡</div>
+        <div>
+          <strong>توصيل سريع</strong>
+          <small>من 7 إلى 30 يوم حسب البلد</small>
+        </div>
+      </div>
+      <div class="split-feat">
+        <div class="sf-icon" style="background:#d1fae5">🏷️</div>
+        <div>
+          <strong>أسعار لا تُنافَس</strong>
+          <small>مباشرة من المصنع بلا هامش وسيط</small>
+        </div>
+      </div>
+    </div>
+    <a href="shop.html" class="btn btn-primary btn-lg">تسوق المنتجات المستوردة</a>
+  </div>
+</section>
+
+<section class="featured-products">
+  <div class="container">
+    <div class="sec-hdr">
+      <div>
+        <h2 class="sec-title">المنتجات المميزة</h2>
+        <p class="sec-sub">مختارة خصيصًا لك بأفضل الأسعار</p>
+      </div>
+      <div class="sec-tabs">
+        <button class="stab active" data-tab="all">الكل</button>
+        <button class="stab" data-tab="men">رجال</button>
+        <button class="stab" data-tab="women">نساء</button>
+        <button class="stab" data-tab="electronics">إلكترونيات</button>
+        <button class="stab" data-tab="home">منزل</button>
+      </div>
+    </div>
+    <div class="products-grid" id="main-grid"></div>
+    <div class="load-more-wrap">
+      <button class="load-more-btn" onclick="window.location='shop.html'">عرض المزيد من المنتجات</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TRUST STRIP ═══════════════ -->
+<div class="trust-strip">
+  <div class="container trust-items">
+    <div class="trust-item">
+      <div class="trust-icon-wrap"><span>🚚</span></div>
+      <div><strong>توصيل مجاني</strong><small>للطلبات فوق $50</small></div>
+    </div>
+    <div class="trust-sep"></div>
+    <div class="trust-item">
+      <div class="trust-icon-wrap"><span>↩️</span></div>
+      <div><strong>إرجاع سهل</strong><small>خلال 30 يوم</small></div>
+    </div>
+    <div class="trust-sep"></div>
+    <div class="trust-item">
+      <div class="trust-icon-wrap"><span>🔒</span></div>
+      <div><strong>دفع آمن</strong><small>حماية 100%</small></div>
+    </div>
+    <div class="trust-sep"></div>
+    <div class="trust-item">
+      <div class="trust-icon-wrap"><span>🎧</span></div>
+      <div><strong>دعم 24/7</strong><small>نحن دائمًا هنا</small></div>
+    </div>
+    <div class="trust-sep"></div>
+    <div class="trust-item">
+      <div class="trust-icon-wrap"><span>🏆</span></div>
+      <div><strong>ضمان الجودة</strong><small>منتجات أصلية 100%</small></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BRANDS ═══════════════ -->
+<section class="brands-sec">
+  <div class="container">
+    <h2 class="sec-title text-center">أبرز الماركات</h2>
+    <div class="brands-track">
+      <div class="brands-inner">
+        <div class="brand-item">NIKE</div>
+        <div class="brand-item">SAMSUNG</div>
+        <div class="brand-item">APPLE</div>
+        <div class="brand-item">ZARA</div>
+        <div class="brand-item">ADIDAS</div>
+        <div class="brand-item">H&M</div>
+        <div class="brand-item">SONY</div>
+        <div class="brand-item">LG</div>
+        <div class="brand-item">IKEA</div>
+        <div class="brand-item">GUCCI</div>
+        <!-- Duplicate for infinite scroll -->
+        <div class="brand-item">NIKE</div>
+        <div class="brand-item">SAMSUNG</div>
+        <div class="brand-item">APPLE</div>
+        <div class="brand-item">ZARA</div>
+        <div class="brand-item">ADIDAS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ NEW ARRIVALS ═══════════════ -->
+<section class="new-arrivals">
+  <div class="container">
+    <div class="sec-hdr">
+      <div>
+        <h2 class="sec-title">وصل حديثًا ✨</h2>
+        <p class="sec-sub">أحدث المنتجات في المتجر</p>
+      </div>
+      <a href="shop.html" class="view-all-link">عرض الكل ←</a>
+    </div>
+    <div class="products-grid" id="new-grid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ PROMO BANNER ═══════════════ -->
+<section class="promo-banner">
+  <div class="promo-inner">
+    <div class="promo-content">
+      <span class="promo-tag">عضوية مميزة</span>
+      <h2>احصل على خصم 15%<br/>على أول طلب!</h2>
+      <p>سجّل الآن واحصل على كود خصم خاص على أول عملية شراء</p>
+      <form class="promo-form" id="promo-form">
+        <input type="email" placeholder="بريدك الإلكتروني" class="promo-input"/>
+        <button type="submit" class="btn btn-white">احصل على الكود</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TESTIMONIALS ═══════════════ -->
+<section class="reviews-sec">
+  <div class="container">
+    <h2 class="sec-title text-center">ماذا يقول عملاؤنا 💬</h2>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p>"منتجات ممتازة والشحن كان سريع جدًا. سعيدة بتجربتي وسأتسوق مرة ثانية بالتأكيد!"</p>
+        <div class="reviewer">
+          <div class="rev-av" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6)">س</div>
+          <div><strong>سارة م.</strong><small>الرياض، السعودية</small></div>
+        </div>
+      </div>
+      <div class="review-card featured">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p>"أفضل متجر إلكتروني استخدمته! الأسعار منافسة والجودة ممتازة. الدعم الفني سريع الرد جدًا."</p>
+        <div class="reviewer">
+          <div class="rev-av" style="background:linear-gradient(135deg,#ef4444,#f97316)">أ</div>
+          <div><strong>أحمد خ.</strong><small>دبي، الإمارات</small></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p>"واجهة سهلة الاستخدام وتجربة تسوق رائعة. المنتجات وصلت بحالة ممتازة ومغلفة بشكل احترافي."</p>
+        <div class="reviewer">
+          <div class="rev-av" style="background:linear-gradient(135deg,#1e40af,#1d4ed8)">م</div>
+          <div><strong>محمد ع.</strong><small>القاهرة، مصر</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="footer-body">
+    <div class="container footer-grid">
+      <div class="footer-brand-col">
+        <a href="index.html" class="logo footer-logo">
+          <div class="logo-mark" style="width:28px;height:28px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;">
+            <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+          </div>
+          <span class="logo-ar">إستوردلي</span>
+        </a>
+        <p>متجرك المفضل لكل شيء. نقدم آلاف المنتجات بأفضل الأسعار مع توصيل سريع وخدمة عملاء استثنائية.</p>
+        <div class="social-row">
+          <a href="#" class="soc-btn" title="فيسبوك">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" class="soc-btn" title="انستقرام">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" class="soc-btn" title="تيك توك">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34l-.01-8.83a8.17 8.17 0 0 0 4.78 1.52V4.56a4.85 4.85 0 0 1-1-.13z"/></svg>
+          </a>
+          <a href="#" class="soc-btn" title="يوتيوب">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
+          </a>
+        </div>
+        <div class="app-dl">
+          <p>حمّل التطبيق:</p>
+          <div class="app-btns-row">
+            <a href="#" class="app-store-btn">
+              🍎 App Store
+            </a>
+            <a href="#" class="app-store-btn">
+              🤖 Google Play
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>تسوق</h4>
+        <a href="shop.html">ملابس رجالية</a>
+        <a href="shop.html">ملابس نسائية</a>
+        <a href="shop.html">ملابس أطفال</a>
+        <a href="shop.html">إلكترونيات</a>
+        <a href="shop.html">أثاث ومنزل</a>
+        <a href="shop.html">أحذية وحقائب</a>
+        <a href="shop.html">مجوهرات</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>خدمة العملاء</h4>
+        <a href="#">تتبع طلبك</a>
+        <a href="#">إرجاع المنتجات</a>
+        <a href="#">الأسئلة الشائعة</a>
+        <a href="#">تواصل معنا</a>
+        <a href="#">طرق الشحن</a>
+        <a href="#">طرق الدفع</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>عن إستوردلي</h4>
+        <a href="#">من نحن</a>
+        <a href="#">وظائف</a>
+        <a href="#">المدونة</a>
+        <a href="#">الشركاء</a>
+        <a href="#">برنامج العمولة</a>
+        <a href="#">سياسة الخصوصية</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>تواصل معنا</h4>
+        <div class="contact-item"><span>📞</span> <a href="tel:+96612345678">+966 12 345 678</a></div>
+        <div class="contact-item"><span>✉️</span> <a href="mailto:hello@estawredly.com">hello@estawredly.com</a></div>
+        <div class="contact-item"><span>💬</span> <a href="#">واتساب</a></div>
+        <div class="contact-item"><span>🕐</span> <span>24/7 متاحون دائمًا</span></div>
+        <div class="pay-methods">
+          <span class="pay-m">VISA</span>
+          <span class="pay-m">MC</span>
+          <span class="pay-m">PayPal</span>
+          <span class="pay-m">Apple Pay</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container ftr-btm-inner">
+      <p>© 2024 إستوردلي – جميع الحقوق محفوظة</p>
+      <div class="ftr-btm-links">
+        <a href="#">سياسة الاستخدام</a>
+        <a href="#">الخصوصية</a>
+        <a href="#">ملفات تعريف الارتباط</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════ CART DRAWER ═══════════════ -->
+<div class="drawer-mask" id="cart-mask"></div>
+<aside class="cart-drawer" id="cart-drawer">
+  <div class="drawer-header">
+    <h3>🛒 سلتي</h3>
+    <button class="drawer-close" id="cart-close">✕</button>
+  </div>
+  <div class="drawer-body" id="cart-body">
+    <div class="drawer-empty" id="cart-empty">
+      <div class="empty-icon">🛒</div>
+      <p>سلتك فارغة!</p>
+      <a href="shop.html" class="btn btn-primary">ابدأ التسوق</a>
+    </div>
+    <div id="cart-items-list"></div>
+  </div>
+  <div class="drawer-footer" id="cart-footer" style="display:none">
+    <div class="cart-subtotal">
+      <span>المجموع الفرعي</span>
+      <strong id="cart-subtotal">$0.00</strong>
+    </div>
+    <div class="cart-shipping">
+      <span>الشحن</span>
+      <strong id="cart-shipping">مجاني 🎉</strong>
+    </div>
+    <div class="cart-divider"></div>
+    <div class="cart-total-row">
+      <span>الإجمالي</span>
+      <strong id="cart-total-price" class="total-big">$0.00</strong>
+    </div>
+    <a href="checkout.html" class="btn btn-primary w-full btn-lg checkout-btn">إتمام الشراء →</a>
+    <button class="continue-btn" id="continue-shopping">متابعة التسوق</button>
+  </div>
+</aside>
+
+<!-- ═══════════════ WISHLIST DRAWER ═══════════════ -->
+<div class="drawer-mask" id="wish-mask"></div>
+<aside class="cart-drawer wish-drawer" id="wish-drawer">
+  <div class="drawer-header">
+    <h3>❤️ المفضلة</h3>
+    <button class="drawer-close" id="wish-close">✕</button>
+  </div>
+  <div class="drawer-body" id="wish-body">
+    <div class="drawer-empty" id="wish-empty">
+      <div class="empty-icon">❤️</div>
+      <p>لا توجد منتجات في المفضلة</p>
+    </div>
+    <div id="wish-items-list"></div>
+  </div>
+</aside>
+
+<!-- ═══════════════ QUICK VIEW MODAL ═══════════════ -->
+<div class="modal-mask" id="qv-mask"></div>
+<div class="qv-modal" id="qv-modal">
+  <button class="qv-close" id="qv-close">✕</button>
+  <div class="qv-inner" id="qv-inner"></div>
+</div>
+
+<!-- ═══════════════ LOGIN MODAL ═══════════════ -->
+<div class="modal-mask" id="auth-mask"></div>
+<div class="auth-modal" id="auth-modal">
+  <button class="qv-close" id="auth-close">✕</button>
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tab-in">دخول</button>
+    <button class="auth-tab" id="tab-up">تسجيل</button>
+  </div>
+  <div id="auth-login">
+    <h2>مرحبًا بعودتك 👋</h2>
+    <form id="login-form">
+      <div class="field"><label>البريد الإلكتروني</label><input type="email" placeholder="email@example.com"/></div>
+      <div class="field"><label>كلمة المرور</label><input type="password" placeholder="••••••••"/></div>
+      <a href="#" class="forgot">نسيت كلمة المرور؟</a>
+      <button type="submit" class="btn btn-primary w-full">دخول</button>
+    </form>
+    <div class="or-sep"><span>أو</span></div>
+    <button class="social-login-btn google">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M5.26 9.77A7.77 7.77 0 0 1 12 4.23c1.8 0 3.42.62 4.7 1.64l3.5-3.5A13 13 0 0 0 12 0 13 13 0 0 0 .7 7.48l4.56 2.29z"/><path fill="#34A853" d="M16.04 18.01A7.77 7.77 0 0 1 12 19.77a7.77 7.77 0 0 1-6.74-3.93L.7 18.1A13 13 0 0 0 12 24a13 13 0 0 0 8.78-3.43l-4.74-2.56z"/><path fill="#4A90D9" d="M20.78 18.57A13 13 0 0 0 25 12c0-.76-.08-1.56-.23-2.32H12v4.64h7.38A6.22 6.22 0 0 1 16.04 18l4.74 2.57z"/><path fill="#FBBC05" d="M5.26 14.23A7.77 7.77 0 0 1 4.23 12c0-.77.12-1.52.31-2.23L.04 7.48A13 13 0 0 0 0 12a13 13 0 0 0 .7 4.14l4.56-1.91z"/></svg>
+      تسجيل بحساب جوجل
+    </button>
+  </div>
+  <div id="auth-signup" style="display:none">
+    <h2>إنشاء حساب جديد 🎉</h2>
+    <form id="signup-form">
+      <div class="field"><label>الاسم الكامل</label><input type="text" placeholder="الاسم الكامل"/></div>
+      <div class="field"><label>البريد الإلكتروني</label><input type="email" placeholder="email@example.com"/></div>
+      <div class="field"><label>كلمة المرور</label><input type="password" placeholder="8 أحرف على الأقل"/></div>
+      <button type="submit" class="btn btn-primary w-full">إنشاء الحساب</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div id="toast-wrap"></div>
+
+<!-- ═══════════════ BACK TO TOP ═══════════════ -->
+<button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="main.js"></script>
+<script src="enhancements.js"></script>
+</body>
+</html>
