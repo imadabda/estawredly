@@ -887,7 +887,10 @@ input,select,textarea{font-family:inherit}
   .footer-grid{grid-template-columns:1fr 1fr 1fr;gap:32px}
   .footer-brand-col{grid-column:1/4}
 }
+.mobile-only-link{display:none}
+.mobile-only-link hr{border:none;border-top:1px solid var(--gray2);margin:8px 16px}
 @media(max-width:900px){
+  .mobile-only-link{display:block}
   .hdr-top{display:none}
   .dd-panel{min-width:280px}
   .reviews-grid{grid-template-columns:1fr}
