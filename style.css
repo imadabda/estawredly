@@ -194,7 +194,7 @@ input,select,textarea{font-family:inherit}
 .hero-slider{position:relative;height:520px;overflow:hidden}
 .slide{
   position:absolute;inset:0;
-  background-size:cover;background-position:center;
+  background-size:cover;background-position:center bottom;
   display:flex;align-items:center;
   opacity:0;transition:opacity .7s ease;
   pointer-events:none
