@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>المتجر – إستوردلي | آلاف المنتجات بأفضل الأسعار</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>استوردلي | عالم التنظيف المتكامل - المتجر</title>
   <meta name="description" content="تسوق من آلاف المنتجات المستوردة في جميع الفئات. أفضل الأسعار مع ضمان الجودة والشحن السريع." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=4" />
-  <link rel="stylesheet" href="enhancements.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=11" />
+  <link rel="stylesheet" href="enhancements.css?v=11" />
   <style>
     /* Shop-specific styles */
     .shop-hero {
@@ -253,7 +253,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span class="badge cart-badge" id="cart-count">0</span>
         </button>
-        <button class="menu-btn" id="menu-btn">
+        <button class="menu-btn" id="menu-btn" onclick="document.getElementById('main-nav').classList.toggle('open')">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -262,6 +262,7 @@
 
   <!-- Nav -->
   <nav class="main-nav" id="main-nav">
+    <div class="nav-close-btn" onclick="document.getElementById('main-nav').classList.remove('open')">✕ إغلاق</div>
     <div class="container nav-inner">
       <ul class="nav-list">
         <li><a href="index.html" class="nav-a active">الرئيسية</a></li>
@@ -516,7 +517,7 @@
     </div>
   </div>
 
-  <script src="main.js?v=4"></script>
+  <script src="main.js?v=11"></script>
   <script>
     // Shop-specific script
     document.querySelectorAll('.cat-chip').forEach(chip => {
@@ -533,6 +534,6 @@
       });
     });
   </script>
-<script src="enhancements.js?v=3"></script>
+<script src="enhancements.js?v=11"></script>
 </body>
 </html>

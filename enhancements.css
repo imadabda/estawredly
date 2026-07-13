@@ -18,23 +18,8 @@ img { transition: opacity .3s ease; }
 /* ══════════════════════════════════════
    CURSOR GLOW (Subtle, not annoying)
    ══════════════════════════════════════ */
-.cursor-dot {
-  position: fixed; pointer-events: none; z-index: 9999;
-  width: 6px; height: 6px;
-  background: var(--accent);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform .08s, opacity .3s;
-}
-.cursor-ring {
-  position: fixed; pointer-events: none; z-index: 9998;
-  width: 34px; height: 34px;
-  border: 1.5px solid rgba(37,99,235,.35);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform .22s cubic-bezier(.23,1,.32,1), width .2s, height .2s, opacity .3s;
-}
-.cursor-ring.expand { width: 56px; height: 56px; border-color: rgba(37,99,235,.18); }
+.cursor-dot { display:none !important; }
+.cursor-ring { display:none !important; }
 @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
 
 /* ══════════════════════════════════════

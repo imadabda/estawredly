@@ -34,7 +34,7 @@
    CURSOR (desktop only)
    ══════════════════════════════════════ */
 (function initCursor() {
-  if (window.matchMedia('(hover: none)').matches) return;
+  return; // Disabled - causes floating ring element on some devices
 
   const dot  = document.createElement('div'); dot.className  = 'cursor-dot';
   const ring = document.createElement('div'); ring.className = 'cursor-ring';

@@ -4,6 +4,13 @@
    ====================================== */
 
 // ══════════════════════════════════════
+// PREVENT ZOOM ON IOS
+// ══════════════════════════════════════
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+});
+
+// ══════════════════════════════════════
 // PRODUCT DATA
 // ══════════════════════════════════════
 const PRODUCTS = {
@@ -438,6 +445,10 @@ function initAuth() {
       authLogin.style.display='block'; authSignup.style.display='none';
     }
   }
+  
+  // Expose to window so we can use inline onclick in HTML
+  window.openAuthModal = openAuth;
+
   if(btnLogin)  btnLogin.addEventListener('click', e=>{e.preventDefault();openAuth('login');});
   if(btnReg)    btnReg.addEventListener('click',   e=>{e.preventDefault();openAuth('signup');});
   if(authClose) authClose.addEventListener('click', ()=>closeModal('auth'));
@@ -459,25 +470,8 @@ function initAuth() {
 }
 
 // ══════════════════════════════════════
-// MOBILE MENU
+// MOBILE MENU IS HANDLED VIA INLINE ONCLICK
 // ══════════════════════════════════════
-function initMenu() {
-  const btn = document.getElementById('menu-btn');
-  const nav = document.getElementById('main-nav');
-  if(!btn||!nav) return;
-
-  btn.addEventListener('click',(e)=>{
-    e.stopPropagation();
-    nav.classList.toggle('open');
-  });
-
-  // Close menu when clicking outside
-  document.addEventListener('click',(e)=>{
-    if(!nav.contains(e.target) && !btn.contains(e.target)){
-      nav.classList.remove('open');
-    }
-  });
-}
 
 // ══════════════════════════════════════
 // PROMO FORM
@@ -541,7 +535,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   initSearch();
   initProductTabs();
   initAuth();
-  initMenu();
   initPromo();
   initCatPills();
   initScroll();

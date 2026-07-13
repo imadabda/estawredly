@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>إستوردلي – تسوق بكل سهولة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>استوردلي | عالم التنظيف المتكامل</title>
   <meta name="description" content="متجر إلكتروني متنوع بأفضل المنتجات وأسعار لا تُقارن. ملابس، إلكترونيات، أثاث، وأكثر."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css?v=4"/>
-  <link rel="stylesheet" href="enhancements.css?v=4"/>
+  <link rel="stylesheet" href="style.css?v=12"/>
+  <link rel="stylesheet" href="enhancements.css?v=12"/>
 </head>
 <body>
 
@@ -83,7 +83,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span class="badge cart-badge" id="cart-count">0</span>
         </button>
-        <button class="menu-btn" id="menu-btn">
+        <button class="menu-btn" id="menu-btn" onclick="document.getElementById('main-nav').classList.toggle('open')">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -92,6 +92,7 @@
 
   <!-- Nav -->
   <nav class="main-nav" id="main-nav">
+    <div class="nav-close-btn" onclick="document.getElementById('main-nav').classList.remove('open')">✕ إغلاق</div>
     <div class="container nav-inner">
       <ul class="nav-list">
         <li><a href="index.html" class="nav-a active">الرئيسية</a></li>
@@ -120,8 +121,8 @@
         <li><a href="shop.html?cat=refills" class="nav-a">قطع غيار</a></li>
         <li><a href="shop.html" class="nav-a nav-a--sale">🔥 عروض الجملة</a></li>
         <li class="mobile-only-link"><hr></li>
-        <li class="mobile-only-link"><a href="#" class="nav-a">👤 تسجيل دخول</a></li>
-        <li class="mobile-only-link"><a href="#" class="nav-a">✨ حساب جديد</a></li>
+        <li class="mobile-only-link"><a href="#" onclick="window.openAuthModal('login'); return false;" class="nav-a">👤 تسجيل دخول</a></li>
+        <li class="mobile-only-link"><a href="#" onclick="window.openAuthModal('signup'); return false;" class="nav-a">✨ حساب جديد</a></li>
         <li class="mobile-only-link"><a href="admin.html" class="nav-a" style="color:var(--gold);">⚙️ لوحة الإدارة</a></li>
       </ul>
     </div>
@@ -773,7 +774,7 @@
 <!-- ═══════════════ BACK TO TOP ═══════════════ -->
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="main.js?v=4"></script>
-<script src="enhancements.js?v=4"></script>
+<script src="main.js?v=12"></script>
+<script src="enhancements.js?v=12"></script>
 </body>
 </html>
