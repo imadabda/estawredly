@@ -92,11 +92,12 @@ input,select,textarea{font-family:inherit}
   border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s
 }
 .announce-close:hover{background:rgba(255,255,255,.2);color:#fff}
+.announce-bar.hidden{display:none!important}
 
 /* ════════════════════════════════════════
    HEADER
    ════════════════════════════════════════ */
-.header{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,0.03);transition:var(--t)}
+.header{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,0.03);transition:var(--t);overflow:visible}
 
 /* Top strip */
 .hdr-top{background:var(--gray9);padding:6px 0}
@@ -887,6 +888,7 @@ input,select,textarea{font-family:inherit}
   .footer-grid{grid-template-columns:1fr 1fr 1fr;gap:32px}
   .footer-brand-col{grid-column:1/4}
 }
+.nav-close-btn{display:none}
 .mobile-only-link{display:none}
 .mobile-only-link hr{border:none;border-top:1px solid var(--gray2);margin:8px 16px}
 @media(max-width:900px){
@@ -909,16 +911,23 @@ input,select,textarea{font-family:inherit}
   .hdr-main-inner{flex-wrap:wrap;gap:12px;justify-content:space-between}
   .search-wrap{order:3;flex-basis:100%;max-width:100%}
   .menu-btn{display:flex}
-  .main-nav{
-    position:absolute;top:100%;left:0;right:0;
-    background:#fff;z-index:300;
-    flex-direction:column;padding:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
-    opacity:0;visibility:hidden;transform:translateY(-10px);
-    transition:all .3s ease;
-    max-height:calc(100vh - 130px);overflow-y:auto;
+  .nav-close-btn{
+    display:flex;align-items:center;gap:8px;
+    position:absolute;top:20px;right:20px;
+    font-size:16px;font-weight:700;color:var(--gray7);
+    background:var(--gray1);border:1.5px solid var(--gray2);
+    padding:8px 16px;border-radius:10px;cursor:pointer;
   }
-  .main-nav.open{opacity:1;visibility:visible;transform:translateY(0);display:flex}
+  .main-nav{
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:#fff;z-index:500;
+    flex-direction:column;padding:80px 20px 20px;
+    overflow-y:auto;
+    opacity:0;visibility:hidden;
+    transform:translateX(-100%);
+    transition:all .3s ease;
+  }
+  .main-nav.open{opacity:1;visibility:visible;transform:translateX(0);display:flex}
   .announce-inner{padding:0 30px}
   .announce-inner span{font-size:11px}
   .slide-content{padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;width:100%}

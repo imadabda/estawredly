@@ -465,9 +465,17 @@ function initMenu() {
   const btn = document.getElementById('menu-btn');
   const nav = document.getElementById('main-nav');
   if(!btn||!nav) return;
-  btn.addEventListener('click',()=>{
+
+  btn.addEventListener('click',(e)=>{
+    e.stopPropagation();
     nav.classList.toggle('open');
-    document.body.style.overflow = nav.classList.contains('open')?'hidden':'';
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click',(e)=>{
+    if(!nav.contains(e.target) && !btn.contains(e.target)){
+      nav.classList.remove('open');
+    }
   });
 }
 
