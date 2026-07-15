@@ -519,11 +519,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (typeof Store !== 'undefined') {
     PRODUCTS_LIVE = Store.getProducts();
   }
-  const flashProds = PRODUCTS_LIVE.filter(p => p.badge === 'sale' || p.badge === 'hot').slice(0, 8);
-  const newProds   = PRODUCTS_LIVE.filter(p => p.badge === 'new').slice(0, 8);
-  renderGrid('flash-grid', flashProds.length ? flashProds : PRODUCTS_LIVE.slice(0, 8));
-  renderGrid('main-grid',  PRODUCTS_LIVE.slice(0, 12));
-  renderGrid('new-grid',   newProds.length ? newProds : PRODUCTS_LIVE.slice(12, 20));
+  const flashProds = PRODUCTS_LIVE.filter(p => p.badge === 'sale' || p.badge === 'hot').slice(0, 16);
+  const newProds   = PRODUCTS_LIVE.filter(p => p.badge === 'new').slice(0, 16);
+  renderGrid('flash-grid', flashProds.length > 0 ? flashProds : PRODUCTS_LIVE.slice(0, 16));
+  renderGrid('main-grid',  PRODUCTS_LIVE.slice(0, 24));
+  renderGrid('new-grid',   newProds.length > 0 ? newProds : PRODUCTS_LIVE.slice(16, 32));
 
   // Update UI from stored state
   updateCartUI();
