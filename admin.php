@@ -21,7 +21,6 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <script src="store.js?v=16">
 </script>
 <style>
-   ADMIN DASHBOARD – إستوردلي
    ══════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1105,7 +1104,6 @@ function toggleAdminSidebar() {
   document.getElementById('admin-overlay').classList.toggle('open');
 }
 
-   ADMIN DASHBOARD LOGIC
    ══════════════════════════════════════ */
 
 let adminProducts = (typeof Store !== 'undefined') ? Store.getProducts() : [];

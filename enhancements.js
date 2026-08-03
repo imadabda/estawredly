@@ -4,7 +4,6 @@
    تحسينات تفاعلية احترافية
    ====================================== */
 
-   PAGE LOADER
    ══════════════════════════════════════ */
 (function initLoader() {
   // Create loader
@@ -62,7 +61,6 @@
   document.addEventListener('mouseenter', () => { dot.style.opacity='1'; ring.style.opacity='1'; });
 })();
 
-   SCROLL REVEAL
    ══════════════════════════════════════ */
 (function initReveal() {
   const targets = [
@@ -94,7 +92,6 @@
   elements.forEach(el => io.observe(el));
 })();
 
-   HEADER SCROLL SHADOW
    ══════════════════════════════════════ */
 (function initHeaderScroll() {
   const header = document.getElementById('header');
@@ -111,7 +108,6 @@
   }, { passive: true });
 })();
 
-   HERO SLIDER PROGRESS BAR
    ══════════════════════════════════════ */
 (function initSliderProgress() {
   const hero = document.querySelector('.hero-slider');
@@ -149,7 +145,6 @@
   setInterval(animateProgress, SLIDE_DURATION);
 })();
 
-   SMOOTH COUNTER ANIMATION
    ══════════════════════════════════════ */
 (function initCounters() {
   function animateCount(el) {
@@ -197,7 +192,6 @@
   });
 })();
 
-   SMOOTH ANCHOR SCROLL
    ══════════════════════════════════════ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
@@ -221,7 +215,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-   PROMO FLOATING SHAPES
    ══════════════════════════════════════ */
 (function initPromoShapes() {
   const promo = document.querySelector('.promo-banner');
@@ -239,7 +232,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-   PRODUCT IMAGE FALLBACK
    ══════════════════════════════════════ */
 document.querySelectorAll('.p-card-img img, .ci-img img').forEach(img => {
   img.addEventListener('error', function() {
