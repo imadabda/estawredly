@@ -308,7 +308,7 @@ async function loadHeroSliders() {
       `).join('');
     }
     
-    loadHeroSliders();
+    resetSlideTimer();
   } catch (e) {
     console.error('Failed to load hero sliders', e);
   }
