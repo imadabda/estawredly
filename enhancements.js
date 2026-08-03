@@ -4,7 +4,6 @@
    تحسينات تفاعلية احترافية
    ====================================== */
 
-   ══════════════════════════════════════ */
 (function initLoader() {
   // Create loader
   const loader = document.createElement('div');
@@ -28,8 +27,6 @@
   setTimeout(() => { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 500); }, 2500);
 })();
 
-   CURSOR (desktop only)
-   ══════════════════════════════════════ */
 (function initCursor() {
   return; // Disabled - causes floating ring element on some devices
 
@@ -61,7 +58,6 @@
   document.addEventListener('mouseenter', () => { dot.style.opacity='1'; ring.style.opacity='1'; });
 })();
 
-   ══════════════════════════════════════ */
 (function initReveal() {
   const targets = [
     '.p-card', '.source-card', '.ihb-card', '.review-card', '.banner-card',
@@ -92,7 +88,6 @@
   elements.forEach(el => io.observe(el));
 })();
 
-   ══════════════════════════════════════ */
 (function initHeaderScroll() {
   const header = document.getElementById('header');
   if (!header) return;
@@ -108,7 +103,6 @@
   }, { passive: true });
 })();
 
-   ══════════════════════════════════════ */
 (function initSliderProgress() {
   const hero = document.querySelector('.hero-slider');
   if (!hero) return;
@@ -145,7 +139,6 @@
   setInterval(animateProgress, SLIDE_DURATION);
 })();
 
-   ══════════════════════════════════════ */
 (function initCounters() {
   function animateCount(el) {
     const target = parseFloat(el.dataset.count || el.textContent.replace(/[^0-9.]/g,''));
@@ -175,8 +168,6 @@
   counters.forEach(c => { c.dataset.count = parseFloat(c.textContent); io.observe(c); });
 })();
 
-   TILT EFFECT on product cards
-   ══════════════════════════════════════ */
 (function initTilt() {
   if (window.matchMedia('(hover: none)').matches) return;
   document.querySelectorAll('.p-card').forEach(card => {
@@ -192,7 +183,6 @@
   });
 })();
 
-   ══════════════════════════════════════ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const target = document.querySelector(a.getAttribute('href'));
@@ -203,8 +193,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-   IMAGE LAZY LOAD with fade
-   ══════════════════════════════════════ */
 (function initLazyImages() {
   const imgs = document.querySelectorAll('img[src]');
   imgs.forEach(img => {
@@ -215,7 +203,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-   ══════════════════════════════════════ */
 (function initPromoShapes() {
   const promo = document.querySelector('.promo-banner');
   if (!promo) return;
@@ -224,15 +211,12 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-   SECTION TITLE LEFT BAR (RTL)
-   ══════════════════════════════════════ */
 (function fixSectionTitles() {
   document.querySelectorAll('.sec-hdr .sec-title').forEach(title => {
     title.style.paddingRight = '16px';
   });
 })();
 
-   ══════════════════════════════════════ */
 document.querySelectorAll('.p-card-img img, .ci-img img').forEach(img => {
   img.addEventListener('error', function() {
     this.parentElement.style.background = 'linear-gradient(135deg,#f1f5f9,#e2e8f0)';
@@ -244,16 +228,12 @@ document.querySelectorAll('.p-card-img img, .ci-img img').forEach(img => {
   });
 });
 
-   KEYBOARD NAVIGATION – ESC closes modals
-   ══════════════════════════════════════ */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   document.querySelectorAll('.drawer-mask.open').forEach(m => m.click());
   document.querySelectorAll('.modal-mask.open').forEach(m => m.click());
 });
 
-   SEARCH SHORTCUT (/ key)
-   ══════════════════════════════════════ */
 document.addEventListener('keydown', e => {
   if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
     e.preventDefault();
@@ -262,8 +242,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-   TOUCH SWIPE on hero slider
-   ══════════════════════════════════════ */
 (function initSwipe() {
   const hero = document.querySelector('.hero-slider');
   if (!hero) return;
@@ -277,8 +255,6 @@ document.addEventListener('keydown', e => {
   }, { passive: true });
 })();
 
-   RIPPLE on buttons
-   ══════════════════════════════════════ */
 (function initRipple() {
   document.querySelectorAll('.p-add-btn, .btn-primary, .checkout-btn, .load-more-btn').forEach(btn => {
     btn.style.position = 'relative';
@@ -308,9 +284,6 @@ document.addEventListener('keydown', e => {
   }
 })();
 
-   RE-APPLY cursor expand on dynamically
-   rendered product cards
-   ══════════════════════════════════════ */
 (function watchDynamicCards() {
   if (window.matchMedia('(hover: none)').matches) return;
   const ring = document.querySelector('.cursor-ring');

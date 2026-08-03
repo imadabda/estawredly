@@ -16,12 +16,11 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<script src="products_db.js?v=<?= time() ?>">
+<script src="products_db.js?v=1785794628900<?= time() ?>">
 </script>
-<script src="store.js?v=16">
+<script src="store.js?v=1785794628900">
 </script>
 <style>
-   ══════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0f1117; --bg2:#1a1d27; --bg3:#22263a;
@@ -1104,7 +1103,6 @@ function toggleAdminSidebar() {
   document.getElementById('admin-overlay').classList.toggle('open');
 }
 
-   ══════════════════════════════════════ */
 
 let adminProducts = (typeof Store !== 'undefined') ? Store.getProducts() : [];
 window.LIVE_ORDERS = [];
