@@ -26,7 +26,7 @@ const state = {
 };
 
 // CART
-function addToCart(product) {
+function addToCart(product, qty=1, variants={}) {
   if (!window.authUser || window.authUser.status !== 'active') {
       openModal('auth');
       return;
@@ -41,14 +41,14 @@ function addToCart(product) {
   animateBadge('cart-count');
 }
 
-function removeFromCart(id) {
-  state.cart = state.cart.filter(i=>i.id!==id);
+function removeFromCart(index) {
+  state.cart.splice(index, 1);
   state.saveCart();
   updateCartUI();
 }
 
-function updateQty(id, delta) {
-  const item = state.cart.find(i=>i.id===id);
+function updateQty(index, delta) {
+  const item = state.cart[index];
   if (!item) return;
   item.qty = Math.max(1, item.qty+delta);
   state.saveCart();
@@ -68,7 +68,7 @@ function updateCartUI() {
     empty.style.display='flex'; list.style.display='none'; footer.style.display='none';
   } else {
     empty.style.display='none'; list.style.display='block'; footer.style.display='block';
-    list.innerHTML = state.cart.map(i=>`
+    list.innerHTML = state.cart.map((i, index)=>`
       <div class="ci">
         <div class="ci-img"><img src="${i.img}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
         <div class="ci-info">

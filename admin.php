@@ -16,9 +16,9 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<script src="products_db.js?v=1785798756120<?= time() ?>">
+<script src="products_db.js?v=1785800636815<?= time() ?>">
 </script>
-<script src="store.js?v=1785798756120">
+<script src="store.js?v=1785800636815">
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1750,6 +1750,7 @@ function saveProduct() {
   
   if (!name || isNaN(price)) { showToast('⚠️ الاسم والسعر مطلوبان!','warn'); return; }
 
+  const pToEdit = editingId ? adminProducts.find(x=>x.id===editingId) : null;
   const product = {
     id: editingId || (Date.now()),
     name,
@@ -1763,7 +1764,11 @@ function saveProduct() {
     stock: stock,
     tab: document.getElementById('f-tab').value || 'all',
     img: document.getElementById('f-img-url').value || document.getElementById('img-preview-el').src || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
-    active: true,
+    active: pToEdit ? pToEdit.active : true,
+
+    images: currentProductImages.length > 0 ? [...currentProductImages] : null,
+    variants: currentProductVariants.length > 0 ? JSON.parse(JSON.stringify(currentProductVariants)) : null,
+
   };
 
   if (editingId) {
@@ -2152,8 +2157,11 @@ function viewOrder(id) {
     if (Array.isArray(o.items)) {
         itemsHtml = o.items.map(i => `
             <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-                <div><strong>${i.name}</strong> <span style="color:var(--text3)">(x${i.quantity || 1})</span></div>
-                <div>₪${i.price * (i.quantity || 1)}</div>
+                <div>
+                  <strong>${i.name}</strong> <span style="color:var(--text3)">(x${i.quantity || i.qty || 1})</span>
+                  ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0 ? `<div style="font-size:12px; color:var(--text3); margin-top:2px;">` + Object.entries(i.selectedVariants).map(([k,v]) => `${k}: ${v}`).join(' | ') + `</div>` : ''}
+                </div>
+                <div>₪${(i.price || 0) * (i.quantity || i.qty || 1)}</div>
             </div>
         `).join('');
     } else {

@@ -1026,3 +1026,5 @@ input,select,textarea{font-family:inherit}
 
 .auth-form { display: none; }
 .auth-form.active { display: block; }
+
+.variant-btn.selected { border-color: var(--primary) !important; background: var(--primary) !important; color: white !important; font-weight: bold; }
