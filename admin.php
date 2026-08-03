@@ -16,9 +16,9 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<script src="products_db.js?v=1785796859234<?= time() ?>">
+<script src="products_db.js?v=1785798756120<?= time() ?>">
 </script>
-<script src="store.js?v=1785796859234">
+<script src="store.js?v=1785798756120">
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}

@@ -40,7 +40,7 @@ const Store = (() => {
   }
 
   function saveProducts(products) {
-    if (typeof PRODUCTS_DB !== 'undefined') {
+    if (typeof PRODUCTS_DB !== 'undefined' && PRODUCTS_DB !== products) {
         // تحديث النسخة في الذاكرة لتجنب الحاجة لعمل ريفريش فوري
         PRODUCTS_DB.length = 0;
         PRODUCTS_DB.push(...products);
