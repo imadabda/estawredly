@@ -3,22 +3,16 @@
    إستوردلي – Store JavaScript
    ====================================== */
 
-// ══════════════════════════════════════
 // PREVENT ZOOM ON IOS
-// ══════════════════════════════════════
 document.addEventListener('gesturestart', function (e) {
   e.preventDefault();
 });
 
-// ══════════════════════════════════════
 // PRODUCT DATA
-// ══════════════════════════════════════
 // Products loaded from Store (localStorage + products_db.js)
 let PRODUCTS_LIVE = [];
 
-// ══════════════════════════════════════
 // STATE
-// ══════════════════════════════════════
 const state = {
   cart: JSON.parse(localStorage.getItem('store_cart')||'[]'),
   wishlist: new Set(JSON.parse(localStorage.getItem('store_wish')||'[]')),
@@ -31,10 +25,13 @@ const state = {
   cartCount() { return this.cart.reduce((s,i)=>s+i.qty, 0); },
 };
 
-// ══════════════════════════════════════
 // CART
-// ══════════════════════════════════════
 function addToCart(product) {
+  if (!window.authUser || window.authUser.status !== 'active') {
+      openModal('auth');
+      return;
+  }
+
   const ex = state.cart.find(i=>i.id===product.id);
   if (ex) { ex.qty++; }
   else { state.cart.push({...product, qty:1}); }
@@ -88,14 +85,12 @@ function updateCartUI() {
     `).join('');
     const total = state.cartTotal();
     document.getElementById('cart-subtotal').textContent = '₪'+total.toFixed(2);
-    document.getElementById('cart-shipping').textContent = total>=200 ? 'مجاني 🎉' : '₪15.00';
-    document.getElementById('cart-total-price').textContent = '₪'+(total+(total<200?15:0)).toFixed(2);
+    document.getElementById('cart-shipping').textContent = 'يُحسب عند الدفع';
+    document.getElementById('cart-total-price').textContent = '₪'+total.toFixed(2);
   }
 }
 
-// ══════════════════════════════════════
 // WISHLIST
-// ══════════════════════════════════════
 function toggleWish(product) {
   if (state.wishlist.has(product.id)) {
     state.wishlist.delete(product.id);
@@ -137,9 +132,7 @@ function updateWishUI() {
   }
 }
 
-// ══════════════════════════════════════
 // PRODUCT CARD
-// ══════════════════════════════════════
 function makeCard(p) {
   const disc = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100) : 0;
   const stars = '★'.repeat(Math.round(p.stars))+'☆'.repeat(5-Math.round(p.stars));
@@ -165,13 +158,20 @@ function makeCard(p) {
         <div class="p-cat">${p.cat}</div>
         <h3 class="p-name">${p.name}</h3>
         <div class="p-stars">${stars} <span>(${p.reviews})</span></div>
-        <div class="p-price">
-          <span class="p-price-main">₪${p.price}</span>
-          ${p.oldPrice?`<span class="p-price-old">₪${p.oldPrice}</span><span class="p-disc">-${disc}%</span>`:''}
-        </div>
-        <button class="p-add-btn" onclick='event.stopPropagation();addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-          أضف للسلة
-        </button>
+        ${(window.authUser && window.authUser.status === 'active') ? `
+          <div class="p-price">
+            <span class="p-price-main">₪${p.price}</span>
+            ${p.oldPrice?`<span class="p-price-old">₪${p.oldPrice}</span><span class="p-disc">-${disc}%</span>`:''}
+          </div>
+          <button class="p-add-btn" onclick='event.stopPropagation();addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
+            أضف للسلة
+          </button>
+        ` : `
+          <div style="background:#f3f4f6;color:var(--text3);padding:10px;border-radius:8px;text-align:center;font-size:12px;font-weight:bold;margin-top:10px;">
+             🔒 الأسعار للأعضاء فقط <br>
+             <a href="#" onclick="event.stopPropagation();openModal('auth')" style="color:var(--p);text-decoration:underline;">سجل دخول لرؤية السعر</a>
+          </div>
+        `}
       </div>
     </div>
   `;
@@ -188,9 +188,7 @@ function renderGrid(containerId, products) {
   });
 }
 
-// ══════════════════════════════════════
 // QUICK VIEW
-// ══════════════════════════════════════
 function quickView(id) {
   const p = PRODUCTS_LIVE.find(x=>x.id===id);
   if (!p) return;
@@ -206,6 +204,7 @@ function quickView(id) {
             ${'★'.repeat(Math.round(p.stars))+'☆'.repeat(5-Math.round(p.stars))}
             <span style="color:var(--gray5);font-size:13px">(${p.reviews} تقييم)</span>
           </div>
+          ${(window.authUser && window.authUser.status === 'active') ? `
           <div class="qv-price">
             ₪${p.price}
             ${p.oldPrice?`<span style="font-size:16px;font-weight:400;color:var(--gray4);text-decoration:line-through;margin-right:10px">₪${p.oldPrice}</span>`:''}
@@ -220,6 +219,18 @@ function quickView(id) {
               ${state.wishlist.has(p.id)?'❤️ في المفضلة':'🤍 أضف للمفضلة'}
             </button>
           </div>
+          ` : `
+          <div class="qv-desc">منتج عالي الجودة مختار بعناية. يأتي مع ضمان كامل وإمكانية الإرجاع خلال 30 يومًا من تاريخ الاستلام.</div>
+          <div style="background:#f3f4f6;color:var(--text3);padding:16px;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;margin-bottom:16px;">
+             🔒 الأسعار مخفية للأعضاء فقط <br><br>
+             <button class="btn btn-primary w-full" onclick="closeQV();openModal('auth')">سجل دخول لرؤية السعر والطلب</button>
+          </div>
+          <div class="qv-actions">
+            <button class="btn w-full" style="border:2px solid var(--gray2)" onclick='toggleWish(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
+              ${state.wishlist.has(p.id)?'❤️ في المفضلة':'🤍 أضف للمفضلة'}
+            </button>
+          </div>
+          `}
           <div style="margin-top:16px;display:flex;gap:16px;font-size:12px;color:var(--gray5)">
             <span>شحن سريع</span>
             <span>إرجاع 30 يوم</span>
@@ -234,9 +245,7 @@ function quickView(id) {
 
 function closeQV() { closeModal('qv'); }
 
-// ══════════════════════════════════════
 // MODALS & DRAWERS
-// ══════════════════════════════════════
 function openDrawer(name) {
   document.getElementById(name+'-mask').classList.add('open');
   document.getElementById(name+'-drawer').classList.add('open');
@@ -260,9 +269,7 @@ function closeModal(name) {
   document.body.style.overflow='';
 }
 
-// ══════════════════════════════════════
 // HERO SLIDER
-// ══════════════════════════════════════
 function goSlide(i) {
   const slides = document.querySelectorAll('.slide');
   const dots   = document.querySelectorAll('.dot');
@@ -280,9 +287,7 @@ function resetSlideTimer() {
 window.goSlide   = goSlide;
 window.changeSlide = changeSlide;
 
-// ══════════════════════════════════════
 // COUNTDOWN TIMER
-// ══════════════════════════════════════
 function startTimer() {
   let total = 5*3600+30*60; // 5h30m
   const h=document.getElementById('t-h');
@@ -301,9 +306,7 @@ function startTimer() {
   setInterval(tick,1000);
 }
 
-// ══════════════════════════════════════
 // TOAST
-// ══════════════════════════════════════
 function toast(msg, type='success') {
   const wrap = document.getElementById('toast-wrap');
   const t = document.createElement('div');
@@ -315,9 +318,7 @@ function toast(msg, type='success') {
 }
 window.toast = toast;
 
-// ══════════════════════════════════════
 // BADGE ANIMATION
-// ══════════════════════════════════════
 function animateBadge(id) {
   const el = document.getElementById(id);
   if(!el) return;
@@ -325,9 +326,7 @@ function animateBadge(id) {
   setTimeout(()=>{el.style.transform='scale(1)';},200);
 }
 
-// ══════════════════════════════════════
 // SEARCH
-// ══════════════════════════════════════
 window.fillSearch = function(el) {
   document.getElementById('search-input').value = el.textContent;
 };
@@ -343,9 +342,7 @@ function initSearch() {
   inp.addEventListener('keypress', e=>{if(e.key==='Enter')doSearch();});
 }
 
-// ══════════════════════════════════════
 // PRODUCT TABS
-// ══════════════════════════════════════
 function initProductTabs() {
   const tabs = document.querySelectorAll('.stab');
   if(!tabs.length) return;
@@ -360,9 +357,7 @@ function initProductTabs() {
   });
 }
 
-// ══════════════════════════════════════
 // SCROLL EFFECTS
-// ══════════════════════════════════════
 function initScroll() {
   const btt = document.getElementById('btt-btn');
   const hdr = document.getElementById('header');
@@ -373,29 +368,8 @@ function initScroll() {
   },{passive:true});
 }
 
-// ══════════════════════════════════════
-// AUTH UI UPDATE
-// ══════════════════════════════════════
-function updateAuthUI() {
-  if (typeof Store === 'undefined') return;
-  const user = Store.getCurrentUser();
-  const btnLogin = document.getElementById('btn-login');
-  const btnReg   = document.getElementById('btn-register');
-  const btnUser  = document.getElementById('btn-user-name');
-  if (user) {
-    if (btnLogin) btnLogin.textContent = user.name.split(' ')[0];
-    if (btnReg)   { btnReg.textContent = 'خروج'; btnReg.onclick = (e) => { e.preventDefault(); Store.logout(); updateAuthUI(); toast('تم تسجيل الخروج'); }; }
-    if (btnUser)  btnUser.textContent = user.name;
-  } else {
-    if (btnLogin) { btnLogin.textContent = 'تسجيل دخول'; btnLogin.onclick = null; }
-    if (btnReg)   { btnReg.textContent = 'حساب جديد'; btnReg.onclick = null; }
-  }
-}
-window.updateAuthUI = updateAuthUI;
 
-// ══════════════════════════════════════
 // AUTH MODAL
-// ══════════════════════════════════════
 function initAuth() {
   const btnLogin   = document.getElementById('btn-login');
   const btnReg     = document.getElementById('btn-register');
@@ -442,8 +416,7 @@ function initAuth() {
     if (result.error) { toast('❌ ' + result.error, 'error'); return; }
     toast('🎉 أهلاً ' + result.user.name + '!');
     closeModal('auth');
-    updateAuthUI();
-  });
+    });
   document.getElementById('signup-form')?.addEventListener('submit', e => {
     e.preventDefault();
     const name     = document.getElementById('signup-name')?.value?.trim();
@@ -458,17 +431,12 @@ function initAuth() {
     Store.loginUser(email, password);
     toast('🎉 تم إنشاء حسابك بنجاح! مرحبًا ' + name + ' 🎊');
     closeModal('auth');
-    updateAuthUI();
-  });
+    });
 }
 
-// ══════════════════════════════════════
 // MOBILE MENU IS HANDLED VIA INLINE ONCLICK
-// ══════════════════════════════════════
 
-// ══════════════════════════════════════
 // PROMO FORM
-// ══════════════════════════════════════
 function initPromo() {
   document.getElementById('promo-form')?.addEventListener('submit',e=>{
     e.preventDefault();
@@ -477,9 +445,7 @@ function initPromo() {
   });
 }
 
-// ══════════════════════════════════════
 // CATEGORY PILLS
-// ══════════════════════════════════════
 function initCatPills() {
   document.querySelectorAll('.cat-pill').forEach(p=>{
     p.addEventListener('click',()=>{
@@ -489,19 +455,16 @@ function initCatPills() {
   });
 }
 
-// ══════════════════════════════════════
 // QV MODAL
-// ══════════════════════════════════════
 window.quickView = quickView;
 window.closeQV   = closeQV;
 window.addToCart = addToCart;
 window.toggleWish = toggleWish;
 window.updateQty = updateQty;
 window.removeFromCart = removeFromCart;
+window.makeCard = makeCard;
 
-// ══════════════════════════════════════
 // KEYBOARD
-// ══════════════════════════════════════
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeDrawer('cart'); closeDrawer('wish');
@@ -511,10 +474,8 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// ══════════════════════════════════════
 // INIT
-// ══════════════════════════════════════
-document.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('authLoaded', ()=>{
   // Load products from Store
   if (typeof Store !== 'undefined') {
     PRODUCTS_LIVE = Store.getProducts();
@@ -524,7 +485,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderGrid('flash-grid', flashProds.length > 0 ? flashProds : PRODUCTS_LIVE.slice(0, 16));
   renderGrid('main-grid',  PRODUCTS_LIVE.slice(0, 24));
   renderGrid('new-grid',   newProds.length > 0 ? newProds : PRODUCTS_LIVE.slice(16, 32));
+});
 
+document.addEventListener('DOMContentLoaded',()=>{
   // Update UI from stored state
   updateCartUI();
   updateWishUI();
@@ -567,12 +530,7 @@ document.addEventListener('DOMContentLoaded',()=>{
           toast('السلة فارغة', 'error'); 
           return; 
         }
-        if (typeof Store === 'undefined' || !Store.isLoggedIn()) {
-          e.preventDefault();
-          toast('يرجى تسجيل الدخول لإتمام الطلب', 'error');
-          window.openAuthModal && window.openAuthModal('login');
-          return;
-        }
+        
         // let it navigate
       }
     });
@@ -584,40 +542,61 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('main-nav')?.classList.toggle('open');
   });
 
-  updateAuthUI();
-});
-
-// Google Login handler
-window.handleGoogleLogin = function() {
-  if (typeof google === 'undefined' || !google.accounts) {
-    const demoUser = {
-      name: 'مستخدم جوجل',
-      email: 'google-user@gmail.com',
-      picture: null,
-    };
-    if (typeof Store !== 'undefined') Store.loginWithGoogle(demoUser);
-    toast('🎉 تم تسجيل الدخول بـ Google!');
-    closeModal('auth');
-    updateAuthUI();
-    return;
-  }
-  google.accounts.id.initialize({
-    client_id: 'YOUR_GOOGLE_CLIENT_ID',
-    callback: (response) => {
-      try {
-        const payload = JSON.parse(atob(response.credential.split('.')[1]));
-        if (typeof Store !== 'undefined') Store.loginWithGoogle({
-          name: payload.name,
-          email: payload.email,
-          picture: payload.picture,
-        });
-        toast('🎉 أهلاً ' + payload.name + '!');
-        closeModal('auth');
-        updateAuthUI();
-      } catch (err) {
-        toast('❌ فشل تسجيل الدخول بجوجل', 'error');
-      }
-    },
   });
-  google.accounts.id.prompt();
-};
+
+// Google login removed
+
+async function loadNavigation() {
+    try {
+        const res = await fetch('api/get_nav.php?t=' + Date.now());
+        const navData = await res.json();
+        
+        const navLists = document.querySelectorAll('.nav-list');
+        if (!navLists.length || !navData.length) return;
+        
+        let html = '';
+        navData.forEach(item => {
+            const isActive = item.active || window.location.pathname.includes(item.url) ? 'active' : '';
+            const badge = item.badge ? ` ${item.badge} ` : '';
+            const cssClass = item.cssClass ? ` ${item.cssClass}` : '';
+            
+            if (item.type === 'link') {
+                html += `<li><a href="${item.url}" class="nav-a ${isActive}${cssClass}">${badge}${item.title}</a></li>`;
+            } else if (item.type === 'dropdown') {
+                let dropdownHtml = '<div class="dd-col">'; // Unified single column for simplicity
+                if (item.subLinks) {
+                    item.subLinks.forEach(link => {
+                        dropdownHtml += `<a href="${link.url}">${link.title}</a>`;
+                    });
+                } else if (item.columns) { // Fallback for old data
+                    item.columns.forEach(col => {
+                        if (col.links) {
+                            col.links.forEach(link => {
+                                dropdownHtml += `<a href="${link.url}">${link.title}</a>`;
+                            });
+                        }
+                    });
+                }
+                dropdownHtml += '</div>';
+                
+                html += `
+                <li class="nav-dd">
+                  <a href="${item.url || 'javascript:void(0)'}" class="nav-a ${isActive}${cssClass}">${badge}${item.title} ▾</a>
+                  <div class="dd-panel" style="min-width:200px;">
+                    ${dropdownHtml}
+                  </div>
+                </li>`;
+            }
+        });
+        
+        html += '<li class="mobile-only-link"><hr></li>';
+        
+        navLists.forEach(list => {
+            list.innerHTML = html;
+        });
+    } catch (err) {
+        console.error('Failed to load navigation', err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadNavigation);

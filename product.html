@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>استوردلي | تفاصيل المنتج</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
   <meta name="description" content="تفاصيل المنتج وصور ومواصفات كاملة مع خيار الإضافة للسلة."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -65,44 +66,7 @@
   <div class="qv-inner" id="qv-inner"></div>
 </div>
 
-<!-- ═══════════════ LOGIN MODAL ═══════════════ -->
-<div class="modal-mask" id="auth-mask"></div>
-<div class="auth-modal" id="auth-modal">
-  <button class="qv-close" id="auth-close">✕</button>
-  <div class="auth-tabs">
-    <button class="auth-tab active" id="tab-in">دخول</button>
-    <button class="auth-tab" id="tab-up">تسجيل</button>
-  </div>
-  <div id="auth-login">
-    <h2>مرحبًا بعودتك 👋</h2>
-    <form id="login-form">
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="login-email" placeholder="email@example.com"/></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="login-password" placeholder="••••••••"/></div>
-      <a href="#" class="forgot">نسيت كلمة المرور؟</a>
-      <button type="submit" class="btn btn-primary w-full">دخول</button>
-    </form>
-    <div class="or-sep"><span>أو</span></div>
-    <button type="button" id="google-login-btn" onclick="handleGoogleLogin()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;background:#fff;color:#333;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:16px;transition:.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      تسجيل الدخول بـ Google
-    </button>
-  </div>
-  <div id="auth-signup" style="display:none">
-    <h2>إنشاء حساب جديد 🎉</h2>
-    <form id="signup-form">
-      <div class="field"><label>الاسم الكامل</label><input type="text" id="signup-name" placeholder="الاسم الكامل"/></div>
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="signup-email" placeholder="email@example.com"/></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="signup-password" placeholder="8 أحرف على الأقل"/></div>
-      <div class="field"><label>رقم الهاتف (اختياري)</label><input type="tel" id="signup-phone" placeholder="05X-XXXXXXX"/></div>
-      <button type="button" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;background:#fff;color:#333;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:16px;transition:.2s;" onclick="handleGoogleLogin()" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        تسجيل بـ Google
-      </button>
-      <div style="text-align:center;color:#999;font-size:13px;margin-bottom:12px;">── أو ──</div>
-      <button type="submit" class="btn btn-primary w-full">إنشاء الحساب</button>
-    </form>
-  </div>
-</div>
+
 
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div id="toast-wrap"></div>
@@ -110,12 +74,11 @@
 <!-- ═══════════════ BACK TO TOP ═══════════════ -->
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="products_db.js?v=13"></script>
-  <script src="store.js?v=13"></script>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="enhancements.css"/>
+<script>document.write("\x3cscript src=\x22products_db.js?v=" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
+  <script src="store.js?v=1785331847"></script>
+  <link rel="stylesheet" href="style.css?v=1785331847"/>
+  <link rel="stylesheet" href="enhancements.css?v=1785331847"/>
   <style>
-  /* ─── Product Page Specific ─── */
   .prod-page { padding-top: 32px; padding-bottom: 64px; }
 
   /* Breadcrumb */
@@ -132,7 +95,6 @@
     .gallery { position: static; } /* Prevent overlap when scrolling on mobile */
   }
 
-  /* ── GALLERY ── */
   .gallery { display:flex; flex-direction:column; gap:14px; position:sticky; top:100px; z-index:10; }
   .gallery-main {
     aspect-ratio:1; border-radius:24px; overflow:hidden;
@@ -290,7 +252,6 @@
   .trust-badge .tb-icon { font-size:20px; }
   .trust-badge strong { font-size:12px; color:var(--gray8); font-weight:800; display:block; }
 
-  /* ── TABS ── */
   .prod-tabs { margin-top:48px; }
   .tabs-nav { display:flex; border-bottom:2px solid var(--gray2); gap:0; }
   .tab-btn {
@@ -337,7 +298,6 @@
   .rev-verified { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:#16a34a; font-weight:700; margin-top:8px; }
   .write-review-btn { margin-top:20px; }
 
-  /* ── RELATED ── */
   .related-sec { margin-top:60px; }
   .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:18px; margin-top:24px; }
 
@@ -387,8 +347,7 @@
     font-size:15px; font-weight:800; border:none; cursor:pointer;
   }
   </style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link rel="manifest" href="manifest.json" />
+<link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
   <link rel="apple-touch-icon" href="logo.jpg" />
 </head>
@@ -407,12 +366,7 @@
       <a href="index.html">الرئيسية</a>
       <a href="shop.html">المتجر</a>
     </nav>
-    <div class="hdr-user">
-      <a href="#" id="btn-login" class="hdr-link-btn">تسجيل دخول</a>
-      <span>|</span>
-      <a href="admin.html" class="hdr-link-btn" style="color:#f59e0b">⚙️ الإدارة</a>
-    </div>
-  </div></div>
+    </div></div>
   <div class="hdr-main"><div class="container hdr-main-inner">
     <a href="index.html" class="logo">
       <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
@@ -432,7 +386,10 @@
       </div>
     </div>
     <div class="hdr-actions">
-      <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
+              <button class="hdr-icon-btn" id="auth-btn" title="حسابي" onclick="openModal('auth')">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         <span class="badge" id="wishlist-count">0</span>
       </button>
@@ -664,9 +621,9 @@
 <div id="toast-wrap"></div>
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="main.js?v=3"></script>
+<script src="auth.js?v=1785331847"></script>
+<script src="main.js?v=1785331847"></script>
 <script>
-/* ══════════════════════════════════════
    PRODUCT PAGE LOGIC
    ══════════════════════════════════════ */
 const ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
@@ -700,7 +657,6 @@ const EXTRA = {
   }
 };
 
-// ─── URL Params ───
 const params = new URLSearchParams(location.search);
 const productId = parseInt(params.get('id')) || 1;
 const product = ALL_PRODUCTS.find(p => p.id === productId) || ALL_PRODUCTS[0];
@@ -722,7 +678,6 @@ let currentColor = null;
 let currentSize  = null;
 let isWished = state.wishlist.has(product.id);
 
-// ─── Render page ───
 function render() {
   // Title
   document.title = `${product.name} – إستوردلي`;
@@ -744,112 +699,127 @@ function render() {
   document.getElementById('prod-reviews-count').textContent = `(${product.reviews} تقييم)`;
   document.getElementById('prod-sold').textContent = `• +${product.reviews*3} مباع`;
 
-  // Price
-  document.getElementById('prod-price').textContent = `₪${product.price}`;
-  if (product.oldPrice) {
-    const disc = Math.round((1-product.price/product.oldPrice)*100);
-    const savings = product.oldPrice - product.price;
-    document.getElementById('prod-old-wrap').style.display='flex';
-    document.getElementById('prod-old-price').textContent = `₪${product.oldPrice}`;
-    document.getElementById('prod-disc').textContent = `-${disc}%`;
-    const savEl = document.getElementById('prod-savings');
-    savEl.style.display='block';
-    savEl.textContent = `✅ وفّر ₪${savings.toFixed(0)} مع هذا العرض`;
-  }
-
-  // Stock
-  const stock = extra.stock || 47;
-  const dot = document.getElementById('stock-dot');
-  if (stock < 10) {
-    dot.className='stock-dot yellow';
-    document.getElementById('stock-status').textContent = 'كمية محدودة';
-    document.getElementById('stock-count').textContent = `(${stock} قطعة متبقية فقط!)`;
-    document.getElementById('stock-count').style.color='#d97706';
+  // Price and Auth check
+  if (window.authUser && window.authUser.status === 'active') {
+    document.getElementById('prod-price').textContent = `₪${product.price}`;
+    if (product.oldPrice) {
+      const disc = Math.round((1-product.price/product.oldPrice)*100);
+      const savings = product.oldPrice - product.price;
+      document.getElementById('prod-old-wrap').style.display='flex';
+      document.getElementById('prod-old-price').textContent = `₪${product.oldPrice}`;
+      document.getElementById('prod-disc').textContent = `-${disc}%`;
+      const savEl = document.getElementById('prod-savings');
+      savEl.style.display='block';
+      savEl.textContent = `✅ وفّر ₪${savings.toFixed(0)} مع هذا العرض`;
+    }
+    document.getElementById('sticky-price').textContent = `₪${product.price}`;
   } else {
-    document.getElementById('stock-count').textContent = `(${stock}+ متوفر)`;
+    const priceBox = document.querySelector('.prod-price-box');
+    if(priceBox) priceBox.innerHTML = '<div style="background:#f3f4f6;color:var(--text3);padding:10px;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;width:100%;">🔒 الأسعار للأعضاء فقط <br><a href="#" onclick="event.preventDefault();openModal(\'auth\')" style="color:var(--accent);text-decoration:underline;">سجل دخول لرؤية السعر</a></div>';
+    
+    const addBtn = document.getElementById('btn-add-cart');
+    if(addBtn) {
+      addBtn.textContent = '🔒 سجل دخول للشراء';
+      addBtn.onclick = () => openModal('auth');
+      addBtn.style.background = '#9ca3af';
+    }
+    const buyBtn = document.getElementById('buy-now-btn');
+    if(buyBtn) buyBtn.style.display = 'none';
+
+    const stickyBtn = document.querySelector('.sticky-btn');
+    if(stickyBtn) {
+      stickyBtn.textContent = '🔒 سجل دخول';
+      stickyBtn.onclick = () => openModal('auth');
+      stickyBtn.style.background = '#9ca3af';
+    }
+    const stickyPrice = document.getElementById('sticky-price');
+    if(stickyPrice) stickyPrice.textContent = '';
+    
+    const qtyBox = document.querySelector('.qty-box');
+    if(qtyBox) qtyBox.style.display = 'none';
   }
 
-  // Gallery
-  const mainImg = document.getElementById('main-img');
-  mainImg.src = IMAGES[0];
-  mainImg.alt = product.name;
-
-  const thumbsEl = document.getElementById('gallery-thumbs');
-  thumbsEl.innerHTML = IMAGES.map((src,i) => `
-    <div class="g-thumb ${i===0?'active':''}" onclick="selectThumb(this,'${src}')">
-      <img src="${src}" alt="صورة ${i+1}" loading="lazy"/>
-    </div>
-  `).join('');
-
-  // Colors
-  const colors = extra.colors || EXTRA.default.colors;
-  const colorNames = extra.colorNames || EXTRA.default.colorNames;
-  const colorsEl = document.getElementById('prod-colors');
-  colorsEl.innerHTML = colors.map((c,i) => `
-    <div class="color-dot" style="background:${c}" data-name="${colorNames[i]||''}"
-      onclick="selectColor(this,'${colorNames[i]||c}')"></div>
-  `).join('');
-
-  // Sizes
-  const sizes = extra.sizes || EXTRA.default.sizes;
-  const sizesEl = document.getElementById('prod-sizes');
-  sizesEl.innerHTML = sizes.map(s => `
-    <button class="size-btn" onclick="selectSize(this,'${s}')">${s}</button>
-  `).join('');
-
-  // Hide color/size if not needed
-  if (!product.tab || product.tab==='electronics') {
-    document.getElementById('size-section').style.display='none';
-    document.getElementById('color-section').style.display='none';
+  // Images
+  document.getElementById('main-img').src = IMAGES[0];
+  const thumbsContainer = document.getElementById('gallery-thumbs');
+  if(thumbsContainer) {
+      thumbsContainer.innerHTML = IMAGES.map((src, i) => `
+        <div class="g-thumb ${i===0?'active':''}" onclick="selectThumb(this, '${src}')">
+          <img src="${src}" alt="thumb"/>
+        </div>
+      `).join('');
   }
 
   // Description
-  document.getElementById('prod-desc-content').innerHTML = extra.desc || EXTRA.default.desc;
+  const descEl = document.getElementById('prod-desc');
+  if(descEl) descEl.innerHTML = extra.desc || 'وصف المنتج غير متوفر.';
 
   // Specs
   const specs = extra.specs || EXTRA.default.specs;
   const specsGeneral = [
     ['اسم المنتج', product.name],
     ['التصنيف', product.cat],
-    ['السعر', `₪${product.price}`],
+    ['السعر', (window.authUser && window.authUser.status === 'active') ? `₪${product.price}` : '🔒 للأعضاء فقط'],
     ['التقييم', `${product.stars}/5 (${product.reviews} تقييم)`],
     ...specs
   ];
-  document.getElementById('specs-table').innerHTML = specsGeneral.map(([k,v]) => `
-    <tr><td>${k}</td><td>${v}</td></tr>
-  `).join('');
+  const specsTable = document.getElementById('specs-table');
+  if(specsTable) {
+      specsTable.innerHTML = specsGeneral.map(([k,v]) => `
+        <tr><td>${k}</td><td>${v}</td></tr>
+      `).join('');
+  }
+
+  // Options (Color/Size)
+  if (extra.colors) {
+    const colorOpts = document.getElementById('color-opts');
+    if(colorOpts) {
+        colorOpts.innerHTML = extra.colors.map((c, i) => `
+          <div class="color-dot ${i===0?'active':''}" style="background:${c}" onclick="selectColor(this, '${extra.colorNames[i]}')"></div>
+        `).join('');
+        currentColor = extra.colorNames[0];
+        document.getElementById('selected-color').textContent = currentColor;
+    }
+  } else {
+    const colorSec = document.getElementById('color-section');
+    if(colorSec) colorSec.style.display='none';
+  }
+
+  if (extra.sizes) {
+    const sizeOpts = document.getElementById('size-opts');
+    if(sizeOpts) {
+        sizeOpts.innerHTML = extra.sizes.map((s, i) => `
+          <button class="size-btn ${i===0?'active':''}" onclick="selectSize(this, '${s}')">${s}</button>
+        `).join('');
+        currentSize = extra.sizes[0];
+        document.getElementById('selected-size').textContent = currentSize;
+    }
+  } else {
+    const sizeSec = document.getElementById('size-section');
+    if(sizeSec) sizeSec.style.display='none';
+  }
 
   // Reviews
-  const revs = extra.reviews || EXTRA.default.reviews;
-  document.getElementById('rating-big').textContent = product.stars;
-  document.getElementById('rating-count').textContent = `${product.reviews} تقييم`;
-  document.getElementById('rating-bars').innerHTML = [5,4,3,2,1].map(n => {
-    const pct = n===5?72:n===4?18:n===3?6:n===2?2:2;
-    return `
-      <div class="rating-bar-row">
-        <span>${n} ★</span>
-        <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${pct}%"></div></div>
-        <span>${pct}%</span>
-      </div>`;
-  }).join('');
-
-  document.getElementById('review-list').innerHTML = revs.map(r => `
-    <div class="rev-item">
-      <div class="rev-header">
-        <div class="rev-av2" style="background:${r.color}">${r.name[0]}</div>
-        <div class="rev-meta">
-          <strong>${r.name}</strong>
-          <small>${r.city} — منذ أسبوعين</small>
+  const reviewsList = document.getElementById('reviews-list');
+  if(reviewsList && extra.reviews) {
+      reviewsList.innerHTML = extra.reviews.map(r => `
+        <div class="review-item">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="rev-avatar" style="background:${r.color}">${r.name[0]}</div>
+              <div>
+                <div class="rev-name">${r.name}</div>
+                <div class="rev-city">${r.city}</div>
+              </div>
+            </div>
+            <div class="rev-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+          </div>
+          <div class="rev-text">${r.text}</div>
+          <div class="rev-verified">✓ عملية شراء مثبتة</div>
         </div>
-        <div class="rev-stars">${'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)}</div>
-      </div>
-      <div class="rev-text">${r.text}</div>
-      <div class="rev-verified">✓ عملية شراء مثبتة</div>
-    </div>
-  `).join('');
+      `).join('');
+  }
 
-  // Sticky price
-  document.getElementById('sticky-price').textContent = `₪${product.price}`;
 
   // Wish button
   updateWishBtn();
@@ -965,9 +935,13 @@ window.addEventListener('scroll', () => {
   document.getElementById('header').classList.toggle('scrolled', scrollY > 40);
 }, {passive:true});
 
-render();
+if (window.authUser !== undefined) {
+  render();
+} else {
+  window.addEventListener('authLoaded', render);
+}
 </script>
-<script src="enhancements.js?v=3"></script>
+<script src="enhancements.js?v=1785331847"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

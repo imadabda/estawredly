@@ -8,13 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <script src="products_db.js?v=13"></script>
-  <script src="store.js?v=13"></script>
-  <link rel="stylesheet" href="style.css?v=13"/>
-  <link rel="stylesheet" href="enhancements.css?v=13"/>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link rel="manifest" href="manifest.json" />
+  <script>document.write("\x3cscript src=\x22products_db.js?v=" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
+  <script src="store.js?v=1785331847"></script>
+  <link rel="stylesheet" href="style.css?v=1785331847"/>
+  <link rel="stylesheet" href="enhancements.css?v=1785331847"/>
+<link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="logo.jpg" />
 </head>
 <body>
@@ -35,14 +35,7 @@
         <a href="#">التواصل</a>
         <a href="#">العروض</a>
       </nav>
-      <div class="hdr-user">
-        <a href="#" id="btn-login" class="hdr-link-btn">تسجيل دخول</a>
-        <span>|</span>
-        <a href="#" id="btn-register" class="hdr-link-btn">حساب جديد</a>
-        <span>|</span>
-        <a href="admin.html" class="hdr-link-btn" style="color:#f59e0b;font-weight:700;" title="لوحة التحكم">⚙️ الإدارة</a>
       </div>
-    </div>
   </div>
 
   <div class="hdr-main">
@@ -81,6 +74,9 @@
 
       <!-- Actions -->
       <div class="hdr-actions">
+                <button class="hdr-icon-btn" id="auth-btn" title="حسابي" onclick="openModal('auth')">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
         <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           <span class="badge" id="wishlist-count">0</span>
@@ -100,37 +96,7 @@
   <nav class="main-nav" id="main-nav">
     <div class="nav-close-btn" onclick="document.getElementById('main-nav').classList.remove('open')">✕ إغلاق</div>
     <div class="container nav-inner">
-      <ul class="nav-list">
-        <li><a href="index.html" class="nav-a active">الرئيسية</a></li>
-        <li class="nav-dd">
-          <a href="shop.html" class="nav-a">مماسح مسطحة ▾</a>
-          <div class="dd-panel">
-            <div class="dd-col"><h5>بأنظمة العصر</h5>
-              <a href="shop.html?cat=flat">ممسحة بعصارة مدمجة</a>
-              <a href="shop.html?cat=flat">ممسحة رذاذ (Spray)</a>
-            </div>
-            <div class="dd-col"><h5>تقليدية</h5>
-              <a href="shop.html?cat=flat">مماسح مسطحة عادية</a>
-            </div>
-          </div>
-        </li>
-        <li class="nav-dd">
-          <a href="shop.html" class="nav-a">مماسح مايكروفايبر ▾</a>
-          <div class="dd-panel">
-            <div class="dd-col"><h5>ممسحة المايكروفايبر</h5>
-              <a href="shop.html?cat=microfiber">مماسح دوارة (Spin Mops)</a>
-              <a href="shop.html?cat=microfiber">مماسح بخيوط</a>
-            </div>
-          </div>
-        </li>
-        <li><a href="shop.html?cat=cotton" class="nav-a">مماسح قطنية</a></li>
-        <li><a href="shop.html?cat=refills" class="nav-a">قطع غيار</a></li>
-        <li><a href="shop.html" class="nav-a nav-a--sale">🔥 عروض الجملة</a></li>
-        <li class="mobile-only-link"><hr></li>
-        <li class="mobile-only-link"><a href="#" onclick="window.openAuthModal('login'); return false;" class="nav-a">👤 تسجيل دخول</a></li>
-        <li class="mobile-only-link"><a href="#" onclick="window.openAuthModal('signup'); return false;" class="nav-a">✨ حساب جديد</a></li>
-        <li class="mobile-only-link"><a href="admin.html" class="nav-a" style="color:var(--gold);">⚙️ لوحة الإدارة</a></li>
-      </ul>
+      <ul class="nav-list"></ul>
     </div>
   </nav>
 </header>
@@ -184,63 +150,63 @@
 <section class="taobao-cats-sec" style="margin-top: 15px; margin-bottom: 15px;">
   <div class="container">
     <div class="taobao-cats">
-      <div class="tc-item" onclick="window.location='shop.html?cat=squeegees'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=squeegees'">
         <div class="tc-icon"><img src="assets/categories/icon_squeegee.jpg" alt="قشاطات"></div>
         <div class="tc-name">قشاطات</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=brooms'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=brooms'">
         <div class="tc-icon"><img src="assets/categories/icon_broom.jpg" alt="مكانس"></div>
         <div class="tc-name">مكانس</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=sponges'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=sponges'">
         <div class="tc-icon"><img src="assets/categories/icon_sponge.jpg" alt="ليفة جلي"></div>
         <div class="tc-name">ليفة جلي</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=loofahs'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=loofahs'">
         <div class="tc-icon"><img src="assets/categories/icon_loofah.jpg" alt="ليف حمام"></div>
         <div class="tc-name">ليف حمام</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=scissors'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=scissors'">
         <div class="tc-icon"><img src="assets/categories/icon_scissors.jpg" alt="مقصات"></div>
         <div class="tc-name">مقصات</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=personal_care'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=personal_care'">
         <div class="tc-icon"><img src="assets/categories/icon_personal_care.jpg" alt="عناية شخصية"></div>
         <div class="tc-name">عناية شخصية</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=dusters'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=dusters'">
         <div class="tc-icon"><img src="assets/categories/icon_duster.jpg" alt="منفضة غبار"></div>
         <div class="tc-name">منفضة غبار</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=cosmetics'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=cosmetics'">
         <div class="tc-icon"><img src="assets/categories/icon_cosmetics.jpg" alt="كورمتكس"></div>
         <div class="tc-name">كورمتكس</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=scales'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=scales'">
         <div class="tc-icon"><img src="assets/categories/icon_scale.jpg" alt="موازين"></div>
         <div class="tc-name">موازين</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=party'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=party'">
         <div class="tc-icon"><img src="assets/categories/icon_party.jpg" alt="أعياد ميلاد"></div>
         <div class="tc-name">حفلات</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=foil'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=foil'">
         <div class="tc-icon"><img src="assets/categories/icon_aluminum_foil.jpg" alt="منتجات قصدير"></div>
         <div class="tc-name">قصدير</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=plastic'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=plastic'">
         <div class="tc-icon"><img src="assets/categories/icon_plastic_products.jpg" alt="منتجات بلاستيك"></div>
         <div class="tc-name">بلاستيك</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=nylon_bags'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=nylon_bags'">
         <div class="tc-icon"><img src="assets/categories/icon_plastic_bags.jpg" alt="أكياس نايلون"></div>
         <div class="tc-name">أكياس نايلون</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=batteries'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=batteries'">
         <div class="tc-icon" style="font-size:28px">🔋</div>
         <div class="tc-name">بطاريات</div>
       </div>
-      <div class="tc-item" onclick="window.location='shop.html?cat=microfiber'">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785337460&cat=microfiber'">
         <div class="tc-icon" style="font-size:28px">🧹</div>
         <div class="tc-name">مايكروفايبر</div>
       </div>
@@ -308,43 +274,36 @@
 <!-- ═══════════════ CATEGORY BANNERS ═══════════════ -->
 <section class="cat-banners">
   <div class="container">
-    <div class="banners-grid">
-      <a href="shop.html?cat=flat" class="banner-card big" style="background-image:url('cat_flat.jpg')">
-        <div class="banner-overlay"></div>
-        <div class="banner-content">
-          <span class="banner-tag">نظافة مثالية</span>
-          <h3>مماسح مسطحة</h3>
-          <p>مماسح عصرية لجميع أنواع الأرضيات</p>
-          <span class="banner-btn">تسوق الآن</span>
-        </div>
-      </a>
-      <a href="shop.html?cat=microfiber" class="banner-card" style="background-image:url('cat_micro.jpg')">
-        <div class="banner-overlay"></div>
-        <div class="banner-content">
-          <span class="banner-tag">أحدث التقنيات</span>
-          <h3>مماسح مايكروفايبر</h3>
-          <span class="banner-btn">اكتشف</span>
-        </div>
-      </a>
-      <a href="shop.html?cat=cotton" class="banner-card" style="background-image:url('cat_cotton.jpg')">
-        <div class="banner-overlay"></div>
-        <div class="banner-content">
-          <span class="banner-tag">للاستخدام الشاق</span>
-          <h3>مماسح قطنية</h3>
-          <span class="banner-btn">استكشف</span>
-        </div>
-      </a>
-      <a href="shop.html?cat=refills" class="banner-card" style="background-image:url('cat_refill.jpg')">
-        <div class="banner-overlay"></div>
-        <div class="banner-content">
-          <span class="banner-tag">عمر أطول</span>
-          <h3>قطع غيار</h3>
-          <span class="banner-btn">تسوق</span>
-        </div>
-      </a>
+    <div class="banners-grid" id="banners-grid">
+      <!-- Banners will be loaded here dynamically -->
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const res = await fetch('api/get_banners.php?t=' + Date.now());
+      const banners = await res.json();
+      const grid = document.getElementById('banners-grid');
+      if (banners && banners.length > 0) {
+        grid.innerHTML = banners.map(b => `
+          <a href="${b.link || '#'}" class="banner-card ${b.is_big ? 'big' : ''}" style="background-image:url('${b.image}'); color:${b.text_color || '#1f2937'};">
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+              ${b.tag ? `<span class="banner-tag" style="color:${b.text_color || '#1f2937'}; border-color:${b.text_color || '#1f2937'}">${b.tag}</span>` : ''}
+              <h3 style="color:${b.text_color || '#1f2937'}">${b.title}</h3>
+              ${b.desc ? `<p style="color:${b.text_color || '#1f2937'}">${b.desc}</p>` : ''}
+              ${b.btn_text ? `<span class="banner-btn" style="color:${b.text_color || '#1f2937'}">${b.btn_text}</span>` : ''}
+            </div>
+          </a>
+        `).join('');
+      }
+    } catch (e) {
+      console.error('Error loading banners:', e);
+    }
+  });
+</script>
 
 <!-- ═══════════════ IMPORT HERO BANNER ═══════════════ -->
 <section class="import-hero-banner">
@@ -793,38 +752,7 @@
   <div class="qv-inner" id="qv-inner"></div>
 </div>
 
-<!-- ═══════════════ LOGIN MODAL ═══════════════ -->
-<div class="modal-mask" id="auth-mask"></div>
-<div class="auth-modal" id="auth-modal">
-  <button class="qv-close" id="auth-close">✕</button>
-  <div class="auth-tabs">
-    <button class="auth-tab active" id="tab-in">دخول</button>
-    <button class="auth-tab" id="tab-up">تسجيل</button>
-  </div>
-  <div id="auth-login">
-    <h2>مرحبًا بعودتك 👋</h2>
-    <form id="login-form">
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="login-email" placeholder="email@example.com"/></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="login-password" placeholder="••••••••"/></div>
-      <a href="#" class="forgot">نسيت كلمة المرور؟</a>
-      <button type="submit" class="btn btn-primary w-full">دخول</button>
-    </form>
-    <div class="or-sep"><span>أو</span></div>
-    <div id="google-login-container" style="display:flex; justify-content:center; margin-bottom:16px;"></div>
-  </div>
-  <div id="auth-signup" style="display:none">
-    <h2>إنشاء حساب جديد 🎉</h2>
-    <form id="signup-form">
-      <div class="field"><label>الاسم الكامل</label><input type="text" id="signup-name" placeholder="الاسم الكامل"/></div>
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="signup-email" placeholder="email@example.com"/></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="signup-password" placeholder="8 أحرف على الأقل"/></div>
-      <div class="field"><label>رقم الهاتف (اختياري)</label><input type="tel" id="signup-phone" placeholder="05X-XXXXXXX"/></div>
-      <div id="google-signup-container" style="display:flex; justify-content:center; margin-bottom:16px;"></div>
-      <div style="text-align:center;color:#999;font-size:13px;margin-bottom:12px;">── أو ──</div>
-      <button type="submit" class="btn btn-primary w-full">إنشاء الحساب</button>
-    </form>
-  </div>
-</div>
+
 
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div id="toast-wrap"></div>
@@ -832,8 +760,9 @@
 <!-- ═══════════════ BACK TO TOP ═══════════════ -->
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="main.js?v=13"></script>
-<script src="enhancements.js?v=13"></script>
+<script src="auth.js?v=1785331847"></script>
+<script src="main.js?v=1785331847"></script>
+<script src="enhancements.js?v=1785331847"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -845,6 +774,5 @@
     });
   }
 </script>
-<script src="auth.js"></script>
 </body>
 </html>

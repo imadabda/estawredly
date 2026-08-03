@@ -1,12 +1,10 @@
 'use strict';
-/* ══════════════════════════════════════════════════════════════
    STORE.JS – مدير البيانات المركزي لإستوردلي
    يعمل كطبقة وسيطة بين الموقع ولوحة الإدارة
    ══════════════════════════════════════════════════════════════ */
 
 const Store = (() => {
 
-  // ── مفاتيح التخزين ──
   const KEYS = {
     PRODUCTS : 'estawrdly_products',
     ORDERS   : 'estawrdly_orders',
@@ -15,9 +13,9 @@ const Store = (() => {
     SETTINGS : 'estawrdly_settings',
     CART     : 'store_cart',
     WISH     : 'store_wish',
+    DELIVERY : 'estawrdly_delivery',
   };
 
-  // ── قراءة من localStorage ──
   function _get(key, fallback = null) {
     try {
       const raw = localStorage.getItem(key);
@@ -25,28 +23,31 @@ const Store = (() => {
     } catch { return fallback; }
   }
 
-  // ── كتابة إلى localStorage ──
   function _set(key, value) {
     try { localStorage.setItem(key, JSON.stringify(value)); return true; }
     catch { return false; }
   }
 
-  // ══════════════════════════════════════
   // PRODUCTS
-  // ══════════════════════════════════════
+  // PRODUCTS
+  
   function getProducts() {
-    // حاول localStorage أولاً، ثم القاعدة الثابتة
-    const stored = _get(KEYS.PRODUCTS);
-    if (stored && stored.length > 0) return stored;
-    // استخدم البيانات الثابتة كنقطة بداية وخزّنها
-    if (typeof PRODUCTS_DB !== 'undefined') {
-      _set(KEYS.PRODUCTS, PRODUCTS_DB);
+    // دائماً نعتمد على القاعدة المركزية أولاً لأنها تتحدث من السيرفر
+    if (typeof PRODUCTS_DB !== 'undefined' && PRODUCTS_DB.length > 0) {
       return PRODUCTS_DB;
     }
+    // احتياطياً فقط
+    const stored = _get(KEYS.PRODUCTS);
+    if (stored && stored.length > 0) return stored;
     return [];
   }
 
   function saveProducts(products) {
+    if (typeof PRODUCTS_DB !== 'undefined') {
+        // تحديث النسخة في الذاكرة لتجنب الحاجة لعمل ريفريش فوري
+        PRODUCTS_DB.length = 0;
+        PRODUCTS_DB.push(...products);
+    }
     return _set(KEYS.PRODUCTS, products);
   }
 
@@ -100,9 +101,7 @@ const Store = (() => {
     return cats.sort();
   }
 
-  // ══════════════════════════════════════
   // ORDERS
-  // ══════════════════════════════════════
   function getOrders() {
     return _get(KEYS.ORDERS, []);
   }
@@ -113,6 +112,17 @@ const Store = (() => {
 
   function addOrder(orderData) {
     const orders = getOrders();
+    // Ensure costPrice is saved for each item at the time of purchase
+    if (orderData.items) {
+      orderData.items = orderData.items.map(item => {
+        const prod = getProduct(item.id);
+        return {
+          ...item,
+          costPrice: prod ? (prod.costPrice || 0) : 0
+        };
+      });
+    }
+
     const order = {
       id: 'ORD-' + Date.now(),
       date: new Date().toISOString(),
@@ -138,9 +148,24 @@ const Store = (() => {
     return getOrders().find(o => o.id === orderId) || null;
   }
 
-  // ══════════════════════════════════════
+  function getDeliveryZones() {
+    const stored = _get(KEYS.DELIVERY);
+    if (stored && stored.length > 0) return stored;
+    // Default zones
+    const defaultZones = [
+      { id: 1, name: 'الضفة', price: 20 },
+      { id: 2, name: 'القدس', price: 30 },
+      { id: 3, name: 'الداخل', price: 70 }
+    ];
+    _set(KEYS.DELIVERY, defaultZones);
+    return defaultZones;
+  }
+
+  function saveDeliveryZones(zones) {
+    return _set(KEYS.DELIVERY, zones);
+  }
+
   // USERS / AUTH
-  // ══════════════════════════════════════
   function getUsers() {
     return _get(KEYS.USERS, []);
   }
@@ -230,9 +255,7 @@ const Store = (() => {
     return getUsers().find(u => u.id === id) || null;
   }
 
-  // ══════════════════════════════════════
   // SETTINGS
-  // ══════════════════════════════════════
   function getSettings() {
     return _get(KEYS.SETTINGS, {
       storeName: 'إستوردلي',
@@ -251,9 +274,7 @@ const Store = (() => {
     return _set(KEYS.SETTINGS, { ...getSettings(), ...settings });
   }
 
-  // ══════════════════════════════════════
   // STATS
-  // ══════════════════════════════════════
   function getStats() {
     const orders = getOrders();
     const products = getProducts();
@@ -275,9 +296,7 @@ const Store = (() => {
     };
   }
 
-  // ══════════════════════════════════════
   // SEED ADMIN (أول مرة فقط)
-  // ══════════════════════════════════════
   function seedAdmin() {
     const users = getUsers();
     const adminExists = users.find(u => u.role === 'admin');
@@ -299,7 +318,6 @@ const Store = (() => {
     }
   }
 
-  // ── تشغيل عند التحميل ──
   seedAdmin();
 
   return {
@@ -309,6 +327,8 @@ const Store = (() => {
     searchProducts, getCategories,
     // Orders
     getOrders, addOrder, updateOrderStatus, getOrderById,
+    // Delivery
+    getDeliveryZones, saveDeliveryZones,
     // Users / Auth
     registerUser, loginUser, loginWithGoogle,
     logout, getCurrentUser, isLoggedIn, isAdmin, getUserById, getUsers,

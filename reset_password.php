@@ -1,34 +1,38 @@
 <?php
 require_once 'api/db_connect.php';
 
-$message = '';
-$token_valid = false;
 $token = $_GET['token'] ?? '';
+$valid = false;
+$msg = '';
 
 if (!empty($token)) {
-    // التحقق من صلاحية التوكن
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE reset_token = ? AND reset_expires > NOW()");
+    $stmt = $pdo->prepare("SELECT id, email FROM users WHERE reset_token = ? AND reset_expires > NOW()");
     $stmt->execute([$token]);
-    if ($stmt->rowCount() > 0) {
-        $token_valid = true;
+    $user = $stmt->fetch();
+    
+    if ($user) {
+        $valid = true;
     } else {
-        $message = "الرابط غير صالح أو منتهي الصلاحية.";
+        $msg = "رابط استرجاع كلمة المرور غير صالح أو منتهي الصلاحية.";
     }
+} else {
+    $msg = "لم يتم توفير رابط صحيح.";
 }
 
-// معالجة تغيير كلمة المرور
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $token_valid) {
-    $password = $_POST['password'] ?? '';
-    if (strlen($password) < 8) {
-        $message = "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid) {
+    $new_pass = $_POST['password'] ?? '';
+    
+    if (strlen($new_pass) < 8) {
+        $msg = "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.";
     } else {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $update_stmt = $pdo->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE reset_token = ?");
-        if ($update_stmt->execute([$hashed_password, $token])) {
-            $message = "تم تغيير كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.";
-            $token_valid = false; // لإخفاء النموذج
+        $hashed = password_hash($new_pass, PASSWORD_DEFAULT);
+        
+        $update = $pdo->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?");
+        if ($update->execute([$hashed, $user['id']])) {
+            $msg = "تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.";
+            $valid = false; // لإخفاء الفورم
         } else {
-            $message = "حدث خطأ أثناء تغيير كلمة المرور.";
+            $msg = "حدث خطأ أثناء حفظ كلمة المرور.";
         }
     }
 }
@@ -36,35 +40,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $token_valid) {
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تعيين كلمة مرور جديدة | استوردلي</title>
-    <style>
-        body { font-family: 'Tajawal', sans-serif; background: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .reset-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
-        h2 { margin-top: 0; color: #333; }
-        input[type="password"] { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { background: #3b82f6; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; cursor: pointer; }
-        button:hover { background: #2563eb; }
-        .message { margin-bottom: 15px; color: #d97706; font-weight: bold; }
-        .success-message { color: #16a34a; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استعادة كلمة المرور | استوردلي</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #f9fafb; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Tajawal', sans-serif; }
+    .reset-card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+    .reset-card h2 { margin-bottom: 20px; color: #1f2937; }
+    .msg { margin-bottom: 20px; padding: 10px; border-radius: 8px; background: #eff6ff; color: #1d4ed8; font-weight: 600; font-size: 14px; }
+    .msg.error { background: #fef2f2; color: #dc2626; }
+    .msg.success { background: #ecfdf5; color: #059669; }
+    .form-group { margin-bottom: 15px; text-align: right; }
+    .form-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #4b5563; font-weight: 600; }
+    .form-group input { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+    .btn { background: #2563eb; color: #fff; width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .btn:hover { background: #1d4ed8; }
+    .back-link { display: inline-block; margin-top: 15px; color: #2563eb; text-decoration: none; font-size: 14px; }
+  </style>
 </head>
 <body>
-    <div class="reset-box">
-        <h2>تعيين كلمة مرور جديدة</h2>
-        <?php if (!empty($message)): ?>
-            <p class="message <?php echo strpos($message, 'بنجاح') !== false ? 'success-message' : ''; ?>"><?php echo htmlspecialchars($message); ?></p>
-        <?php endif; ?>
+  <div class="reset-card">
+    <h2>استعادة كلمة المرور</h2>
+    
+    <?php if ($msg): ?>
+      <div class="msg <?php echo strpos($msg, 'بنجاح') !== false ? 'success' : 'error'; ?>">
+        <?php echo $msg; ?>
+      </div>
+    <?php endif; ?>
 
-        <?php if ($token_valid): ?>
-        <form method="POST">
-            <input type="password" name="password" placeholder="أدخل كلمة المرور الجديدة" required>
-            <button type="submit">حفظ كلمة المرور</button>
-        </form>
-        <?php elseif(strpos($message, 'بنجاح') !== false): ?>
-            <a href="index.html" style="display:inline-block; margin-top:15px; color:#3b82f6; text-decoration:none;">العودة للصفحة الرئيسية</a>
-        <?php endif; ?>
-    </div>
+    <?php if ($valid): ?>
+      <form method="POST">
+        <div class="form-group">
+          <label>كلمة المرور الجديدة</label>
+          <input type="password" name="password" required minlength="8" placeholder="أدخل كلمة المرور الجديدة">
+        </div>
+        <button type="submit" class="btn">حفظ كلمة المرور</button>
+      </form>
+    <?php endif; ?>
+
+    <a href="index.html" class="back-link">العودة للصفحة الرئيسية</a>
+  </div>
 </body>
 </html>

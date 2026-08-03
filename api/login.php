@@ -18,8 +18,8 @@ if (empty($email) || empty($password)) {
 }
 
 try {
-    // جلب المستخدم بناءً على البريد الإلكتروني
-    $stmt = $pdo->prepare("SELECT id, name, email, password, role FROM users WHERE email = ?");
+    // جلب المستخدم بناءً على البريد الإلكتروني (بما في ذلك الحالة)
+    $stmt = $pdo->prepare("SELECT id, name, email, password, role, status FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -32,11 +32,19 @@ try {
 
         // التحقق من صحة كلمة المرور المشفرة
         if (password_verify($password, $user['password'])) {
+            
+            // التحقق من حالة الحساب (للزوار العاديين فقط)
+            if ($user['role'] !== 'admin' && isset($user['status']) && $user['status'] === 'pending') {
+                echo json_encode(['success' => false, 'message' => 'حسابك قيد المراجعة. سوف يتم التواصل معك قريباً لتفعيل الحساب.']);
+                exit;
+            }
+
             // بيانات صحيحة -> حفظ الجلسة
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_status'] = $user['status'] ?? 'active';
 
             echo json_encode([
                 'success' => true,
@@ -44,7 +52,8 @@ try {
                 'user' => [
                     'name' => $user['name'],
                     'email' => $user['email'],
-                    'role' => $user['role']
+                    'role' => $user['role'],
+                    'status' => $user['status'] ?? 'active'
                 ]
             ]);
         } else {

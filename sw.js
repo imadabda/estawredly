@@ -1,4 +1,4 @@
-const CACHE_NAME = 'estawredly-cache-v1';
+const CACHE_NAME = 'estawredly-cache-v7';
 const urlsToCache = [
   './',
   './index.html',
@@ -9,12 +9,12 @@ const urlsToCache = [
   './enhancements.css',
   './main.js',
   './store.js',
-  './products_db.js',
   './enhancements.js',
   './logo.jpg'
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -23,11 +23,32 @@ self.addEventListener('install', event => {
   );
 });
 
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
 self.addEventListener('fetch', event => {
+  // Bypass cache for API requests, POST requests, and the dynamic products db
+  if (event.request.method !== 'GET' || 
+      event.request.url.includes('/api/') || 
+      event.request.url.includes('products_db.js') ||
+      event.request.url.includes('admin.php')) {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Cache hit - return response
         if (response) {
           return response;
         }

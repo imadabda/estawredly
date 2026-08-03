@@ -15,24 +15,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if (!empty($email) && !empty($password)) {
-        try {
-            $stmt = $pdo->prepare("SELECT id, name, email, password, role FROM users WHERE email = ? AND role = 'admin'");
-            $stmt->execute([$email]);
-            $admin = $stmt->fetch();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("SELECT id, name, email, password, role FROM users WHERE email = ? AND role = 'admin'");
+                $stmt->execute([$email]);
+                $admin = $stmt->fetch();
 
-            if ($admin && password_verify($password, $admin['password'])) {
-                $_SESSION['user_id'] = $admin['id'];
-                $_SESSION['user_name'] = $admin['name'];
-                $_SESSION['user_email'] = $admin['email'];
-                $_SESSION['user_role'] = $admin['role'];
+                if ($admin && password_verify($password, $admin['password'])) {
+                    $_SESSION['user_id'] = $admin['id'];
+                    $_SESSION['user_name'] = $admin['name'];
+                    $_SESSION['user_email'] = $admin['email'];
+                    $_SESSION['user_role'] = $admin['role'];
+
+                    header("Location: admin.php");
+                    exit;
+                } else {
+                    $error = "بيانات الدخول غير صحيحة أو أنك لا تملك صلاحية الإدارة.";
+                }
+            } catch (PDOException $e) {
+                $error = "خطأ في الاتصال بقاعدة البيانات.";
+            }
+        } else {
+            // Local fallback when MySQL is not available (for local testing only)
+            if ($email === 'admin@estawredly.com' && $password === 'admin123') {
+                $_SESSION['user_id'] = 1;
+                $_SESSION['user_name'] = 'المدير العام (محلي)';
+                $_SESSION['user_email'] = 'admin@estawredly.com';
+                $_SESSION['user_role'] = 'admin';
 
                 header("Location: admin.php");
                 exit;
             } else {
-                $error = "بيانات الدخول غير صحيحة أو أنك لا تملك صلاحية الإدارة.";
+                $error = "قاعدة البيانات غير متصلة محلياً. استخدم الايميل admin@estawredly.com وكلمة المرور admin123 للدخول المحلي.";
             }
-        } catch (PDOException $e) {
-            $error = "خطأ في الاتصال بقاعدة البيانات.";
         }
     } else {
         $error = "يرجى إدخال البريد الإلكتروني وكلمة المرور.";
@@ -45,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل دخول الإدارة | استوردلي</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Tajawal', sans-serif; background: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }

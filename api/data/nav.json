@@ -1,0 +1,71 @@
+[
+    {
+        "id": "nav_home",
+        "title": "الرئيسية",
+        "url": "index.html",
+        "type": "link",
+        "active": true
+    },
+    {
+        "id": "nav_flat",
+        "title": "مماسح مسطحة",
+        "url": "shop.html",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "ممسحة بعصارة مدمجة",
+                "url": "shop.html?cat=flat"
+            },
+            {
+                "title": "ممسحة رذاذ (Spray)",
+                "url": "shop.html?cat=flat"
+            },
+            {
+                "title": "مماسح مسطحة عادية",
+                "url": "shop.html?cat=flat"
+            }
+        ]
+    },
+    {
+        "id": "nav_micro",
+        "title": "مماسح مايكروفايبر",
+        "url": "shop.html",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "مماسح دوارة (Spin Mops)",
+                "url": "shop.html?cat=microfiber"
+            },
+            {
+                "title": "مماسح بخيوط",
+                "url": "shop.html?cat=microfiber"
+            }
+        ]
+    },
+    {
+        "id": "nav_cotton",
+        "title": "مماسح قطنية",
+        "url": "shop.html?cat=cotton",
+        "type": "link"
+    },
+    {
+        "id": "nav_refills",
+        "title": "قطع غيار",
+        "url": "shop.html?cat=refills",
+        "type": "link"
+    },
+    {
+        "id": "nav_wholesale",
+        "title": "عروض الجملة",
+        "url": "shop.html?cat=wholesale",
+        "type": "link",
+        "badge": "🔥",
+        "cssClass": "nav-a--sale"
+    },
+    {
+        "id": "nav_1785333520915",
+        "title": "قسم جديد",
+        "url": "shop.html",
+        "type": "link"
+    }
+]

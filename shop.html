@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>استوردلي | عالم التنظيف المتكامل - المتجر</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
   <meta name="description" content="تسوق من آلاف المنتجات المستوردة في جميع الفئات. أفضل الأسعار مع ضمان الجودة والشحن السريع." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=13" />
-  <link rel="stylesheet" href="enhancements.css?v=13" />
+  <link rel="stylesheet" href="style.css?v=1785331847" />
+  <link rel="stylesheet" href="enhancements.css?v=1785331847" />
   <style>
     /* Shop-specific styles */
     .shop-hero {
@@ -179,8 +180,7 @@
       .filter-sidebar { position: static; }
     }
   </style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link rel="manifest" href="manifest.json" />
+<link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
   <link rel="apple-touch-icon" href="logo.jpg" />
 </head>
@@ -203,14 +203,7 @@
         <a href="#">التواصل</a>
         <a href="#">العروض</a>
       </nav>
-      <div class="hdr-user">
-        <a href="#" id="btn-login" class="hdr-link-btn">تسجيل دخول</a>
-        <span>|</span>
-        <a href="#" id="btn-register" class="hdr-link-btn">حساب جديد</a>
-        <span>|</span>
-        <a href="admin.html" class="hdr-link-btn" style="color:#f59e0b;font-weight:700;" title="لوحة التحكم">⚙️ الإدارة</a>
       </div>
-    </div>
   </div>
 
   <div class="hdr-main">
@@ -249,6 +242,9 @@
 
       <!-- Actions -->
       <div class="hdr-actions">
+                <button class="hdr-icon-btn" id="auth-btn" title="حسابي" onclick="openModal('auth')">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
         <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           <span class="badge" id="wishlist-count">0</span>
@@ -268,37 +264,7 @@
   <nav class="main-nav" id="main-nav">
     <div class="nav-close-btn" onclick="document.getElementById('main-nav').classList.remove('open')">✕ إغلاق</div>
     <div class="container nav-inner">
-      <ul class="nav-list">
-        <li><a href="index.html" class="nav-a active">الرئيسية</a></li>
-        <li class="nav-dd">
-          <a href="shop.html" class="nav-a">مماسح مسطحة ▾</a>
-          <div class="dd-panel">
-            <div class="dd-col"><h5>بأنظمة العصر</h5>
-              <a href="shop.html?cat=flat">ممسحة بعصارة مدمجة</a>
-              <a href="shop.html?cat=flat">ممسحة رذاذ (Spray)</a>
-            </div>
-            <div class="dd-col"><h5>تقليدية</h5>
-              <a href="shop.html?cat=flat">مماسح مسطحة عادية</a>
-            </div>
-          </div>
-        </li>
-        <li class="nav-dd">
-          <a href="shop.html" class="nav-a">مماسح مايكروفايبر ▾</a>
-          <div class="dd-panel">
-            <div class="dd-col"><h5>ممسحة المايكروفايبر</h5>
-              <a href="shop.html?cat=microfiber">مماسح دوارة (Spin Mops)</a>
-              <a href="shop.html?cat=microfiber">مماسح بخيوط</a>
-            </div>
-          </div>
-        </li>
-        <li><a href="shop.html?cat=cotton" class="nav-a">مماسح قطنية</a></li>
-        <li><a href="shop.html?cat=refills" class="nav-a">قطع غيار</a></li>
-        <li><a href="shop.html" class="nav-a nav-a--sale">🔥 عروض الجملة</a></li>
-        <li class="mobile-only-link"><hr></li>
-        <li class="mobile-only-link"><a href="#" class="nav-a">👤 تسجيل دخول</a></li>
-        <li class="mobile-only-link"><a href="#" class="nav-a">✨ حساب جديد</a></li>
-        <li class="mobile-only-link"><a href="admin.html" class="nav-a" style="color:var(--gold);">⚙️ لوحة الإدارة</a></li>
-      </ul>
+      <ul class="nav-list"></ul>
     </div>
   </nav>
 </header>
@@ -328,28 +294,28 @@
           </div>
           <div class="filter-options">
             <label class="filter-option">
-              <input type="checkbox" checked /> أدوات تنظيف <span class="filter-count">5,200</span>
+              <input type="checkbox" value="squeegees" /> قشاطات <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> عروض خاصة <span class="filter-count">3,800</span>
+              <input type="checkbox" value="brooms" /> مكانس <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> سيارات ومواصلات <span class="filter-count">2,100</span>
+              <input type="checkbox" value="sponges" /> ليفة جلي <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> المماسح بخاخ <span class="filter-count">4,500</span>
+              <input type="checkbox" value="loofahs" /> ليف حمام <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> المجوهرات <span class="filter-count">1,900</span>
+              <input type="checkbox" value="scissors" /> مقصات <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> الحقائب <span class="filter-count">2,600</span>
+              <input type="checkbox" value="personal_care" /> عناية شخصية <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> البناء والعقارات <span class="filter-count">3,200</span>
+              <input type="checkbox" value="dusters" /> منفضة غبار <span class="filter-count"></span>
             </label>
             <label class="filter-option">
-              <input type="checkbox" /> الأمن والحماية <span class="filter-count">950</span>
+              <input type="checkbox" value="microfiber" /> مايكروفايبر <span class="filter-count"></span>
             </label>
           </div>
         </div>
@@ -392,15 +358,15 @@
       <div class="shop-main">
         <!-- Category Chips -->
         <div class="cat-chips">
-          <span class="cat-chip active">الكل</span>
-          <span class="cat-chip">👔 مماسح</span>
-          <span class="cat-chip">📱 عروض خاصة</span>
-          <span class="cat-chip">🚗 سيارات</span>
-          <span class="cat-chip">🛋️ مماسح بخاخ</span>
-          <span class="cat-chip">💎 مجوهرات</span>
-          <span class="cat-chip">👜 حقائب</span>
-          <span class="cat-chip">🔐 أمن</span>
-          <span class="cat-chip">🏗️ بناء</span>
+          <span class="cat-chip active" onclick="window.location='shop.html'">الكل</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=squeegees'">🧹 قشاطات</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=brooms'">🧹 مكانس</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=sponges'">🧽 ليفة جلي</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=loofahs'">🛁 ليف حمام</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=scissors'">✂️ مقصات</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=personal_care'">🧴 عناية شخصية</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=dusters'">🪶 منفضة غبار</span>
+          <span class="cat-chip" onclick="window.location='shop.html?cat=microfiber'">✨ مايكروفايبر</span>
         </div>
 
         <!-- Toolbar -->
@@ -510,44 +476,7 @@
   <div class="qv-inner" id="qv-inner"></div>
 </div>
 
-<!-- ═══════════════ LOGIN MODAL ═══════════════ -->
-<div class="modal-mask" id="auth-mask"></div>
-<div class="auth-modal" id="auth-modal">
-  <button class="qv-close" id="auth-close">✕</button>
-  <div class="auth-tabs">
-    <button class="auth-tab active" id="tab-in">دخول</button>
-    <button class="auth-tab" id="tab-up">تسجيل</button>
-  </div>
-  <div id="auth-login">
-    <h2>مرحبًا بعودتك 👋</h2>
-    <form id="login-form">
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="login-email" placeholder="email@example.com"/></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="login-password" placeholder="••••••••"/></div>
-      <a href="#" class="forgot">نسيت كلمة المرور؟</a>
-      <button type="submit" class="btn btn-primary w-full">دخول</button>
-    </form>
-    <div class="or-sep"><span>أو</span></div>
-    <button type="button" id="google-login-btn" onclick="handleGoogleLogin()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;background:#fff;color:#333;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:16px;transition:.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      تسجيل الدخول بـ Google
-    </button>
-  </div>
-  <div id="auth-signup" style="display:none">
-    <h2>إنشاء حساب جديد 🎉</h2>
-    <form id="signup-form">
-      <div class="field"><label>الاسم الكامل</label><input type="text" id="signup-name" placeholder="الاسم الكامل"/></div>
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="signup-email" placeholder="email@example.com"/></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="signup-password" placeholder="8 أحرف على الأقل"/></div>
-      <div class="field"><label>رقم الهاتف (اختياري)</label><input type="tel" id="signup-phone" placeholder="05X-XXXXXXX"/></div>
-      <button type="button" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border:2px solid #e0e0e0;border-radius:12px;background:#fff;color:#333;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:16px;transition:.2s;" onclick="handleGoogleLogin()" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        تسجيل بـ Google
-      </button>
-      <div style="text-align:center;color:#999;font-size:13px;margin-bottom:12px;">── أو ──</div>
-      <button type="submit" class="btn btn-primary w-full">إنشاء الحساب</button>
-    </form>
-  </div>
-</div>
+
 
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div id="toast-wrap"></div>
@@ -555,9 +484,10 @@
 <!-- ═══════════════ BACK TO TOP ═══════════════ -->
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="products_db.js?v=13"></script>
-  <script src="store.js?v=13"></script>
-  <script src="main.js?v=13"></script>
+<script>document.write("\x3cscript src=\x22products_db.js?v=" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
+  <script src="store.js?v=1785331847"></script>
+  <script src="auth.js?v=1785331847"></script>
+<script src="main.js?v=1785331847"></script>
   <script>
     // Shop-specific script
     document.querySelectorAll('.cat-chip').forEach(chip => {
@@ -575,7 +505,7 @@
     });
 
     // Load products from Store and handle URL params
-    document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('authLoaded', async () => {
       const params = new URLSearchParams(location.search);
       const q   = params.get('q')   || '';
       const cat = params.get('cat') || '';
@@ -595,34 +525,61 @@
           (p.cat  && p.cat.toLowerCase().includes(ql))
         );
       }
+      
       if (cat) {
-        const catMap = {
-          flat: ['مسطحة', 'flat'],
-          microfiber: ['مايكرو', 'microfiber'],
-          cotton: ['قطن', 'cotton'],
-          refills: ['غيار', 'refill'],
-        };
-        const terms = catMap[cat] || [cat];
-        filtered = products.filter(p => terms.some(t =>
-          (p.cat || '').toLowerCase().includes(t.toLowerCase()) ||
-          (p.name || '').toLowerCase().includes(t.toLowerCase())
-        ));
-      }
-      if (sale) {
-        filtered = products.filter(p => p.badge === 'sale' || p.badge === 'hot');
+        try {
+            const res = await fetch('api/get_icons.php?t=' + Date.now());
+            const iconMapping = await res.json();
+            
+            // If admin explicitly mapped products to this icon, show ONLY those products!
+            if (iconMapping[cat] && iconMapping[cat].length > 0) {
+                filtered = products.filter(p => iconMapping[cat].includes(String(p.id)));
+            } else {
+                // Fallback to text matching if no mapping exists, OR if the category is from Navbar (where cat is arabic text)
+                const catMap = {
+                  flat: ['مسطحة', 'flat'],
+                  microfiber: ['مايكرو', 'microfiber', 'مايكروفايبر'],
+                  cotton: ['قطن', 'cotton'],
+                  refills: ['غيار', 'refill', 'قطع غيار'],
+                  squeegees: ['قشاطات'],
+                  brooms: ['مكانس'],
+                  sponges: ['ليفة جلي', 'ليفة'],
+                  loofahs: ['ليف حمام'],
+                  scissors: ['مقصات'],
+                  personal_care: ['عناية شخصية'],
+                  dusters: ['منفضة غبار'],
+                  cosmetics: ['كورمتكس', 'مستحضرات تجميل'],
+                  scales: ['موازين'],
+                  party: ['حفلات', 'أعياد ميلاد'],
+                  foil: ['قصدير'],
+                  plastic: ['بلاستيك'],
+                  nylon_bags: ['أكياس نايلون'],
+                  batteries: ['بطاريات'],
+                  wholesale: ['عروض الجملة']
+                };
+                const terms = catMap[cat] || [cat];
+                filtered = products.filter(p => terms.some(t =>
+                  (p.cat || '').toLowerCase().includes(t.toLowerCase()) ||
+                  (p.name || '').toLowerCase().includes(t.toLowerCase())
+                ));
+            }
+        } catch (e) {
+            console.error("Error loading icon mappings:", e);
+            filtered = products.filter(p => (p.cat || '').toLowerCase().includes(cat.toLowerCase()));
+        }
       }
 
-      const grid = document.getElementById('products-grid');
-      if (grid && typeof makeCard !== 'undefined') {
-        if (filtered.length) {
-          grid.innerHTML = filtered.slice(0, 48).map(p => makeCard(p)).join('');
-          grid.querySelectorAll('.p-card').forEach((c, i) => {
-            c.style.opacity = '0'; c.style.transform = 'translateY(16px)';
-            setTimeout(() => { c.style.transition = '.3s ease'; c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }, i * 60 + 50);
-          });
+      // Render the products
+      if (filtered.length > 0) {
+        if (typeof renderGrid === 'function') {
+          renderGrid('products-grid', filtered);
         } else {
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5)">🔍 لم يتم العثور على نتائج</div>';
+          const grid = document.getElementById('products-grid');
+          grid.innerHTML = filtered.map(p => typeof makeCard === 'function' ? makeCard(p) : '').join('');
         }
+      } else {
+          const grid = document.getElementById('products-grid');
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5)">🔍 لم يتم العثور على نتائج</div>';
       }
 
       // Update search input if query present
@@ -634,7 +591,7 @@
       if (countEl) countEl.innerHTML = `عرض <strong>${filtered.length}</strong> من <strong>${products.length}</strong> منتج`;
     });
   </script>
-<script src="enhancements.js?v=11"></script>
+<script src="enhancements.js?v=1785331847"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

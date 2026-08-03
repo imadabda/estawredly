@@ -4,7 +4,6 @@
    تحسينات تفاعلية احترافية
    ====================================== */
 
-/* ══════════════════════════════════════
    PAGE LOADER
    ══════════════════════════════════════ */
 (function initLoader() {
@@ -30,7 +29,6 @@
   setTimeout(() => { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 500); }, 2500);
 })();
 
-/* ══════════════════════════════════════
    CURSOR (desktop only)
    ══════════════════════════════════════ */
 (function initCursor() {
@@ -64,7 +62,6 @@
   document.addEventListener('mouseenter', () => { dot.style.opacity='1'; ring.style.opacity='1'; });
 })();
 
-/* ══════════════════════════════════════
    SCROLL REVEAL
    ══════════════════════════════════════ */
 (function initReveal() {
@@ -97,7 +94,6 @@
   elements.forEach(el => io.observe(el));
 })();
 
-/* ══════════════════════════════════════
    HEADER SCROLL SHADOW
    ══════════════════════════════════════ */
 (function initHeaderScroll() {
@@ -115,7 +111,6 @@
   }, { passive: true });
 })();
 
-/* ══════════════════════════════════════
    HERO SLIDER PROGRESS BAR
    ══════════════════════════════════════ */
 (function initSliderProgress() {
@@ -154,7 +149,6 @@
   setInterval(animateProgress, SLIDE_DURATION);
 })();
 
-/* ══════════════════════════════════════
    SMOOTH COUNTER ANIMATION
    ══════════════════════════════════════ */
 (function initCounters() {
@@ -186,7 +180,6 @@
   counters.forEach(c => { c.dataset.count = parseFloat(c.textContent); io.observe(c); });
 })();
 
-/* ══════════════════════════════════════
    TILT EFFECT on product cards
    ══════════════════════════════════════ */
 (function initTilt() {
@@ -204,7 +197,6 @@
   });
 })();
 
-/* ══════════════════════════════════════
    SMOOTH ANCHOR SCROLL
    ══════════════════════════════════════ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -217,7 +209,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-/* ══════════════════════════════════════
    IMAGE LAZY LOAD with fade
    ══════════════════════════════════════ */
 (function initLazyImages() {
@@ -230,7 +221,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-/* ══════════════════════════════════════
    PROMO FLOATING SHAPES
    ══════════════════════════════════════ */
 (function initPromoShapes() {
@@ -241,7 +231,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-/* ══════════════════════════════════════
    SECTION TITLE LEFT BAR (RTL)
    ══════════════════════════════════════ */
 (function fixSectionTitles() {
@@ -250,7 +239,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 })();
 
-/* ══════════════════════════════════════
    PRODUCT IMAGE FALLBACK
    ══════════════════════════════════════ */
 document.querySelectorAll('.p-card-img img, .ci-img img').forEach(img => {
@@ -264,7 +252,6 @@ document.querySelectorAll('.p-card-img img, .ci-img img').forEach(img => {
   });
 });
 
-/* ══════════════════════════════════════
    KEYBOARD NAVIGATION – ESC closes modals
    ══════════════════════════════════════ */
 document.addEventListener('keydown', e => {
@@ -273,7 +260,6 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.modal-mask.open').forEach(m => m.click());
 });
 
-/* ══════════════════════════════════════
    SEARCH SHORTCUT (/ key)
    ══════════════════════════════════════ */
 document.addEventListener('keydown', e => {
@@ -284,7 +270,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ══════════════════════════════════════
    TOUCH SWIPE on hero slider
    ══════════════════════════════════════ */
 (function initSwipe() {
@@ -300,7 +285,6 @@ document.addEventListener('keydown', e => {
   }, { passive: true });
 })();
 
-/* ══════════════════════════════════════
    RIPPLE on buttons
    ══════════════════════════════════════ */
 (function initRipple() {
@@ -332,7 +316,6 @@ document.addEventListener('keydown', e => {
   }
 })();
 
-/* ══════════════════════════════════════
    RE-APPLY cursor expand on dynamically
    rendered product cards
    ══════════════════════════════════════ */

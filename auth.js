@@ -1,10 +1,73 @@
-// ══════════════════════════════════════════════════
 // Authentication Logic (PHP/MySQL)
-// ══════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Check if user is logged in
+    
+    // Inject auth modal if it doesn't exist
+    if (!document.getElementById('auth-modal')) {
+        const authHtml = `
+        <div class="modal-mask" id="auth-mask"></div>
+        <div class="auth-modal" id="auth-modal">
+            <button class="auth-close" onclick="closeModal('auth')">&times;</button>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-target="login">تسجيل الدخول</div>
+                <div class="auth-tab" data-target="register">إنشاء حساب</div>
+            </div>
+            
+            <div class="auth-forms">
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="field">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="login-email" required placeholder="أدخل بريدك الإلكتروني">
+                    </div>
+                    <div class="field">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="login-password" required placeholder="أدخل كلمة المرور">
+                    </div>
+                    <a href="#" class="forgot">نسيت كلمة المرور؟</a>
+                    <button type="submit" class="btn btn-primary w-full">تسجيل الدخول</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="signup-form" class="auth-form">
+                    <div class="field">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="signup-name" required placeholder="الاسم الكامل">
+                    </div>
+                    <div class="field">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="signup-email" required placeholder="أدخل بريدك الإلكتروني">
+                    </div>
+                    <div class="field">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="signup-password" required minlength="8" placeholder="أدخل كلمة المرور (8 أحرف على الأقل)">
+                    </div>
+                    <div class="field">
+                        <label>رقم الجوال <span style="color:red">*</span></label>
+                        <input type="tel" id="signup-phone" required placeholder="أدخل رقم الجوال (ضروري)">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">إنشاء حساب</button>
+                </form>
+            </div>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', authHtml);
+        
+        // Tab switching logic for the modal
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.target === 'login' ? 'login-form' : 'signup-form').classList.add('active');
+            });
+        });
+        
+        // Also add logic to close modal when clicking the mask
+        document.getElementById('auth-mask').addEventListener('click', () => closeModal('auth'));
+    }
+// Check if user is logged in
     checkAuthStatus();
 
     // 1. Handle Login
@@ -25,8 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (data.success) {
                     showToast('تم تسجيل الدخول بنجاح! 👋', 'success');
+                    if (data.user && data.user.role === 'admin') {
+                        window.location.href = 'admin.php';
+                        return;
+                    }
                     updateUIAfterLogin(data.user);
                     if(window.closeModal) closeModal('auth');
+                    // Reload the page so the prices/locked products update
+                    setTimeout(() => window.location.reload(), 500);
                 } else {
                     showToast(data.message, 'error');
                 }
@@ -55,8 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
                 
                 if (data.success) {
-                    showToast('تم إنشاء الحساب بنجاح! 🎉', 'success');
-                    updateUIAfterLogin(data.user);
+                    showToast(data.message || 'تم إنشاء الحساب بنجاح! 🎉', 'success');
                     if(window.closeModal) closeModal('auth');
                 } else {
                     showToast(data.message, 'error');
@@ -99,21 +167,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+window.authUser = null;
+
 // Check auth status on page load
 async function checkAuthStatus() {
     try {
-        const res = await fetch('api/check_auth.php');
+        const res = await fetch('api/check_auth.php?t=' + Date.now());
         const data = await res.json();
         if (data.loggedIn) {
+            window.authUser = data.user;
             updateUIAfterLogin(data.user);
+        } else {
+            window.authUser = null;
         }
     } catch(err) {
         console.log("Not logged in");
+        window.authUser = null;
     }
+    window.dispatchEvent(new Event('authLoaded'));
 }
 
 // Update UI
 function updateUIAfterLogin(user) {
+    window.authUser = user;
+    window.dispatchEvent(new Event('authLoaded'));
     const hdrUser = document.querySelector('.hdr-user');
     if(hdrUser) {
         hdrUser.innerHTML = `
@@ -138,52 +215,34 @@ async function logoutUser() {
 // 4. Handle Google Login
 const GOOGLE_CLIENT_ID = '244006724557-a845r5ljc7rutv6hht4m1kr537de3r42.apps.googleusercontent.com';
 
-window.onload = function () {
-    // Note: The google GIS script must be loaded. We rely on the script tag in index.html.
-    if(typeof google !== 'undefined' && google.accounts) {
-        google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleResponse
-        });
+// Google Login code removed as per user request
 
-        const loginContainer = document.getElementById('google-login-container');
-        if(loginContainer) {
-            google.accounts.id.renderButton(
-                loginContainer,
-                { theme: "outline", size: "large", width: 300, text: "signin_with" }
-            );
-        }
-
-        const signupContainer = document.getElementById('google-signup-container');
-        if(signupContainer) {
-            google.accounts.id.renderButton(
-                signupContainer,
-                { theme: "outline", size: "large", width: 300, text: "signup_with" }
-            );
-        }
-
-        // Optional: Also display the One Tap dialog
-        // google.accounts.id.prompt();
+// ----------------------------------------------------
+// Toast Notification System
+// ----------------------------------------------------
+function showToast(msg, type = 'success') {
+    let container = document.getElementById('toast-container');
+    if(!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
+        document.body.appendChild(container);
     }
-};
-
-async function handleGoogleResponse(response) {
-    try {
-        const res = await fetch('api/google_auth.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_token: response.credential })
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-            showToast('تم تسجيل الدخول بحساب جوجل بنجاح! 👋', 'success');
-            updateUIAfterLogin(data.user);
-            if(window.closeModal) closeModal('auth');
-        } else {
-            showToast(data.message, 'error');
-        }
-    } catch (err) {
-        showToast('حدث خطأ في الاتصال بالسيرفر', 'error');
-    }
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `background:${type==='success'?'#10b981':'#ef4444'};color:#fff;padding:12px 24px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.15);opacity:0;transform:translateY(20px);transition:all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);`;
+    toast.textContent = msg;
+    
+    container.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    });
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
