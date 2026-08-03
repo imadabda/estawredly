@@ -16,9 +16,9 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<script src="products_db.js?v=1785794628900<?= time() ?>">
+<script src="products_db.js?v=1785796006758<?= time() ?>">
 </script>
-<script src="store.js?v=1785794628900">
+<script src="store.js?v=1785796006758">
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -918,7 +918,7 @@ tr:last-child td{border-bottom:none}
             <h1 class="page-title">السلايدر الرئيسي</h1>
             <p class="page-sub">تعديل صور وعناوين الصفحة الرئيسية</p>
           </div>
-          <button class="btn-add" onclick="showToast('💡 قريباً: إضافة شريحة جديدة')">+ شريحة جديدة</button>
+          <div><button class="btn-outline" onclick="adminSliders.addSlide()" style="background:transparent; margin-left:10px;">+ شريحة جديدة</button><button class="btn-add" onclick="adminSliders.save()">💾 حفظ السلايدر</button></div>
         </div>
         <div id="hero-slides-list" style="display:flex;flex-direction:column;gap:16px"></div>
       </div>
@@ -1153,11 +1153,6 @@ const NOTIFS = [
   {icon:'📦',color:'rgba(16,185,129,.15)', title:'206 منتج في المتجر', sub:'جميع المنتجات محملة من قاعدة البيانات'},
 ];
 
-const HERO_SLIDES = [
-  {title:'كل ما تحتاجه في مكان واحد', sub:'تشكيلة 2025', img:'hero_cleaning1.jpg'},
-  {title:'مماسح باحترافية عالية', sub:'أفضل المنتجات', img:'hero_cleaning2.jpg'},
-  {title:'جودة وسعر لا يُنافَسان', sub:'توفير حقيقي', img:'hero_cleaning3.jpg'},
-];
 
 const CAT_DATA = [
   {name:'مماسح مسطحة', icon:'🧹', count:0, sales:0},
@@ -1207,7 +1202,10 @@ function showPage(id, el) {
   if (id === 'customers') renderCustomers();
   if (id === 'media')    renderMedia();
   if (id === 'hero')     renderHeroEditor();
+  
+  if (id === 'hero')  adminSliders.load();
   if (id === 'banners')  adminBanners.load();
+
   if (id === 'categories') renderCategories();
   if (id === 'notifications') renderNotifs();
   if (id === 'analytics') renderBigChart();
@@ -1872,30 +1870,6 @@ function handleBulkUpload(input) {
   showToast(`✅ تم رفع ${files.length} صورة`);
 }
 
-function renderHeroEditor() {
-  const el = document.getElementById('hero-slides-list');
-  if (!el || el.dataset.rendered) return;
-  el.innerHTML = HERO_SLIDES.map((s,i)=>`
-    <div class="setting-card" style="display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start">
-      <div style="background:var(--bg3);border-radius:14px;overflow:hidden;height:120px">
-        <img src="${s.img}" alt="" style="width:100%;height:100%;object-fit:contain"/>
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <span class="chip chip-blue">شريحة ${i+1}</span>
-          <label class="toggle" style="margin-right:auto"><input type="checkbox" checked/><div class="toggle-slider"></div></label>
-        </div>
-        <div class="field" style="margin-bottom:8px"><label>العنوان الرئيسي</label><input type="text" value="${s.title}"/></div>
-        <div class="field" style="margin-bottom:8px"><label>العنوان الثانوي</label><input type="text" value="${s.sub}"/></div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn-save" onclick="showToast('✅ تم حفظ الشريحة ${i+1}')" style="padding:8px 16px;font-size:12px">حفظ</button>
-          <button class="btn-outline" onclick="showToast('⬆️ تم رفع صورة جديدة')" style="font-size:12px">تغيير الصورة</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  el.dataset.rendered='1';
-}
 
 function renderCategories() {
   const grid = document.getElementById('cat-grid');
@@ -2227,7 +2201,114 @@ function closeOrderModal() {
 // ==========================================
 // BANNERS MANAGER
 // ==========================================
+
+const adminSliders = {
+    slides: [],
+    
+    async load() {
+        try {
+            const res = await fetch('api/get_sliders.php');
+            this.slides = await res.json();
+            this.render();
+        } catch(e) {
+            console.error('Failed to load sliders', e);
+        }
+    },
+    
+    render() {
+        const container = document.getElementById('hero-slides-list');
+        if (!container) return;
+        
+        if (!this.slides || this.slides.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:var(--text3);">لا يوجد شرائح حالياً.</div>';
+            return;
+        }
+        
+        container.innerHTML = this.slides.map((s, i) => `
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:15px; display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:5px;">
+                    <h3 style="margin-bottom:0;">شريحة رقم ${i+1}</h3>
+                    <button onclick="adminSliders.removeSlide(${i})" style="background:red; color:white; border:none; border-radius:4px; cursor:pointer; padding:4px 8px; font-size:12px;">حذف</button>
+                </div>
+                
+                <label style="font-size:12px; color:var(--text2);">صورة الخلفية (رابط)</label>
+                <input type="text" value="${s.img || ''}" onchange="adminSliders.update(${i}, 'img', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                
+                <label style="font-size:12px; color:var(--text2);">الشارة (Tag)</label>
+                <input type="text" value="${s.tag || ''}" onchange="adminSliders.update(${i}, 'tag', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                
+                <label style="font-size:12px; color:var(--text2);">العنوان الرئيسي (استخدم &lt;br/&gt; للسطر الجديد و &lt;em&gt; للكلمات المميزة)</label>
+                <input type="text" value="${(s.title || '').replace(/"/g, '&quot;')}" onchange="adminSliders.update(${i}, 'title', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                
+                <label style="font-size:12px; color:var(--text2);">الوصف والتفاصيل</label>
+                <input type="text" value="${s.desc || ''}" onchange="adminSliders.update(${i}, 'desc', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="font-size:12px; color:var(--text2);">زر 1: النص</label>
+                        <input type="text" value="${s.btn1_text || ''}" onchange="adminSliders.update(${i}, 'btn1_text', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:var(--text2);">زر 1: الرابط</label>
+                        <input type="text" value="${s.btn1_link || ''}" onchange="adminSliders.update(${i}, 'btn1_link', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                    </div>
+                </div>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="font-size:12px; color:var(--text2);">زر 2: النص</label>
+                        <input type="text" value="${s.btn2_text || ''}" onchange="adminSliders.update(${i}, 'btn2_text', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="font-size:12px; color:var(--text2);">زر 2: الرابط</label>
+                        <input type="text" value="${s.btn2_link || ''}" onchange="adminSliders.update(${i}, 'btn2_link', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    },
+    
+    update(index, field, value) {
+        this.slides[index][field] = value;
+    },
+    
+    addSlide() {
+        this.slides.push({
+            img: '', tag: '', title: '', desc: '', 
+            btn1_text: 'تسوق الآن', btn1_link: 'shop.html', btn1_class: 'btn btn-primary btn-lg',
+            btn2_text: '', btn2_link: '', btn2_class: ''
+        });
+        this.render();
+    },
+    
+    removeSlide(index) {
+        if(confirm('هل أنت متأكد من حذف هذه الشريحة؟')) {
+            this.slides.splice(index, 1);
+            this.render();
+        }
+    },
+    
+    async save() {
+        try {
+            const res = await fetch('api/save_sliders.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.slides)
+            });
+            const data = await res.json();
+            if(data.success) {
+                alert('✅ تم حفظ السلايدر بنجاح!');
+            } else {
+                alert('❌ ' + data.message);
+            }
+        } catch (e) {
+            alert('❌ فشل الاتصال بالخادم!');
+        }
+    }
+};
+
 const adminBanners = {
+
     banners: [],
     
     async load() {
