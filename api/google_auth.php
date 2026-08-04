@@ -38,11 +38,17 @@ $name = $google_data['name'];
 
 try {
     // البحث عن المستخدم باستخدام الإيميل أو الجوجل آي دي
-    $stmt = $pdo->prepare("SELECT id, name, email, role, google_id FROM users WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id, name, email, role, status, google_id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user) {
+        // التحقق من حالة الحساب (للزوار العاديين فقط)
+        if ($user['role'] !== 'admin' && isset($user['status']) && $user['status'] === 'pending') {
+            echo json_encode(['success' => false, 'message' => 'حسابك قيد المراجعة حالياً من قبل الإدارة.']);
+            exit;
+        }
+
         // إذا كان حسابه مسجلاً مسبقاً بالإيميل لكن بدون google_id، نحدثه
         if (empty($user['google_id'])) {
             $update_stmt = $pdo->prepare("UPDATE users SET google_id = ? WHERE id = ?");
@@ -51,31 +57,36 @@ try {
         
         $user_id = $user['id'];
         $user_role = $user['role'];
+        $user_status = $user['status'] ?? 'active';
+        
+        // تسجيل الدخول بنجاح للمستخدم الموجود والنشط
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_role'] = $user_role;
+        $_SESSION['user_status'] = $user_status;
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'تم تسجيل الدخول بنجاح عبر جوجل',
+            'user' => [
+                'name' => $name,
+                'email' => $email,
+                'role' => $user_role,
+                'status' => $user_status
+            ]
+        ]);
     } else {
-        // إنشاء حساب جديد عبر جوجل بوضع النشط تلقائياً
-        $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, google_id, role, status) VALUES (?, ?, ?, 'customer', 'active')");
+        // إنشاء حساب جديد عبر جوجل بوضع المعلق (pending) تلقائياً بانتظار تفعيل الأدمن
+        $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, google_id, role, status) VALUES (?, ?, ?, 'customer', 'pending')");
         $insert_stmt->execute([$name, $email, $google_id]);
-        $user_id = $pdo->lastInsertId();
-        $user_role = 'customer';
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'تم إنشاء حسابك عبر جوجل بنجاح وهو قيد المراجعة حالياً. ستتمكن من الدخول فور تفعيل حسابك من قبل الإدارة. 🎉',
+            'pending' => true
+        ]);
     }
-
-    // تسجيل الدخول بنجاح
-    $_SESSION['user_id'] = $user_id;
-    $_SESSION['user_name'] = $name;
-    $_SESSION['user_email'] = $email;
-    $_SESSION['user_role'] = $user_role;
-    $_SESSION['user_status'] = 'active';
-
-    echo json_encode([
-        'success' => true,
-        'message' => 'تم تسجيل الدخول بنجاح عبر جوجل',
-        'user' => [
-            'name' => $name,
-            'email' => $email,
-            'role' => $user_role,
-            'status' => 'active'
-        ]
-    ]);
 
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => 'خطأ في قاعدة البيانات']);

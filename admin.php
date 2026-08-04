@@ -2282,6 +2282,7 @@ function openModal(p) {
   document.getElementById('f-stock').value = (p && p.stock !== undefined) ? p.stock : '';
   document.getElementById('f-tab').value = p?.tab || 'all';
   document.getElementById('f-img-url').value = p?.img || '';
+  document.getElementById('f-desc').value = p?.desc || '';
 
   // Reset and load Images & Variants for this product
   let imagesArr = [];
@@ -2334,6 +2335,7 @@ function saveProduct() {
   const product = {
     id: editingId || (Date.now()),
     name,
+    desc: document.getElementById('f-desc').value.trim() || '',
     cat: document.getElementById('f-cat').value,
     badge: document.getElementById('f-badge').value,
     price,
@@ -2591,6 +2593,7 @@ window.deleteProductAdmin = function(id) {
 document.addEventListener('DOMContentLoaded', () => {
   fetchLiveOrders();
   loadAdminProducts();
+  if(typeof fetchMembershipRequests === "function") fetchMembershipRequests();
 });
 
 </script>

@@ -703,7 +703,7 @@ function render() {
 
   // Description
   const descEl = document.getElementById('prod-desc');
-  if(descEl) descEl.innerHTML = extra.desc || 'وصف المنتج غير متوفر.';
+  if(descEl) descEl.innerHTML = product.desc || extra.desc || 'وصف المنتج غير متوفر.';
 
   // Specs
   const specs = extra.specs || EXTRA.default.specs;
