@@ -16,9 +16,9 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<script src="products_db.js?v=1785802153537<?= time() ?>">
+<script src="products_db.js?v=1785802726140<?= time() ?>">
 </script>
-<script src="store.js?v=1785802153537">
+<script src="store.js?v=1785802726140">
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -552,6 +552,23 @@ tr:last-child td{border-bottom:none}
           </select>
         </div>
       </div>
+
+        <!-- Additional Images -->
+        <div class="field full" style="background:var(--bg); border:1px solid var(--border); padding:15px; border-radius:12px; margin:15px 0 0 0;">
+          <label style="font-weight:bold; color:var(--p); display:block; margin-bottom:10px;">🖼️ صور إضافية للمنتج</label>
+          <div id="additional-images-container" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;"></div>
+          <input type="url" id="f-new-img-url" placeholder="أدخل رابط صورة واضغط Enter..." onkeypress="if(event.key==='Enter'){event.preventDefault();addAdditionalImage(this.value);this.value='';}" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1); box-sizing:border-box;">
+          <button type="button" onclick="document.getElementById('img-file-multi').click()" style="margin-top:8px; width:100%; padding:10px; border:1px dashed var(--border); border-radius:8px; background:transparent; color:var(--text2); cursor:pointer;">+ رفع صورة من الجهاز</button>
+          <input type="file" id="img-file-multi" accept="image/*" style="display:none" onchange="addAdditionalImageBase64(this)"/>
+        </div>
+
+        <!-- Variants -->
+        <div class="field full" style="background:var(--bg); border:1px solid var(--border); padding:15px; border-radius:12px; margin:10px 0;">
+          <label style="font-weight:bold; color:var(--p); display:block; margin-bottom:10px;">🎨 خصائص المنتج (ألوان، مقاسات...)</label>
+          <div id="variants-container" style="display:flex; flex-direction:column; gap:12px; margin-bottom:10px;"></div>
+          <button type="button" onclick="addVariantField()" style="width:100%; padding:10px; border:1px dashed var(--border); border-radius:8px; background:transparent; color:var(--p); cursor:pointer; font-weight:bold;">+ إضافة خاصية جديدة</button>
+        </div>
+
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
