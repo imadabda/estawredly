@@ -69,10 +69,10 @@
 
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script>document.write("\x3cscript src=\x22products_db.js?v=1785803845471" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-  <script src="store.js?v=1785803845471"></script>
-  <link rel="stylesheet" href="style.css?v=1785803845471"/>
-  <link rel="stylesheet" href="enhancements.css?v=1785803845471"/>
+<script>document.write("\x3cscript src=\x22products_db.js?v=1785804552463" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
+  <script src="store.js?v=1785804552463"></script>
+  <link rel="stylesheet" href="style.css?v=1785804552463"/>
+  <link rel="stylesheet" href="enhancements.css?v=1785804552463"/>
   <style>
   .prod-page { padding-top: 32px; padding-bottom: 64px; }
 
@@ -462,13 +462,13 @@
         </div>
 
         <!-- Color -->
-        <div id="color-section">
+        <div id="color-section" style="display:none;">
           <div class="prod-option-label">اللون: <span id="selected-color">—</span></div>
           <div class="prod-colors" id="prod-colors"></div>
         </div>
 
         <!-- Size -->
-        <div id="size-section">
+        <div id="size-section" style="display:none;">
           <div class="prod-option-label">
             المقاس: <span id="selected-size">—</span>
             <a href="#" style="font-size:11px;color:var(--p);margin-right:auto;" onclick="return false">دليل المقاسات</a>
@@ -617,8 +617,8 @@
 <div id="toast-wrap"></div>
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="auth.js?v=1785803845471"></script>
-<script src="main.js?v=1785803845471"></script>
+<script src="auth.js?v=1785804552463"></script>
+<script src="main.js?v=1785804552463"></script>
 <script>
 const ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
 
@@ -795,30 +795,28 @@ function render() {
     variantsArea.style.display = 'none';
     // Fall back to static color/size from EXTRA
     if (extra.colors) {
-      const colorOpts = document.getElementById('color-opts');
-      if(colorOpts) {
+      const colorSec = document.getElementById('color-section');
+      const colorOpts = document.getElementById('prod-colors');
+      if(colorOpts && colorSec) {
           colorOpts.innerHTML = extra.colors.map((c, i) => `
             <div class="color-dot ${i===0?'active':''}" style="background:${c}" onclick="selectColor(this, '${extra.colorNames[i]}')"></div>
           `).join('');
           currentColor = extra.colorNames[0];
           document.getElementById('selected-color').textContent = currentColor;
+          colorSec.style.display = 'block';
       }
-    } else {
-      const colorSec = document.getElementById('color-section');
-      if(colorSec) colorSec.style.display='none';
     }
     if (extra.sizes) {
-      const sizeOpts = document.getElementById('size-opts');
-      if(sizeOpts) {
+      const sizeSec = document.getElementById('size-section');
+      const sizeOpts = document.getElementById('prod-sizes');
+      if(sizeOpts && sizeSec) {
           sizeOpts.innerHTML = extra.sizes.map((s, i) => `
             <button class="size-btn ${i===0?'active':''}" onclick="selectSize(this, '${s}')">${s}</button>
           `).join('');
           currentSize = extra.sizes[0];
           document.getElementById('selected-size').textContent = currentSize;
+          sizeSec.style.display = 'block';
       }
-    } else {
-      const sizeSec = document.getElementById('size-section');
-      if(sizeSec) sizeSec.style.display='none';
     }
   }
 
@@ -981,13 +979,17 @@ window.addEventListener('scroll', () => {
   document.getElementById('header').classList.toggle('scrolled', scrollY > 40);
 }, {passive:true});
 
-if (window.authUser !== undefined) {
+// Always wait for auth check to complete before rendering
+// This prevents showing the wrong price or blank content
+if (window.authUser !== null && window.authUser !== undefined) {
+  // Auth was already resolved synchronously (unlikely but safe)
   render();
 } else {
-  window.addEventListener('authLoaded', render);
+  // Wait for the async auth check to complete
+  window.addEventListener('authLoaded', render, { once: true });
 }
 </script>
-<script src="enhancements.js?v=1785803845471"></script>
+<script src="enhancements.js?v=1785804552463"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
