@@ -22,4 +22,4 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- إدراج حساب مدير افتراضي (كلمة المرور: admin123)
 -- ملاحظة: كلمة المرور مشفرة باستخدام bcrypt
 INSERT IGNORE INTO `users` (`name`, `email`, `password`, `role`, `status`) VALUES
-('المدير العام', 'admin@estawredly.com', '$2y$10$wN1I4O09L2M.3K4e3s0sOuWc3O1I1b1x2M5a/5g3t9o1Y8f4V9kG2', 'admin', 'active');
+('المدير العام', 'admin@estawredly.com', '$2y$12$Wo0G9za0lax853eW09bCpucvrGLNaqqL4.90.UePQCaT/LJu86t4m', 'admin', 'active');

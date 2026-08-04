@@ -1,38 +1,38 @@
 [
-  {
-    "img": "hero_cleaning1.jpg",
-    "tag": "أدوات تنظيف احترافية",
-    "title": "كل ما تحتاجه<br/><em>في مكان واحد</em>",
-    "desc": "أكثر من 500 منتج بأفضل الأسعار مع ضمان الجودة للمنازل والشركات",
-    "btn1_text": "تسوق الآن",
-    "btn1_link": "shop.html",
-    "btn1_class": "btn btn-white btn-lg",
-    "btn2_text": "عروض اليوم",
-    "btn2_link": "shop.html?sale=1",
-    "btn2_class": "btn btn-outline-white btn-lg"
-  },
-  {
-    "img": "hero_cleaning2.jpg",
-    "tag": "أحدث التقنيات",
-    "title": "مماسح مايكروفايبر<br/><em>لنظافة أعمق</em>",
-    "desc": "مماسح سريعة الامتصاص وعالية الجودة لكافة الأرضيات",
-    "btn1_text": "تسوق المايكروفايبر",
-    "btn1_link": "shop.html",
-    "btn1_class": "btn btn-primary btn-lg",
-    "btn2_text": "",
-    "btn2_link": "",
-    "btn2_class": ""
-  },
-  {
-    "img": "hero_cleaning3.jpg",
-    "tag": "جودة واعتمادية",
-    "title": "أفضل المماسح القطنية<br/><em>بأسعار رائعة</em>",
-    "desc": "تشكيلة واسعة من المماسح والأدوات بمواصفات عالمية",
-    "btn1_text": "تسوق الآن",
-    "btn1_link": "shop.html",
-    "btn1_class": "btn btn-primary btn-lg",
-    "btn2_text": "",
-    "btn2_link": "",
-    "btn2_class": ""
-  }
+    {
+        "img": "hero_cleaning1.jpg",
+        "tag": "أدوات تنظيف احترافية",
+        "title": "كل ما تحتاجه<br\/><em>في مكان واحد<\/em>",
+        "desc": "أكثر من 500 منتج بأفضل الأسعار مع ضمان الجودة للمنازل والشركات",
+        "btn1_text": "تسوق الآن",
+        "btn1_link": "shop.html",
+        "btn1_class": "btn btn-white btn-lg",
+        "btn2_text": "عروض اليوم",
+        "btn2_link": "shop.html?sale=1",
+        "btn2_class": "btn btn-outline-white btn-lg"
+    },
+    {
+        "img": "hero_cleaning2.jpg",
+        "tag": "أحدث التقنيات",
+        "title": "مماسح مايكروفايبر<br\/><em>لنظافة أعمق<\/em>",
+        "desc": "مماسح سريعة الامتصاص وعالية الجودة لكافة الأرضيات",
+        "btn1_text": "تسوق المايكروفايبر",
+        "btn1_link": "shop.html",
+        "btn1_class": "btn btn-primary btn-lg",
+        "btn2_text": "",
+        "btn2_link": "",
+        "btn2_class": ""
+    },
+    {
+        "img": "hero_cleaning3.jpg",
+        "tag": "جودة واعتمادية",
+        "title": "أفضل المماسح القطنية<br\/><em>بأسعار رائعة<\/em>",
+        "desc": "تشكيلة واسعة من المماسح والأدوات بمواصفات عالمية",
+        "btn1_text": "تسوق الآن",
+        "btn1_link": "shop.html",
+        "btn1_class": "btn btn-primary btn-lg",
+        "btn2_text": "",
+        "btn2_link": "",
+        "btn2_class": ""
+    }
 ]

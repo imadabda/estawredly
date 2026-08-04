@@ -44,17 +44,25 @@ try {
     // تشفير كلمة المرور بقوة
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // إدخال المستخدم في قاعدة البيانات
-    $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, 'customer')");
+    // إدخال المستخدم في قاعدة البيانات بوضع النشط (active) تلقائياً
+    $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, password, phone, role, status) VALUES (?, ?, ?, ?, 'customer', 'active')");
     
     if ($insert_stmt->execute([$name, $email, $hashed_password, $phone])) {
+        $user_id = $pdo->lastInsertId();
+        
+        // تسجيل الدخول التلقائي للمستخدم الجديد
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_role'] = 'customer';
+        $_SESSION['user_status'] = 'active';
         
         // إرسال إيميل ترحيبي للمستخدم
-        $user_subject = "مرحباً بك في متجر استوردلي - حسابك قيد المراجعة";
+        $user_subject = "مرحباً بك في متجر استوردلي - تم تفعيل حسابك";
         $user_message = "مرحباً " . $name . "،
 
 شكراً لتسجيلك في متجر استوردلي.
-حسابك الآن قيد المراجعة. سوف يتم التواصل معك قريباً لتفعيل حسابك وإظهار الأسعار.
+تم تفعيل حسابك بنجاح. يمكنك الآن تصفح المتجر ورؤية الأسعار والشراء مباشرة.
 
 مع تحيات فريق استوردلي.";
         $headers = "From: noreply@" . $_SERVER['HTTP_HOST'];
@@ -62,20 +70,24 @@ try {
         
         // إرسال إيميل للأدمن
         $admin_email = "admin@" . $_SERVER['HTTP_HOST']; // قم بتغيير هذا للإيميل الخاص بك
-        $admin_subject = "تسجيل عضوية جديدة بانتظار التفعيل";
+        $admin_subject = "عضوية جديدة مسجلة ونشطة تلقائياً";
         $admin_message = "مرحباً،
 
-هناك طلب عضوية جديد بانتظار تفعيلك:
+هناك عضوية جديدة تم تسجيلها وتفعيلها تلقائياً:
 الاسم: $name
 الإيميل: $email
-رقم الجوال: $phone
-
-يرجى الدخول للوحة التحكم لتفعيل الحساب.";
+رقم الجوال: $phone";
         mail($admin_email, $admin_subject, $admin_message, $headers);
 
         echo json_encode([
             'success' => true, 
-            'message' => 'تم إنشاء الحساب بنجاح! سوف يتم التواصل معك لتفعيل الحساب، أو يرجى التواصل معنا.'
+            'message' => 'تم إنشاء الحساب وتسجيل الدخول بنجاح! 🎉',
+            'user' => [
+                'name' => $name,
+                'email' => $email,
+                'role' => 'customer',
+                'status' => 'active'
+            ]
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة لاحقاً']);

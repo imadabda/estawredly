@@ -11,24 +11,70 @@ $db_name = 'u515868829_store'; // استبدله باسم قاعدة بيانا�
 // تمت إزالة هيدر JSON من هنا لكي تعمل صفحات HTML بشكل صحيح
 
 try {
-    // إنشاء الاتصال باستخدام PDO لتوفير أقصى درجات الحماية من الاختراقات (SQL Injection)
-    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass);
-    
-    // إعداد PDO لإظهار الأخطاء بشكل واضح
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
+    // حاول الاتصال بخادم MySQL (بيئة الإنتاج / Hostinger أو MySQL محلي)
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass, [
+        PDO::ATTR_TIMEOUT => 2,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
 } catch (PDOException $e) {
-    $pdo = null; // Set to null instead of exiting immediately
-    $db_error_message = $e->getMessage();
-    
-    // Only output JSON if this is a direct API call (not included from HTML pages)
-    if (strpos($_SERVER['REQUEST_URI'], '/api/') !== false) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'فشل الاتصال بقاعدة البيانات: ' . $db_error_message
-        ]);
-        exit;
+    // عند عدم توفر خادم MySQL، التبديل تلقائياً لقاعدة بيانات SQLite محلية للتطوير
+    try {
+        $sqlite_file = __DIR__ . '/local_database.sqlite';
+        $pdo = new PDO("sqlite:" . $sqlite_file);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+        // إنشاء جدول المستخدمين إن لم يكن موجوداً
+        $pdo->exec("CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT DEFAULT NULL,
+            phone TEXT DEFAULT NULL,
+            role TEXT DEFAULT 'customer',
+            status TEXT DEFAULT 'pending',
+            google_id TEXT UNIQUE,
+            reset_token TEXT,
+            reset_expires DATETIME,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+
+        // إنشاء جدول الطلبات إن لم يكن موجوداً
+        $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_name TEXT NOT NULL,
+            customer_phone TEXT NOT NULL,
+            customer_address TEXT NOT NULL,
+            shipping_zone TEXT NOT NULL,
+            items_json TEXT NOT NULL,
+            subtotal REAL NOT NULL,
+            shipping_cost REAL NOT NULL,
+            total_price REAL NOT NULL,
+            status TEXT DEFAULT 'pending',
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+
+        // إدراج المدير الافتراضي إن لم يكن موجوداً (password: admin123)
+        $admin_hash = password_hash('admin123', PASSWORD_DEFAULT);
+        $checkAdmin = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $checkAdmin->execute(['admin@estawredly.com']);
+        if (!$checkAdmin->fetch()) {
+            $insertAdmin = $pdo->prepare("INSERT INTO users (name, email, password, role, status) VALUES (?, ?, ?, 'admin', 'active')");
+            $insertAdmin->execute(['المدير العام', 'admin@estawredly.com', $admin_hash]);
+        }
+    } catch (PDOException $sqlite_err) {
+        $pdo = null;
+        $db_error_message = $sqlite_err->getMessage();
+        
+        if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'فشل الاتصال بقاعدة البيانات: ' . $db_error_message
+            ]);
+            exit;
+        }
     }
 }
 ?>

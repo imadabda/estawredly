@@ -9,65 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<div class="drawer-mask" id="cart-mask"></div>
-<aside class="cart-drawer" id="cart-drawer">
-  <div class="drawer-header">
-    <h3>🛒 سلتي</h3>
-    <button class="drawer-close" id="cart-close">✕</button>
-  </div>
-  <div class="drawer-body" id="cart-body">
-    <div class="drawer-empty" id="cart-empty">
-      <div class="empty-icon">🛒</div>
-      <p>سلتك فارغة!</p>
-      <a href="shop.html" class="btn btn-primary">ابدأ التسوق</a>
-    </div>
-    <div id="cart-items-list"></div>
-  </div>
-  <div class="drawer-footer" id="cart-footer" style="display:none">
-    <div class="cart-subtotal">
-      <span>المجموع الفرعي</span>
-      <strong id="cart-subtotal">$0.00</strong>
-    </div>
-    <div class="cart-shipping">
-      <span>الشحن</span>
-      <strong id="cart-shipping">مجاني 🎉</strong>
-    </div>
-    <div class="cart-divider"></div>
-    <div class="cart-total-row">
-      <span>الإجمالي</span>
-      <strong id="cart-total-price" class="total-big">$0.00</strong>
-    </div>
-    <a href="checkout.html" class="btn btn-primary w-full btn-lg checkout-btn">إتمام الشراء →</a>
-    <button class="continue-btn" id="continue-shopping">متابعة التسوق</button>
-  </div>
-</aside>
 
-<div class="drawer-mask" id="wish-mask"></div>
-<aside class="cart-drawer wish-drawer" id="wish-drawer">
-  <div class="drawer-header">
-    <h3>❤️ المفضلة</h3>
-    <button class="drawer-close" id="wish-close">✕</button>
-  </div>
-  <div class="drawer-body" id="wish-body">
-    <div class="drawer-empty" id="wish-empty">
-      <div class="empty-icon">❤️</div>
-      <p>لا توجد منتجات في المفضلة</p>
-    </div>
-    <div id="wish-items-list"></div>
-  </div>
-</aside>
-
-<div class="modal-mask" id="qv-mask"></div>
-<div class="qv-modal" id="qv-modal">
-  <button class="qv-close" id="qv-close">✕</button>
-  <div class="qv-inner" id="qv-inner"></div>
-</div>
-
-
-
-<div id="toast-wrap"></div>
-
-<button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785804552463" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
   <script src="store.js?v=1785804552463"></script>
@@ -494,9 +436,9 @@
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               أضف للسلة
             </button>
-            <a href="checkout.html" class="btn-buy-now" id="btn-buy">
+            <button class="btn-buy-now" id="btn-buy" onclick="buyNow()">
               ⚡ اشتري الآن
-            </a>
+            </button>
             <button class="btn-wish" id="btn-wish" onclick="toggleProductWish()">🤍</button>
           </div>
         </div>
@@ -614,6 +556,27 @@
   </div>
 </aside>
 
+<div class="drawer-mask" id="wish-mask"></div>
+<aside class="cart-drawer wish-drawer" id="wish-drawer">
+  <div class="drawer-header">
+    <h3>❤️ المفضلة</h3>
+    <button class="drawer-close" id="wish-close">✕</button>
+  </div>
+  <div class="drawer-body" id="wish-body">
+    <div class="drawer-empty" id="wish-empty">
+      <div class="empty-icon">❤️</div>
+      <p>لا توجد منتجات في المفضلة</p>
+    </div>
+    <div id="wish-items-list"></div>
+  </div>
+</aside>
+
+<div class="modal-mask" id="qv-mask"></div>
+<div class="qv-modal" id="qv-modal">
+  <button class="qv-close" id="qv-close">✕</button>
+  <div class="qv-inner" id="qv-inner"></div>
+</div>
+
 <div id="toast-wrap"></div>
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
@@ -622,7 +585,7 @@
 <script>
 const ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
 
-// Extra data per product (desc, specs, colors, sizes, images)
+// Extra data per product (desc, specs, images)
 const EXTRA = {
   default: {
     images: [],
@@ -630,8 +593,7 @@ const EXTRA = {
 يتميز هذا المنتج بجودة الخامات ودقة الصناعة التي تجعله الخيار الأمثل لكل من يبحث عن التميز والأناقة بسعر منافس.<br><br>
 • مستورد مباشرة من المصنع بدون وسطاء<br>
 • خضع لفحص الجودة قبل الشحن<br>
-• يأتي بتغليف احترافي مع بطاقة ضمان<br>
-• متوفر بعدة ألوان ومقاسات`,
+• يأتي بتغليف احترافي مع بطاقة ضمان`,
     specs: [
       ['الحالة','جديد – أصلي 100%'],
       ['المورد','مستورد مباشرة'],
@@ -639,9 +601,6 @@ const EXTRA = {
       ['التغليف','صندوق احترافي'],
       ['الشحن','2–5 أيام عمل'],
     ],
-    colors: ['#1e293b','#dc2626','#16a34a','#d97706'],
-    colorNames: ['أسود','أحمر','أخضر','ذهبي'],
-    sizes: ['XS','S','M','L','XL','XXL'],
     stock: 47,
     reviews: [
       {name:'أحمد م.',city:'رام الله',rating:5,text:'منتج ممتاز جداً! وصل بسرعة وبحالة مثالية. سعيد بالتجربة وسأطلب مرة أخرى.',color:'#1d4ed8'},
@@ -661,7 +620,7 @@ const BASE_IMG = product.img;
 const additionalImgs = product.images && product.images.length > 0 ? product.images : (extra.images || []);
 const IMAGES = [BASE_IMG, ...additionalImgs];
 
-// Build variants from product.variants (saved via admin) or fall back to extra colors/sizes
+// Build variants from product.variants (saved via admin)
 const PRODUCT_VARIANTS = product.variants && product.variants.length > 0 ? product.variants : null;
 
 let currentQty = 1;
@@ -762,30 +721,34 @@ function render() {
       `).join('');
   }
 
-  // Options (Color/Size) — use dynamic PRODUCT_VARIANTS if available
+  // Options / Variants (Render ONLY if product.variants explicitly exists and has items)
   const variantsArea = document.getElementById('dynamic-variants-area');
-  if (PRODUCT_VARIANTS && variantsArea) {
-    // Hide old static color/size sections
-    const colorSec = document.getElementById('color-section');
-    const sizeSec = document.getElementById('size-section');
-    if(colorSec) colorSec.style.display='none';
-    if(sizeSec) sizeSec.style.display='none';
+  const colorSec = document.getElementById('color-section');
+  const sizeSec = document.getElementById('size-section');
 
+  // Hide static fallback sections completely
+  if(colorSec) colorSec.style.display = 'none';
+  if(sizeSec) sizeSec.style.display = 'none';
+
+  selectedVariants = {};
+  const activeVariants = (PRODUCT_VARIANTS || []).filter(v => v.name && v.name.trim() !== '' && Array.isArray(v.options) && v.options.length > 0);
+
+  if (activeVariants.length > 0 && variantsArea) {
     // Pre-select first option of each variant
-    PRODUCT_VARIANTS.forEach(v => {
-      if (v.options && v.options.length > 0) selectedVariants[v.name] = v.options[0];
+    activeVariants.forEach(v => {
+      selectedVariants[v.name] = v.options[0];
     });
 
-    variantsArea.innerHTML = PRODUCT_VARIANTS.map(v => `
+    variantsArea.innerHTML = activeVariants.map(v => `
       <div style="margin-bottom:18px;">
-        <div style="font-weight:700; margin-bottom:8px; font-size:15px;">${v.name}:
-          <span id="selected-${v.name}" style="color:var(--p); font-size:14px;">${v.options[0] || ''}</span>
+        <div style="font-weight:700; margin-bottom:8px; font-size:15px; color:var(--text1);">${v.name}:
+          <span id="selected-${v.name}" style="color:var(--p); font-size:14px; margin-right:6px;">${v.options[0] || ''}</span>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           ${v.options.map((opt, i) => `
             <button class="variant-pill ${i===0?'active':''}" data-variant="${v.name}" data-value="${opt}"
-              onclick="pickVariant(this, '${v.name}', '${opt}')" 
-              style="padding:8px 18px; border-radius:8px; border:2px solid var(--border); background:var(--bg2); color:var(--text); cursor:pointer; font-size:14px; font-family:inherit; transition:all .2s;">${opt}</button>
+              onclick="pickVariant(this, '${v.name.replace(/'/g, "\\'")}', '${opt.replace(/'/g, "\\'")}')" 
+              style="padding:8px 18px; border-radius:8px; border:2px solid ${i===0?'var(--p)':'var(--border)'}; background:${i===0?'var(--p)':'var(--bg2)'}; color:${i===0?'#fff':'var(--text1)'}; cursor:pointer; font-size:14px; font-family:inherit; transition:all .2s; font-weight:600;">${opt}</button>
           `).join('')}
         </div>
       </div>
@@ -793,31 +756,7 @@ function render() {
     variantsArea.style.display = 'block';
   } else if (variantsArea) {
     variantsArea.style.display = 'none';
-    // Fall back to static color/size from EXTRA
-    if (extra.colors) {
-      const colorSec = document.getElementById('color-section');
-      const colorOpts = document.getElementById('prod-colors');
-      if(colorOpts && colorSec) {
-          colorOpts.innerHTML = extra.colors.map((c, i) => `
-            <div class="color-dot ${i===0?'active':''}" style="background:${c}" onclick="selectColor(this, '${extra.colorNames[i]}')"></div>
-          `).join('');
-          currentColor = extra.colorNames[0];
-          document.getElementById('selected-color').textContent = currentColor;
-          colorSec.style.display = 'block';
-      }
-    }
-    if (extra.sizes) {
-      const sizeSec = document.getElementById('size-section');
-      const sizeOpts = document.getElementById('prod-sizes');
-      if(sizeOpts && sizeSec) {
-          sizeOpts.innerHTML = extra.sizes.map((s, i) => `
-            <button class="size-btn ${i===0?'active':''}" onclick="selectSize(this, '${s}')">${s}</button>
-          `).join('');
-          currentSize = extra.sizes[0];
-          document.getElementById('selected-size').textContent = currentSize;
-          sizeSec.style.display = 'block';
-      }
-    }
+    variantsArea.innerHTML = '';
   }
 
   // Reviews
@@ -901,11 +840,7 @@ function changeQty(delta) {
 }
 
 function addProductToCart() {
-  // Build combined selectedVariants from dynamic + static
-  const combined = {...selectedVariants};
-  if (currentColor) combined['اللون'] = currentColor;
-  if (currentSize) combined['المقاس'] = currentSize;
-  addToCart(product, currentQty, combined);
+  addToCart(product, currentQty, selectedVariants);
   const btn = document.getElementById('btn-add-cart');
   btn.textContent = '✅ تمت الإضافة!';
   btn.style.background = 'linear-gradient(135deg,#16a34a,#22c55e)';
@@ -913,6 +848,15 @@ function addProductToCart() {
     btn.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> أضف للسلة`;
     btn.style.background = '';
   }, 2000);
+}
+
+function buyNow() {
+  if (!window.authUser || window.authUser.status !== 'active') {
+      addToCart(product, currentQty, selectedVariants);
+      return;
+  }
+  addToCart(product, currentQty, selectedVariants);
+  window.location.href = 'checkout.html';
 }
 
 function toggleProductWish() {

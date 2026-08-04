@@ -6,63 +6,7 @@
   <title>استوردلي | إتمام الشراء</title>
   <link rel="icon" type="image/png" href="favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
-<div class="drawer-mask" id="cart-mask"></div>
-<aside class="cart-drawer" id="cart-drawer">
-  <div class="drawer-header">
-    <h3>🛒 سلتي</h3>
-    <button class="drawer-close" id="cart-close">✕</button>
-  </div>
-  <div class="drawer-body" id="cart-body">
-    <div class="drawer-empty" id="cart-empty">
-      <div class="empty-icon">🛒</div>
-      <p>سلتك فارغة!</p>
-      <a href="shop.html" class="btn btn-primary">ابدأ التسوق</a>
-    </div>
-    <div id="cart-items-list"></div>
-  </div>
-  <div class="drawer-footer" id="cart-footer" style="display:none">
-    <div class="cart-subtotal">
-      <span>المجموع الفرعي</span>
-      <strong id="cart-subtotal">$0.00</strong>
-    </div>
-    <div class="cart-shipping">
-      <span>الشحن</span>
-      <strong id="cart-shipping">مجاني 🎉</strong>
-    </div>
-    <div class="cart-divider"></div>
-    <div class="cart-total-row">
-      <span>الإجمالي</span>
-      <strong id="cart-total-price" class="total-big">$0.00</strong>
-    </div>
-    <a href="checkout.html" class="btn btn-primary w-full btn-lg checkout-btn">إتمام الشراء →</a>
-    <button class="continue-btn" id="continue-shopping">متابعة التسوق</button>
-  </div>
-</aside>
 
-<div class="drawer-mask" id="wish-mask"></div>
-<aside class="cart-drawer wish-drawer" id="wish-drawer">
-  <div class="drawer-header">
-    <h3>❤️ المفضلة</h3>
-    <button class="drawer-close" id="wish-close">✕</button>
-  </div>
-  <div class="drawer-body" id="wish-body">
-    <div class="drawer-empty" id="wish-empty">
-      <div class="empty-icon">❤️</div>
-      <p>لا توجد منتجات في المفضلة</p>
-    </div>
-    <div id="wish-items-list"></div>
-  </div>
-</aside>
-
-<div class="modal-mask" id="qv-mask"></div>
-<div class="qv-modal" id="qv-modal">
-  <button class="qv-close" id="qv-close">✕</button>
-  <div class="qv-inner" id="qv-inner"></div>
-</div>
-
-
-
-<div id="toast-wrap"></div>
 
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
@@ -141,7 +85,47 @@
         <button type="submit" class="btn-submit">تأكيد الطلب 🚀</button>
       </div>
     </form>
+
+  <!-- Cart + Wish Drawers -->
+  <div class="drawer-mask" id="cart-mask"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="drawer-header"><h3>🛒 سلتي</h3><button class="drawer-close" id="cart-close">✕</button></div>
+    <div class="drawer-body" id="cart-body">
+      <div class="drawer-empty" id="cart-empty"><div class="empty-icon">🛒</div><p>سلتك فارغة!</p><a href="shop.html" class="btn btn-primary">ابدأ التسوق</a></div>
+      <div id="cart-items-list"></div>
+    </div>
+    <div class="drawer-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal"><span>المجموع الفرعي</span><strong id="cart-subtotal">₪0.00</strong></div>
+      <div class="cart-shipping"><span>الشحن</span><strong id="cart-shipping">مجاني 🎉</strong></div>
+      <div class="cart-divider"></div>
+      <div class="cart-total-row"><span>الإجمالي</span><strong id="cart-total-price" class="total-big">₪0.00</strong></div>
+      <a href="checkout.html" class="btn btn-primary w-full btn-lg checkout-btn">إتمام الشراء →</a>
+      <button class="continue-btn" id="continue-shopping">متابعة التسوق</button>
+    </div>
+  </aside>
+
+  <div class="drawer-mask" id="wish-mask"></div>
+  <aside class="cart-drawer wish-drawer" id="wish-drawer">
+    <div class="drawer-header">
+      <h3>❤️ المفضلة</h3>
+      <button class="drawer-close" id="wish-close">✕</button>
+    </div>
+    <div class="drawer-body" id="wish-body">
+      <div class="drawer-empty" id="wish-empty">
+        <div class="empty-icon">❤️</div>
+        <p>لا توجد منتجات في المفضلة</p>
+      </div>
+      <div id="wish-items-list"></div>
+    </div>
+  </aside>
+
+  <div class="modal-mask" id="qv-mask"></div>
+  <div class="qv-modal" id="qv-modal">
+    <button class="qv-close" id="qv-close">✕</button>
+    <div class="qv-inner" id="qv-inner"></div>
   </div>
+
+  <div id="toast-wrap"></div>
 
   <script src="auth.js?v=1785802153537"></script>
 <script src="main.js?v=1785802153537"></script>

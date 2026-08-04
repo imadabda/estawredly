@@ -639,19 +639,50 @@ function renderAdditionalImages() {
     `).join('');
 }
 
+function syncVariantsFromDOM() {
+    document.querySelectorAll('#variants-container .variant-name-input').forEach(inp => {
+        const idx = parseInt(inp.dataset.index);
+        const val = inp.value.trim();
+        if (currentProductVariants[idx]) {
+            currentProductVariants[idx].name = val;
+        }
+    });
+
+    document.querySelectorAll('#variants-container .variant-opt-input').forEach(inp => {
+        const idx = parseInt(inp.dataset.index);
+        const val = inp.value.trim();
+        if (val && currentProductVariants[idx]) {
+            const parts = val.split(/[,،]/).map(s => s.trim()).filter(Boolean);
+            parts.forEach(p => {
+                if (!currentProductVariants[idx].options.includes(p)) {
+                    currentProductVariants[idx].options.push(p);
+                }
+            });
+            inp.value = '';
+        }
+    });
+}
+
 function addVariantField() {
+    syncVariantsFromDOM();
     currentProductVariants.push({ name: '', options: [] });
     renderVariants();
 }
 function removeVariantField(index) {
+    syncVariantsFromDOM();
     currentProductVariants.splice(index, 1);
     renderVariants();
 }
 function addVariantOption(index, inputEl) {
-    const val = inputEl.value.trim();
-    if(val) {
-        currentProductVariants[index].options.push(val);
-        inputEl.value = '';
+    const val = inputEl ? inputEl.value.trim() : '';
+    if(val && currentProductVariants[index]) {
+        const parts = val.split(/[,،]/).map(s => s.trim()).filter(Boolean);
+        parts.forEach(p => {
+            if(!currentProductVariants[index].options.includes(p)) {
+                currentProductVariants[index].options.push(p);
+            }
+        });
+        if(inputEl) inputEl.value = '';
         renderVariants();
     }
 }
@@ -669,7 +700,7 @@ function renderVariants() {
             <button type="button" onclick="removeVariantField(${i})" style="position:absolute; top:10px; left:10px; color:red; border:none; background:transparent; cursor:pointer;">✕ حذف الخاصية</button>
             <div style="margin-bottom:10px;">
                 <label style="font-size:12px; color:var(--text3)">اسم الخاصية (مثال: اللون)</label>
-                <input type="text" value="${v.name}" onchange="updateVariantName(${i}, this.value)" placeholder="مثال: اللون" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text1); margin-top:5px;">
+                <input type="text" class="variant-name-input" data-index="${i}" value="${v.name}" onchange="updateVariantName(${i}, this.value)" placeholder="مثال: اللون" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text1); margin-top:5px;">
             </div>
             <div>
                 <label style="font-size:12px; color:var(--text3)">خيارات الخاصية</label>
@@ -680,7 +711,10 @@ function renderVariants() {
                         </span>
                     `).join('')}
                 </div>
-                <input type="text" placeholder="اكتب خيار واضغط Enter..." onkeypress="if(event.key==='Enter') { event.preventDefault(); addVariantOption(${i}, this); }" style="width:100%; padding:8px; border:1px dashed var(--border); border-radius:6px; background:var(--bg); color:var(--text1); font-size:13px;">
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <input type="text" class="variant-opt-input" data-index="${i}" placeholder="اكتب خيار واضغط Enter..." onkeypress="if(event.key==='Enter') { event.preventDefault(); addVariantOption(${i}, this); }" style="flex:1; padding:8px; border:1px dashed var(--border); border-radius:6px; background:var(--bg); color:var(--text1); font-size:13px;">
+                    <button type="button" onclick="addVariantOption(${i}, this.previousElementSibling)" style="padding:8px 14px; background:var(--p); color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:12px; font-weight:bold; white-space:nowrap;">+ إضافة خيار</button>
+                </div>
             </div>
         </div>
     `).join('');
@@ -713,6 +747,31 @@ function openModal(p) {
   document.getElementById('f-stock').value = (p && p.stock !== undefined) ? p.stock : '';
   document.getElementById('f-tab').value = p?.tab || 'all';
   document.getElementById('f-img-url').value = p?.img || '';
+
+  // Reset and load Images & Variants for this product
+  let imagesArr = [];
+  if (p && p.images) {
+    if (Array.isArray(p.images)) {
+      imagesArr = [...p.images];
+    } else if (typeof p.images === 'string') {
+      try { imagesArr = JSON.parse(p.images); } catch(e) {}
+    }
+  }
+  currentProductImages = Array.isArray(imagesArr) ? imagesArr : [];
+
+  let variantsArr = [];
+  if (p && p.variants) {
+    if (Array.isArray(p.variants)) {
+      variantsArr = JSON.parse(JSON.stringify(p.variants));
+    } else if (typeof p.variants === 'string') {
+      try { variantsArr = JSON.parse(p.variants); } catch(e) {}
+    }
+  }
+  currentProductVariants = Array.isArray(variantsArr) ? variantsArr : [];
+
+  if (typeof renderAdditionalImages === 'function') renderAdditionalImages();
+  if (typeof renderVariants === 'function') renderVariants();
+
   const prev = document.getElementById('img-preview-el');
   const ph = document.getElementById('upload-placeholder');
   if (p?.img) { prev.src=p.img; prev.style.display='block'; ph.style.display='none'; }
@@ -735,8 +794,14 @@ function saveProduct() {
   
   if (!name || isNaN(price)) { showToast('⚠️ الاسم والسعر مطلوبان!','warn'); return; }
 
+  // Sync any uncommitted input values from the DOM
+  syncVariantsFromDOM();
+
   const pToEdit = editingId ? adminProducts.find(x=>x.id===editingId) : null;
-  const pToEdit = editingId ? adminProducts.find(x=>x.id===editingId) : null;
+  const validVariants = currentProductVariants
+    .filter(v => v.name && v.name.trim() !== '' && Array.isArray(v.options) && v.options.length > 0)
+    .map(v => ({ name: v.name.trim(), options: [...new Set(v.options)] }));
+
   const product = {
     id: editingId || (Date.now()),
     name,
@@ -753,8 +818,7 @@ function saveProduct() {
     active: pToEdit ? pToEdit.active : true,
 
     images: currentProductImages.length > 0 ? [...currentProductImages] : null,
-    variants: currentProductVariants.length > 0 ? JSON.parse(JSON.stringify(currentProductVariants)) : null,
-
+    variants: validVariants.length > 0 ? validVariants : null,
   };
 
   if (editingId) {

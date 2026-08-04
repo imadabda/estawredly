@@ -12,9 +12,28 @@ document.addEventListener('gesturestart', function (e) {
 // Products loaded from Store (localStorage + products_db.js)
 let PRODUCTS_LIVE = [];
 
+// Clean legacy bloated cart items to prevent QuotaExceededError
+let initialCart = [];
+try {
+  let cartData = JSON.parse(localStorage.getItem('store_cart') || '[]');
+  if (Array.isArray(cartData)) {
+    initialCart = cartData.map(i => ({
+      id: i.id,
+      name: i.name,
+      price: i.price,
+      img: i.img,
+      qty: i.qty,
+      selectedVariants: i.selectedVariants
+    }));
+    localStorage.setItem('store_cart', JSON.stringify(initialCart));
+  }
+} catch (e) {
+  console.error(e);
+}
+
 // STATE
 const state = {
-  cart: JSON.parse(localStorage.getItem('store_cart')||'[]'),
+  cart: initialCart,
   wishlist: new Set(JSON.parse(localStorage.getItem('store_wish')||'[]')),
   currentTab: 'all',
   slideIndex: 0,
@@ -37,9 +56,20 @@ function addToCart(product, qty=1, variants={}) {
   if (ex) {
     ex.qty += qty;
   } else {
-    state.cart.push({...product, qty, selectedVariants: Object.keys(variants).length > 0 ? variants : undefined});
+    state.cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      qty: qty,
+      selectedVariants: Object.keys(variants).length > 0 ? variants : undefined
+    });
   }
-  state.saveCart();
+  try {
+    state.saveCart();
+  } catch (e) {
+    console.error('Failed to save cart to localStorage:', e);
+  }
   updateCartUI();
   toast(`🛒 تمت الإضافة: ${product.name}`);
   animateBadge('cart-count');

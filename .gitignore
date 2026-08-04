@@ -29,3 +29,7 @@ dist/
 build/
 .cache/
 *.zip
+
+# Databases
+*.sqlite
+api/*.sqlite

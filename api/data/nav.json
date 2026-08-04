@@ -67,5 +67,11 @@
         "title": "قسم جديد",
         "url": "shop.html",
         "type": "link"
+    },
+    {
+        "id": "nav_1785842185849",
+        "title": "سيمو",
+        "url": "shop.html?cat=%D8%B3%D9%8A%D9%85%D9%88",
+        "type": "link"
     }
 ]

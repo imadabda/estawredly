@@ -124,8 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
                 
                 if (data.success) {
-                    showToast(data.message || 'تم إنشاء الحساب بنجاح! 🎉', 'success');
+                    showToast(data.message || 'تم إنشاء الحساب وتسجيل الدخول بنجاح! 🎉', 'success');
+                    if (data.user) {
+                        updateUIAfterLogin(data.user);
+                    }
                     if(window.closeModal) closeModal('auth');
+                    setTimeout(() => window.location.reload(), 500);
                 } else {
                     showToast(data.message, 'error');
                 }

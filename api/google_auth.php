@@ -52,8 +52,8 @@ try {
         $user_id = $user['id'];
         $user_role = $user['role'];
     } else {
-        // إنشاء حساب جديد عبر جوجل
-        $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, google_id, role) VALUES (?, ?, ?, 'customer')");
+        // إنشاء حساب جديد عبر جوجل بوضع النشط تلقائياً
+        $insert_stmt = $pdo->prepare("INSERT INTO users (name, email, google_id, role, status) VALUES (?, ?, ?, 'customer', 'active')");
         $insert_stmt->execute([$name, $email, $google_id]);
         $user_id = $pdo->lastInsertId();
         $user_role = 'customer';
@@ -64,6 +64,7 @@ try {
     $_SESSION['user_name'] = $name;
     $_SESSION['user_email'] = $email;
     $_SESSION['user_role'] = $user_role;
+    $_SESSION['user_status'] = 'active';
 
     echo json_encode([
         'success' => true,
@@ -71,7 +72,8 @@ try {
         'user' => [
             'name' => $name,
             'email' => $email,
-            'role' => $user_role
+            'role' => $user_role,
+            'status' => 'active'
         ]
     ]);
 
