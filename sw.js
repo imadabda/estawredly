@@ -1,4 +1,4 @@
-const CACHE_NAME = 'estawredly-cache-v7';
+const CACHE_NAME = 'estawredly-cache-v8';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,11 +6,8 @@ const urlsToCache = [
   './product.html',
   './checkout.html',
   './style.css',
-  './enhancements.css',
   './main.js',
   './store.js',
-  './enhancements.js',
-  './logo.jpg'
 ];
 
 self.addEventListener('install', event => {
