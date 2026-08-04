@@ -32,9 +32,13 @@ function addToCart(product, qty=1, variants={}) {
       return;
   }
 
-  const ex = state.cart.find(i=>i.id===product.id);
-  if (ex) { ex.qty++; }
-  else { state.cart.push({...product, qty:1}); }
+  const varsStr = JSON.stringify(variants);
+  const ex = state.cart.find(i => i.id === product.id && JSON.stringify(i.selectedVariants || {}) === varsStr);
+  if (ex) {
+    ex.qty += qty;
+  } else {
+    state.cart.push({...product, qty, selectedVariants: Object.keys(variants).length > 0 ? variants : undefined});
+  }
   state.saveCart();
   updateCartUI();
   toast(`🛒 تمت الإضافة: ${product.name}`);
@@ -73,14 +77,17 @@ function updateCartUI() {
         <div class="ci-img"><img src="${i.img}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
         <div class="ci-info">
           <div class="ci-name">${i.name}</div>
+          ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0
+            ? `<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">${Object.entries(i.selectedVariants).map(([k,v])=>`${k}: <strong>${v}</strong>`).join(' | ')}</div>`
+            : ''}
           <div class="ci-price">₪${(i.price*i.qty).toFixed(2)}</div>
           <div class="ci-qty">
-            <button class="qty-ctrl" onclick="updateQty(${i.id},-1)">−</button>
+            <button class="qty-ctrl" onclick="updateQty(${index},-1)">−</button>
             <span class="qty-num">${i.qty}</span>
-            <button class="qty-ctrl" onclick="updateQty(${i.id},1)">+</button>
+            <button class="qty-ctrl" onclick="updateQty(${index},1)">+</button>
           </div>
         </div>
-        <button class="ci-del" onclick="removeFromCart(${i.id})" title="حذف">🗑</button>
+        <button class="ci-del" onclick="removeFromCart(${index})" title="حذف">🗑</button>
       </div>
     `).join('');
     const total = state.cartTotal();
