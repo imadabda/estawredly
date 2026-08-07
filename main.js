@@ -23,6 +23,9 @@ try {
       price: i.price,
       img: i.img,
       qty: i.qty,
+      pieces_per_carton: i.pieces_per_carton || 1,
+      product_code: i.product_code || '',
+      factory_code: i.factory_code || '',
       selectedVariants: i.selectedVariants
     }));
     localStorage.setItem('store_cart', JSON.stringify(initialCart));
@@ -40,7 +43,7 @@ const state = {
   slideTimer: null,
   saveCart() { localStorage.setItem('store_cart', JSON.stringify(this.cart)); },
   saveWish() { localStorage.setItem('store_wish', JSON.stringify([...this.wishlist])); },
-  cartTotal() { return this.cart.reduce((s,i)=>s+i.price*i.qty, 0); },
+  cartTotal() { return this.cart.reduce((s,i)=>s+i.price*i.qty*(i.pieces_per_carton||1), 0); },
   cartCount() { return this.cart.reduce((s,i)=>s+i.qty, 0); },
 };
 
@@ -62,6 +65,9 @@ function addToCart(product, qty=1, variants={}) {
       price: product.price,
       img: product.img,
       qty: qty,
+      pieces_per_carton: product.pieces_per_carton || 1,
+      product_code: product.product_code || '',
+      factory_code: product.factory_code || '',
       selectedVariants: Object.keys(variants).length > 0 ? variants : undefined
     });
   }
@@ -102,24 +108,28 @@ function updateCartUI() {
     empty.style.display='flex'; list.style.display='none'; footer.style.display='none';
   } else {
     empty.style.display='none'; list.style.display='block'; footer.style.display='block';
-    list.innerHTML = state.cart.map((i, index)=>`
-      <div class="ci">
-        <div class="ci-img"><img src="${i.img}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
-        <div class="ci-info">
-          <div class="ci-name">${i.name}</div>
-          ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0
-            ? `<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">${Object.entries(i.selectedVariants).map(([k,v])=>`${k}: <strong>${v}</strong>`).join(' | ')}</div>`
-            : ''}
-          <div class="ci-price">₪${(i.price*i.qty).toFixed(2)}</div>
-          <div class="ci-qty">
-            <button class="qty-ctrl" onclick="updateQty(${index},-1)">−</button>
-            <span class="qty-num">${i.qty}</span>
-            <button class="qty-ctrl" onclick="updateQty(${index},1)">+</button>
+    list.innerHTML = state.cart.map((i, index)=>{
+      const pcs = i.pieces_per_carton || 1;
+      return `
+        <div class="ci">
+          <div class="ci-img"><img src="${i.img}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+          <div class="ci-info">
+            <div class="ci-name">${i.name}</div>
+            ${pcs > 1 ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">الكرتونة: ${pcs} قطع (إجمالي: ${i.qty * pcs} قطعة)</div>` : ''}
+            ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0
+              ? `<div style="font-size:11px;color:var(--text3);margin:2px 0 4px;">${Object.entries(i.selectedVariants).map(([k,v])=>`${k}: <strong>${v}</strong>`).join(' | ')}</div>`
+              : ''}
+            <div class="ci-price">₪${(i.price * i.qty * pcs).toFixed(2)}</div>
+            <div class="ci-qty">
+              <button class="qty-ctrl" onclick="updateQty(${index},-1)">−</button>
+              <span class="qty-num">${i.qty}</span>
+              <button class="qty-ctrl" onclick="updateQty(${index},1)">+</button>
+            </div>
           </div>
+          <button class="ci-del" onclick="removeFromCart(${index})" title="حذف">🗑</button>
         </div>
-        <button class="ci-del" onclick="removeFromCart(${index})" title="حذف">🗑</button>
-      </div>
-    `).join('');
+      `;
+    }).join('');
     const total = state.cartTotal();
     document.getElementById('cart-subtotal').textContent = '₪'+total.toFixed(2);
     document.getElementById('cart-shipping').textContent = 'يُحسب عند الدفع';
@@ -196,9 +206,10 @@ function makeCard(p) {
         <h3 class="p-name">${p.name}</h3>
         <div class="p-stars">${stars} <span>(${p.reviews})</span></div>
         ${(window.authUser && window.authUser.status === 'active') ? `
-          <div class="p-price">
+          <div class="p-price" style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
             <span class="p-price-main">₪${p.price}</span>
             ${p.oldPrice?`<span class="p-price-old">₪${p.oldPrice}</span><span class="p-disc">-${disc}%</span>`:''}
+            ${p.pieces_per_carton > 1 ? `<span style="font-size:10px; color:#166534; background:#f0fdf4; border:1px solid #bbf7d0; padding:2px 6px; border-radius:4px; margin-right:5px; font-weight:bold;">الكرتونة: ${p.pieces_per_carton} قطع</span>` : ''}
           </div>
           <button class="p-add-btn" onclick='event.stopPropagation();addToCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
             أضف للسلة

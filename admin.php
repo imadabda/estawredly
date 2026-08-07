@@ -891,6 +891,12 @@ tr:last-child td{border-bottom:none}
             <datalist id="cats-list"></datalist>
           </div>
           <div class="field">
+            <label>الماركة التجارية</label>
+            <select id="f-brand">
+              <option value="">بدون ماركة</option>
+            </select>
+          </div>
+          <div class="field">
             <label>تصنيف التبويب <span style="color:var(--text3);font-size:10px">(للفلترة)</span></label>
             <select id="f-tab">
               <option value="all">الكل</option>
@@ -961,6 +967,18 @@ tr:last-child td{border-bottom:none}
           <div class="field">
             <label>المخزون المتوفر</label>
             <input type="number" id="f-stock" placeholder="غير محدود" min="0"/>
+          </div>
+          <div class="field">
+            <label>عدد القطع في الكرتونة (للجملة)</label>
+            <input type="number" id="f-pieces-per-carton" placeholder="1 أو فارغ للبيع بالقطعة" min="1" step="1"/>
+          </div>
+          <div class="field">
+            <label>كود المنتج (SKU)</label>
+            <input type="text" id="f-product-code" placeholder="كود المنتج الفريد"/>
+          </div>
+          <div class="field">
+            <label>كود المصنع</label>
+            <input type="text" id="f-factory-code" placeholder="كود المصنع"/>
           </div>
         </div>
       </div>
@@ -1058,6 +1076,9 @@ tr:last-child td{border-bottom:none}
         </button>
         <button class="sb-item" onclick="showPage('categories',this)">
           <span class="sb-icon">🗂️</span> التصنيفات
+        </button>
+        <button class="sb-item" onclick="showPage('brands',this)">
+          <span class="sb-icon">🏷️</span> إدارة الماركات
         </button>
       </div>
 
@@ -1421,6 +1442,27 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
 
+      <!-- ══ BRANDS MANAGER ══ -->
+      <div class="page" id="page-brands">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> إدارة الماركات</div>
+            <h1 class="page-title">إدارة ماركات الرئيسية</h1>
+            <p class="page-sub">إضافة، تعديل، وترتيب الماركات التجارية التي تظهر في السلايدر</p>
+          </div>
+          <div>
+            <button class="btn-add" onclick="adminBrands.add()" style="background:var(--p); margin-left:10px;">➕ إضافة ماركة</button>
+            <button class="btn-add" onclick="adminBrands.save()" style="background:var(--blue)">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+        
+        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:20px;">
+            <div id="admin-brands-builder" style="display:flex; flex-direction:column; gap:10px; max-width: 600px;">
+                <div style="text-align:center; padding:40px; color:var(--text3)">جاري تحميل الماركات...</div>
+            </div>
+        </div>
+      </div>
+
       <!-- ══ ANALYTICS ══ -->
       <div class="page" id="page-analytics">
         <div class="page-header">
@@ -1451,7 +1493,7 @@ tr:last-child td{border-bottom:none}
             <h1 class="page-title">إعدادات المتجر</h1>
             <p class="page-sub">تخصيص الهوية البصرية والإعدادات العامة</p>
           </div>
-          <button class="btn-add" onclick="showToast('✅ تم حفظ الإعدادات!')">💾 حفظ التغييرات</button>
+          <button class="btn-add" onclick="adminPolicies.save()">💾 حفظ التغييرات</button>
         </div>
         <div class="settings-grid">
           <div class="setting-card">
@@ -1496,9 +1538,17 @@ tr:last-child td{border-bottom:none}
               <div class="setting-row-info"><strong>الشحن المجاني</strong><small>للطلبات التي تتجاوز الحد الأدنى</small></div>
               <label class="toggle"><input type="checkbox" checked/><div class="toggle-slider"></div></label>
             </div>
-            <div class="field" style="margin-top:12px"><label>الحد الأدنى للشحن المجاني (₪)</label><input type="number" value="200"/></div>
-            <div class="field" style="margin-top:12px"><label>تكلفة الشحن الافتراضية (₪)</label><input type="number" value="15"/></div>
-          </div>
+             <div class="field" style="margin-top:12px"><label>الحد الأدنى للشحن المجاني (₪)</label><input type="number" value="200"/></div>
+             <div class="field" style="margin-top:12px"><label>تكلفة الشحن الافتراضية (₪)</label><input type="number" value="15"/></div>
+             <div class="field" style="margin-top:12px">
+               <label>سياسة الشحن</label>
+               <textarea id="sett-shipping-policy" style="min-height:80px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1); font-family:inherit;"></textarea>
+             </div>
+             <div class="field" style="margin-top:12px">
+               <label>سياسة الارتجاع</label>
+               <textarea id="sett-return-policy" style="min-height:80px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1); font-family:inherit;"></textarea>
+             </div>
+           </div>
           <div class="setting-card">
             <h3>🔔 الإشعارات</h3>
             <div class="setting-row"><div class="setting-row-info"><strong>إشعار طلبية جديدة</strong><small>إشعار فوري عند كل طلبية</small></div><label class="toggle"><input type="checkbox" checked/><div class="toggle-slider"></div></label></div>
@@ -1641,6 +1691,8 @@ function showPage(id, el) {
   
   if (id === 'hero')  adminSliders.load();
   if (id === 'banners')  adminBanners.load();
+  if (id === 'brands')  adminBrands.load();
+  if (id === 'settings') adminPolicies.load();
 
   if (id === 'categories') renderCategories();
   if (id === 'notifications') renderNotifs();
@@ -1813,7 +1865,11 @@ function renderOrders(list) {
     const itemsCount = Array.isArray(o.items) ? o.items.length : (o.items || 0);
     let itemsHtml = '';
     if (Array.isArray(o.items)) {
-        itemsHtml = o.items.map(i => `<div style="font-size:11px;color:var(--text3);margin-bottom:2px;">• ${i.name} (x${i.quantity||1})</div>`).join('');
+        itemsHtml = o.items.map(i => {
+            const qty = i.quantity || i.qty || 1;
+            const pcs = i.pieces_per_carton || 1;
+            return `<div style="font-size:11px;color:var(--text3);margin-bottom:2px;">• ${i.name} (x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</div>`;
+        }).join('');
     } else {
         itemsHtml = `${itemsCount} منتج`;
     }
@@ -2280,6 +2336,18 @@ function openModal(p) {
   document.getElementById('f-stars').value = p?.stars || '';
   document.getElementById('f-reviews').value = p?.reviews || '';
   document.getElementById('f-stock').value = (p && p.stock !== undefined) ? p.stock : '';
+  
+  // Populate Brand Select Options
+  const brandSelect = document.getElementById('f-brand');
+  if (brandSelect) {
+      brandSelect.innerHTML = '<option value="">بدون ماركة</option>' +
+          (adminBrands.brands || []).map(b => `<option value="${b}">${b}</option>`).join('');
+  }
+  document.getElementById('f-brand').value = p?.brand || '';
+
+  document.getElementById('f-pieces-per-carton').value = p?.pieces_per_carton || '';
+  document.getElementById('f-product-code').value = p?.product_code || '';
+  document.getElementById('f-factory-code').value = p?.factory_code || '';
   document.getElementById('f-tab').value = p?.tab || 'all';
   document.getElementById('f-img-url').value = p?.img || '';
   document.getElementById('f-desc').value = p?.desc || '';
@@ -2328,6 +2396,12 @@ function saveProduct() {
   const costPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
   const stockStr = document.getElementById('f-stock').value;
   const stock = stockStr === '' ? null : parseInt(stockStr);
+  const cartonPiecesStr = document.getElementById('f-pieces-per-carton').value;
+  const piecesVal = parseInt(cartonPiecesStr);
+  const pieces_per_carton = isNaN(piecesVal) || piecesVal <= 1 ? 1 : piecesVal;
+  const product_code = document.getElementById('f-product-code').value.trim();
+  const factory_code = document.getElementById('f-factory-code').value.trim();
+  const brand = document.getElementById('f-brand').value;
   
   if (!name || isNaN(price)) { showToast('⚠️ الاسم والسعر مطلوبان!','warn'); return; }
 
@@ -2337,6 +2411,7 @@ function saveProduct() {
     name,
     desc: document.getElementById('f-desc').value.trim() || '',
     cat: document.getElementById('f-cat').value,
+    brand,
     badge: document.getElementById('f-badge').value,
     price,
     costPrice,
@@ -2344,6 +2419,9 @@ function saveProduct() {
     stars: parseFloat(document.getElementById('f-stars').value) || 4.5,
     reviews: parseInt(document.getElementById('f-reviews').value) || 0,
     stock: stock,
+    pieces_per_carton,
+    product_code,
+    factory_code,
     tab: document.getElementById('f-tab').value || 'all',
     img: document.getElementById('f-img-url').value || document.getElementById('img-preview-el').src || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
     active: pToEdit ? pToEdit.active : true,
@@ -2651,14 +2729,29 @@ function printOrder(id) {
     
     let itemsHtml = '';
     if (Array.isArray(o.items)) {
-        itemsHtml = o.items.map(i => `
-            <tr>
-                <td style="padding:10px;border-bottom:1px solid #ddd;">${i.name}</td>
-                <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">${i.quantity || 1}</td>
-                <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">₪${i.price}</td>
-                <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">₪${(i.price * (i.quantity || 1))}</td>
-            </tr>
-        `).join('');
+        itemsHtml = o.items.map(i => {
+            const qty = i.quantity || i.qty || 1;
+            const pcs = i.pieces_per_carton || 1;
+            const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
+            const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
+            const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
+            const codeInfo = [
+                product_code ? `كود المنتج: ${product_code}` : '',
+                factory_code ? `كود المصنع: ${factory_code}` : ''
+            ].filter(Boolean).join(' | ');
+            return `
+                <tr>
+                    <td style="padding:10px;border-bottom:1px solid #ddd;">
+                        ${i.name}
+                        ${pcs > 1 ? `<br><small style="color:#666;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</small>` : ''}
+                        ${codeInfo ? `<br><small style="color:#4361ee;font-weight:bold;">${codeInfo}</small>` : ''}
+                    </td>
+                    <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'}</td>
+                    <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">₪${i.price}</td>
+                    <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">₪${(i.price * qty * pcs).toLocaleString()}</td>
+                </tr>
+            `;
+        }).join('');
     } else {
         itemsHtml = `<tr><td colspan="4" style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">${o.items} منتج</td></tr>`;
     }
@@ -2738,15 +2831,28 @@ function viewOrder(id) {
     
     let itemsHtml = '';
     if (Array.isArray(o.items)) {
-        itemsHtml = o.items.map(i => `
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-                <div>
-                  <strong>${i.name}</strong> <span style="color:var(--text3)">(x${i.quantity || i.qty || 1})</span>
-                  ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0 ? `<div style="font-size:12px; color:var(--text3); margin-top:2px;">` + Object.entries(i.selectedVariants).map(([k,v]) => `${k}: ${v}`).join(' | ') + `</div>` : ''}
+        itemsHtml = o.items.map(i => {
+            const qty = i.quantity || i.qty || 1;
+            const pcs = i.pieces_per_carton || 1;
+            const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
+            const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
+            const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
+            const codeInfo = [
+                product_code ? `كود المنتج: ${product_code}` : '',
+                factory_code ? `كود المصنع: ${factory_code}` : ''
+            ].filter(Boolean).join(' | ');
+            return `
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+                    <div>
+                      <strong>${i.name}</strong> <span style="color:var(--text3)">(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</span>
+                      ${pcs > 1 ? `<div style="font-size:11px; color:#166534; margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
+                      ${codeInfo ? `<div style="font-size:12px; color:var(--p); margin-top:2px; font-weight:bold;">${codeInfo}</div>` : ''}
+                      ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0 ? `<div style="font-size:12px; color:var(--text3); margin-top:2px;">` + Object.entries(i.selectedVariants).map(([k,v]) => `${k}: ${v}`).join(' | ') + `</div>` : ''}
+                    </div>
+                    <div>₪${((i.price || 0) * qty * pcs).toFixed(2)}</div>
                 </div>
-                <div>₪${(i.price || 0) * (i.quantity || i.qty || 1)}</div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     } else {
         itemsHtml = `<div style="padding:8px 0">${o.items} منتج</div>`;
     }
@@ -2971,7 +3077,109 @@ const adminBanners = {
     }
 };
 
+const adminBrands = {
+    brands: [],
+    
+    async load() {
+        try {
+            const res = await fetch('api/get_brands.php?t=' + Date.now());
+            this.brands = await res.json();
+            if (!Array.isArray(this.brands)) this.brands = [];
+            this.render();
+        } catch (e) {
+            console.error("Error loading brands:", e);
+        }
+    },
+    
+    render() {
+        const container = document.getElementById('admin-brands-builder');
+        if (!container) return;
+        
+        if (this.brands.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:var(--text3);padding:20px;">لا يوجد ماركات حالياً. اضغط على زر الإضافة لإضافة ماركة جديدة.</div>';
+            return;
+        }
+        
+        container.innerHTML = this.brands.map((b, i) => `
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:10px 15px; display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:bold; color:var(--text3); min-width:30px;">#${i+1}</span>
+                <input type="text" value="${b}" onchange="adminBrands.update(${i}, this.value)" style="flex:1; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                <button class="btn" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="adminBrands.delete(${i})">🗑️ حذف</button>
+            </div>
+        `).join('');
+    },
+    
+    update(index, value) {
+        this.brands[index] = value.trim();
+    },
+    
+    add() {
+        this.brands.push("ماركة جديدة");
+        this.render();
+    },
+    
+    delete(index) {
+        this.brands.splice(index, 1);
+        this.render();
+    },
+    
+    async save() {
+        try {
+            const res = await fetch('api/save_brands.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.brands)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ تم حفظ قائمة الماركات بنجاح!');
+                this.load();
+            } else {
+                showToast('❌ فشل في حفظ الماركات: ' + data.message, 'error');
+            }
+        } catch(e) {
+            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
+        }
+    }
+};
+
+const adminPolicies = {
+    async load() {
+        try {
+            const res = await fetch('api/get_policies.php?t=' + Date.now());
+            const data = await res.json();
+            const shippingEl = document.getElementById('sett-shipping-policy');
+            const returnEl = document.getElementById('sett-return-policy');
+            if (shippingEl) shippingEl.value = data.shipping || '';
+            if (returnEl) returnEl.value = data.returns || '';
+        } catch(e) {
+            console.error('Error loading policies:', e);
+        }
+    },
+
+    async save() {
+        const shipping = document.getElementById('sett-shipping-policy')?.value || '';
+        const returns = document.getElementById('sett-return-policy')?.value || '';
+        try {
+            const res = await fetch('api/save_policies.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shipping, returns })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ تم حفظ السياسات بنجاح!');
+            } else {
+                showToast('❌ فشل في حفظ السياسات: ' + (data.message || ''), 'error');
+            }
+        } catch(e) {
+            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
+        }
+    }
+};
+
 const adminNav = {
+
     data: [],
     async load() {
         try {
@@ -3284,6 +3492,7 @@ const originalLoadIcons = adminNav.load;
 adminNav.load = async function() {
     await originalLoadIcons.call(adminNav);
     adminIcons.load();
+    adminBrands.load();
 };
 
 </script>

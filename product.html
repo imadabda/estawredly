@@ -396,6 +396,9 @@
           </div>
         </div>
 
+        <!-- Carton Info -->
+        <div id="prod-carton-box" style="margin-top:10px;"></div>
+
         <!-- Stock -->
         <div class="stock-bar">
           <div class="stock-dot green" id="stock-dot"></div>
@@ -509,13 +512,14 @@
       <div class="tab-panel" id="tab-shipping">
         <div class="prod-desc">
           <strong>🚚 سياسة الشحن:</strong><br>
-          نوفر شحناً سريعاً لجميع محافظات فلسطين خلال 2–5 أيام عمل. الشحن مجاني للطلبات التي تتجاوز ₪200، وبتكلفة ₪15 للطلبات الأقل.<br><br>
+          <span id="policy-shipping-text">نوفر شحناً سريعاً لجميع محافظات فلسطين خلال 2–5 أيام عمل. الشحن مجاني للطلبات التي تتجاوز ₪200، وبتكلفة ₪15 للطلبات الأقل.</span><br><br>
           <strong>↩️ سياسة الإرجاع:</strong><br>
-          يمكنك إرجاع أي منتج خلال 30 يوماً من تاريخ الاستلام، شريطة أن يكون في حالته الأصلية مع تغليفه. سيتم استرداد المبلغ كاملاً خلال 5–7 أيام عمل.<br><br>
+          <span id="policy-return-text">يمكنك إرجاع أي منتج خلال 30 يوماً من تاريخ الاستلام، شريطة أن يكون في حالته الأصلية مع تغليفه. سيتم استرداد المبلغ كاملاً خلال 5–7 أيام عمل.</span><br><br>
           <strong>📦 التتبع:</strong><br>
           ستصلك رسالة برقم التتبع فور شحن الطلبية.
         </div>
       </div>
+
     </div>
 
     <div class="related-sec">
@@ -664,6 +668,42 @@ function render() {
       savEl.textContent = `✅ وفّر ₪${savings.toFixed(0)} مع هذا العرض`;
     }
     document.getElementById('sticky-price').textContent = `₪${product.price}`;
+
+    // Render Carton Info
+    const cartonBox = document.getElementById('prod-carton-box');
+    if (cartonBox) {
+      if (product.pieces_per_carton > 1) {
+        const cartonPrice = product.price * product.pieces_per_carton;
+        cartonBox.innerHTML = `
+          <div style="padding:12px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; font-size:14px; color:#166534; display:flex; flex-direction:column; gap:4px; margin-bottom: 15px; text-align: right;">
+            <span>📦 <strong>البيع بالكرتونة:</strong> الكرتونة تحتوي على <strong>${product.pieces_per_carton}</strong> قطعة</span>
+            <span>💰 <strong>سعر الكرتونة:</strong> <strong style="font-size:16px;">₪${cartonPrice.toFixed(2)}</strong></span>
+          </div>
+        `;
+        const qtyLabel = document.querySelector('.qty-box .prod-option-label');
+        if (qtyLabel) qtyLabel.innerHTML = `الكمية (كرتونة):`;
+      } else {
+        cartonBox.innerHTML = '';
+      }
+    }
+
+    // Render Dynamic Stock Count
+    const stockCountEl = document.getElementById('stock-count');
+    const stockDotEl = document.getElementById('stock-dot');
+    const stockStatusEl = document.getElementById('stock-status');
+    if (stockCountEl && product.stock !== null && product.stock !== undefined && product.stock !== '') {
+      const qtyUnit = product.pieces_per_carton > 1 ? 'كرتونة' : 'قطعة';
+      const stockNum = parseInt(product.stock);
+      if (stockNum > 0) {
+        stockCountEl.textContent = `(المتبقي: ${stockNum} ${qtyUnit})`;
+        stockStatusEl.textContent = 'متوفر في المخزون';
+        if (stockDotEl) stockDotEl.style.background = '#16a34a';
+      } else {
+        stockCountEl.textContent = `(نفدت الكمية)`;
+        stockStatusEl.textContent = 'غير متوفر حالياً';
+        if (stockDotEl) stockDotEl.style.background = '#ef4444';
+      }
+    }
   } else {
     const priceBox = document.querySelector('.prod-price-box');
     if(priceBox) priceBox.innerHTML = '<div style="background:#f3f4f6;color:var(--text3);padding:10px;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;width:100%;">🔒 الأسعار للأعضاء فقط <br><a href="#" onclick="event.preventDefault();openModal(\'auth\')" style="color:var(--accent);text-decoration:underline;">سجل دخول لرؤية السعر</a></div>';
@@ -934,6 +974,18 @@ if (window.authUser !== null && window.authUser !== undefined) {
 }
 </script>
 <script src="enhancements.js?v=1785804552463"></script>
+<script>
+  // Load dynamic shipping & return policies
+  fetch('api/get_policies.php?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const shEl = document.getElementById('policy-shipping-text');
+      const rtEl = document.getElementById('policy-return-text');
+      if (shEl && data.shipping) shEl.textContent = data.shipping;
+      if (rtEl && data.returns)  rtEl.textContent = data.returns;
+    })
+    .catch(() => {}); // Silently fail - default text shown
+</script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

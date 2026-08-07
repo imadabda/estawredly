@@ -273,10 +273,10 @@
       <div class="breadcrumb">
         <a href="index.html">الرئيسية</a>
         <span>/</span>
-        <span>المتجر</span>
+        <span id="shop-breadcrumb-text">المتجر</span>
       </div>
-      <h1>🛒 المتجر</h1>
-      <p>آلاف المنتجات المستوردة من أفضل الموردين حول العالم</p>
+      <h1 id="shop-title-text">🛒 المتجر</h1>
+      <p id="shop-desc-text">آلاف المنتجات المستوردة من أفضل الموردين حول العالم</p>
     </div>
   </div>
 
@@ -503,6 +503,7 @@
       const q   = params.get('q')   || '';
       const cat = params.get('cat') || '';
       const sale= params.get('sale')|| '';
+      const brand = params.get('brand') || '';
 
       let products = [];
       if (typeof Store !== 'undefined') {
@@ -560,6 +561,17 @@
             console.error("Error loading icon mappings:", e);
             filtered = products.filter(p => (p.cat || '').toLowerCase().includes(cat.toLowerCase()));
         }
+      }
+      
+      if (brand) {
+          filtered = filtered.filter(p => (p.brand || '').toLowerCase() === brand.toLowerCase());
+          
+          const breadcrumbText = document.getElementById('shop-breadcrumb-text');
+          const titleText = document.getElementById('shop-title-text');
+          const descText = document.getElementById('shop-desc-text');
+          if (breadcrumbText) breadcrumbText.textContent = `الماركة: ${brand}`;
+          if (titleText) titleText.textContent = `🏷️ ماركة ${brand}`;
+          if (descText) descText.textContent = `تصفح جميع المنتجات التابعة لماركة ${brand}`;
       }
 
       // Render the products

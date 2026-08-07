@@ -241,6 +241,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Load Banners
     try {
       const res = await fetch('api/get_banners.php?t=' + Date.now());
       const banners = await res.json();
@@ -260,6 +261,19 @@
       }
     } catch (e) {
       console.error('Error loading banners:', e);
+    }
+
+    // 2. Load Brands dynamically
+    try {
+      const res = await fetch('api/get_brands.php?t=' + Date.now());
+      const brands = await res.json();
+      const container = document.querySelector('.brands-inner');
+      if (container && Array.isArray(brands) && brands.length > 0) {
+        const allBrands = [...brands, ...brands];
+        container.innerHTML = allBrands.map(b => `<div class="brand-item" onclick="window.location.href='shop.html?brand=${encodeURIComponent(b)}'" style="cursor:pointer;">${b}</div>`).join('');
+      }
+    } catch (e) {
+      console.error('Error loading brands:', e);
     }
   });
 </script>

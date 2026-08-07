@@ -148,12 +148,19 @@
       
       // 2. Render items
       const itemsContainer = document.getElementById('co-items');
-      itemsContainer.innerHTML = cart.map(i => `
-        <div class="ci-row">
-          <div>${i.name} <strong>(x${i.qty})</strong></div>
-          <div>₪${(i.price * i.qty).toLocaleString()}</div>
-        </div>
-      `).join('');
+      itemsContainer.innerHTML = cart.map(i => {
+        const qty = i.qty || 1;
+        const pcs = i.pieces_per_carton || 1;
+        return `
+          <div class="ci-row" style="align-items: flex-start;">
+            <div>
+              ${i.name} <strong>(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</strong>
+              ${pcs > 1 ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
+            </div>
+            <div>₪${(i.price * qty * pcs).toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
       
       let currentShipping = 0;
       const zoneSelect = document.getElementById('co-zone');
@@ -216,7 +223,15 @@
           address: address,
           zone: zone,
           notes: notes,
-          items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
+          items: cart.map(i => ({ 
+            id: i.id, 
+            name: i.name, 
+            price: i.price, 
+            qty: i.qty,
+            pieces_per_carton: i.pieces_per_carton || 1,
+            product_code: i.product_code || '',
+            factory_code: i.factory_code || ''
+          })),
           subtotal: state.cartTotal(),
           shipping_cost: currentShipping,
           total: state.cartTotal() + currentShipping
