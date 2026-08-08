@@ -13,6 +13,26 @@ const Store = (() => {
     DELIVERY : 'estawrdly_delivery',
   };
 
+  let currencyLoaded = false;
+  let currencySettings = {
+    enabled: false,
+    base_rate: 0.50,
+    current_rate: 0.50,
+    auto_fetch: true
+  };
+
+  const currencyPromise = fetch('api/get_currency.php?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      currencySettings = data;
+      currencyLoaded = true;
+    })
+    .catch(e => console.error('Error loading currency settings:', e));
+
+  function ensureReady() {
+    return currencyPromise;
+  }
+
   function _get(key, fallback = null) {
     try {
       const raw = localStorage.getItem(key);
@@ -29,14 +49,33 @@ const Store = (() => {
   // PRODUCTS
   
   function getProducts() {
-    // دائماً نعتمد على القاعدة المركزية أولاً لأنها تتحدث من السيرفر
+    let list = [];
     if (typeof PRODUCTS_DB !== 'undefined' && PRODUCTS_DB.length > 0) {
-      return PRODUCTS_DB;
+      list = PRODUCTS_DB;
+    } else {
+      const stored = _get(KEYS.PRODUCTS);
+      if (stored && stored.length > 0) list = stored;
     }
-    // احتياطياً فقط
-    const stored = _get(KEYS.PRODUCTS);
-    if (stored && stored.length > 0) return stored;
-    return [];
+
+    const isAdminPage = window.location.pathname.endsWith('admin.php') || (typeof adminProducts !== 'undefined');
+    if (!isAdminPage && currencySettings.enabled && currencySettings.base_rate > 0) {
+      const multiplier = currencySettings.current_rate / currencySettings.base_rate;
+      if (multiplier !== 1.0) {
+        return list.map(p => {
+          const item = { ...p };
+          if (item.price) {
+            const pr = parseFloat(item.price);
+            if (!isNaN(pr)) item.price = Math.round((pr * multiplier) * 100) / 100;
+          }
+          if (item.oldPrice) {
+            const opr = parseFloat(item.oldPrice);
+            if (!isNaN(opr)) item.oldPrice = Math.round((opr * multiplier) * 100) / 100;
+          }
+          return item;
+        });
+      }
+    }
+    return list;
   }
 
   function saveProducts(products) {
@@ -318,6 +357,7 @@ const Store = (() => {
   seedAdmin();
 
   return {
+    ensureReady,
     // Products
     getProducts, saveProducts, getProduct,
     addProduct, updateProduct, deleteProduct,

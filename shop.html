@@ -507,6 +507,7 @@
 
       let products = [];
       if (typeof Store !== 'undefined') {
+        await Store.ensureReady();
         products = Store.getProducts();
       }
 

@@ -130,7 +130,10 @@
   <script src="auth.js?v=1785802153537"></script>
 <script src="main.js?v=1785802153537"></script>
   <script>
-    window.addEventListener('authLoaded', () => {
+    window.addEventListener('authLoaded', async () => {
+      if (typeof Store !== 'undefined') {
+        await Store.ensureReady();
+      }
       // 0. Check if user is active
       if (!window.authUser || window.authUser.status !== 'active') {
         alert('يرجى تسجيل الدخول بعضوية مفعلة لإتمام الطلب.');

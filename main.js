@@ -567,11 +567,28 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// INIT
-window.addEventListener('authLoaded', ()=>{
-  // Load products from Store
+window.addEventListener('authLoaded', async ()=>{
+  // Load products from Store after currency settings are ready
   if (typeof Store !== 'undefined') {
+    await Store.ensureReady();
     PRODUCTS_LIVE = Store.getProducts();
+
+    // Sync cart prices with dynamic exchange-rate adjusted prices
+    if (state.cart && state.cart.length > 0) {
+      let cartUpdated = false;
+      state.cart = state.cart.map(item => {
+        const lp = PRODUCTS_LIVE.find(p => String(p.id) === String(item.id));
+        if (lp && lp.price !== item.price) {
+          item.price = lp.price;
+          cartUpdated = true;
+        }
+        return item;
+      });
+      if (cartUpdated) {
+        state.saveCart();
+        updateCartUI();
+      }
+    }
   }
   const flashProds = PRODUCTS_LIVE.filter(p => p.badge === 'sale' || p.badge === 'hot').slice(0, 16);
   const newProds   = PRODUCTS_LIVE.filter(p => p.badge === 'new').slice(0, 16);

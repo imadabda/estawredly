@@ -1493,7 +1493,7 @@ tr:last-child td{border-bottom:none}
             <h1 class="page-title">إعدادات المتجر</h1>
             <p class="page-sub">تخصيص الهوية البصرية والإعدادات العامة</p>
           </div>
-          <button class="btn-add" onclick="adminPolicies.save()">💾 حفظ التغييرات</button>
+          <button class="btn-add" onclick="saveAllSettings()">💾 حفظ التغييرات</button>
         </div>
         <div class="settings-grid">
           <div class="setting-card">
@@ -1548,7 +1548,33 @@ tr:last-child td{border-bottom:none}
                <label>سياسة الارتجاع</label>
                <textarea id="sett-return-policy" style="min-height:80px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1); font-family:inherit;"></textarea>
              </div>
-           </div>
+            </div>
+
+          <div class="setting-card">
+            <h3>🔗 ربط العملة بالرنمينبي الصيني (RMB/CNY)</h3>
+            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">اربط أسعار منتجاتك بالشيكل مع سعر الصرف الصيني لحمايتك من تقلبات العملة تلقائياً.</p>
+            <div class="setting-row">
+              <div class="setting-row-info"><strong>تفعيل ربط الأسعار</strong><small>تطبيق معامل التغير على أسعار المتجر</small></div>
+              <label class="toggle"><input type="checkbox" id="sett-currency-enabled" onchange="adminCurrency.toggleFields()"/><div class="toggle-slider"></div></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-row-info"><strong>التحديث التلقائي</strong><small>جلب سعر الصرف تلقائياً من البورصة</small></div>
+              <label class="toggle"><input type="checkbox" id="sett-currency-auto" onchange="adminCurrency.toggleFields()"/><div class="toggle-slider"></div></label>
+            </div>
+            <div class="field" style="margin-top:12px">
+              <label>سعر الصرف الأساسي (Base Exchange Rate)</label>
+              <input type="number" id="sett-currency-base" step="0.0001" placeholder="مثال: 0.50" value="0.50"/>
+            </div>
+            <div class="field" style="margin-top:12px">
+              <label>سعر الصرف الحالي (Current Exchange Rate)</label>
+              <input type="number" id="sett-currency-current" step="0.0001" placeholder="مثال: 0.51" value="0.50"/>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:10px;">
+              <button class="btn" style="flex:1" id="btn-currency-fetch" onclick="adminCurrency.fetchLive()">🔄 تحديث الآن من البورصة</button>
+            </div>
+            <div id="currency-last-update" style="font-size:11px; color:var(--text3); margin-top:8px; text-align:center;"></div>
+          </div>
+
           <div class="setting-card">
             <h3>🔔 الإشعارات</h3>
             <div class="setting-row"><div class="setting-row-info"><strong>إشعار طلبية جديدة</strong><small>إشعار فوري عند كل طلبية</small></div><label class="toggle"><input type="checkbox" checked/><div class="toggle-slider"></div></label></div>
@@ -1692,7 +1718,10 @@ function showPage(id, el) {
   if (id === 'hero')  adminSliders.load();
   if (id === 'banners')  adminBanners.load();
   if (id === 'brands')  adminBrands.load();
-  if (id === 'settings') adminPolicies.load();
+  if (id === 'settings') {
+      adminPolicies.load();
+      adminCurrency.load();
+  }
 
   if (id === 'categories') renderCategories();
   if (id === 'notifications') renderNotifs();
@@ -3177,6 +3206,136 @@ const adminPolicies = {
         }
     }
 };
+
+const adminCurrency = {
+    async load() {
+        try {
+            const res = await fetch('api/get_currency.php?t=' + Date.now());
+            const data = await res.json();
+            
+            const enabledEl = document.getElementById('sett-currency-enabled');
+            const autoEl = document.getElementById('sett-currency-auto');
+            const baseEl = document.getElementById('sett-currency-base');
+            const currentEl = document.getElementById('sett-currency-current');
+            const updateEl = document.getElementById('currency-last-update');
+            
+            if (enabledEl) enabledEl.checked = data.enabled || false;
+            if (autoEl) autoEl.checked = data.auto_fetch || false;
+            if (baseEl) baseEl.value = data.base_rate || 0.50;
+            if (currentEl) currentEl.value = data.current_rate || 0.50;
+            if (updateEl && data.last_updated) {
+                updateEl.textContent = 'آخر تحديث تلقائي: ' + data.last_updated;
+            } else if (updateEl) {
+                updateEl.textContent = '';
+            }
+            this.toggleFields();
+        } catch(e) {
+            console.error('Error loading currency settings:', e);
+        }
+    },
+
+    toggleFields() {
+        const enabled = document.getElementById('sett-currency-enabled')?.checked || false;
+        const auto = document.getElementById('sett-currency-auto')?.checked || false;
+        
+        const autoEl = document.getElementById('sett-currency-auto');
+        const baseEl = document.getElementById('sett-currency-base');
+        const currentEl = document.getElementById('sett-currency-current');
+        const fetchBtn = document.getElementById('btn-currency-fetch');
+        
+        if (autoEl) autoEl.disabled = !enabled;
+        if (baseEl) baseEl.disabled = !enabled;
+        
+        if (currentEl) {
+            currentEl.disabled = !enabled || auto;
+        }
+        if (fetchBtn) {
+            fetchBtn.disabled = !enabled || !auto;
+        }
+    },
+
+    async fetchLive() {
+        const fetchBtn = document.getElementById('btn-currency-fetch');
+        if (fetchBtn) {
+            fetchBtn.disabled = true;
+            fetchBtn.textContent = '⏳ جاري الجلب...';
+        }
+        try {
+            const res = await fetch('api/save_currency.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ force_fetch: true })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ تم جلب سعر الصرف وتحديثه بنجاح!');
+                this.load();
+            } else {
+                showToast('❌ فشل الجلب: ' + (data.message || ''), 'error');
+            }
+        } catch(e) {
+            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
+        } finally {
+            if (fetchBtn) {
+                fetchBtn.textContent = '🔄 تحديث الآن من البورصة';
+                this.toggleFields();
+            }
+        }
+    },
+
+    async save() {
+        const enabled = document.getElementById('sett-currency-enabled')?.checked || false;
+        const auto = document.getElementById('sett-currency-auto')?.checked || false;
+        const base = parseFloat(document.getElementById('sett-currency-base')?.value || '0.50');
+        const current = parseFloat(document.getElementById('sett-currency-current')?.value || '0.50');
+        
+        try {
+            const res = await fetch('api/save_currency.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    enabled,
+                    auto_fetch: auto,
+                    base_rate: base,
+                    current_rate: current
+                })
+            });
+            const data = await res.json();
+            return data.success;
+        } catch(e) {
+            console.error('Error saving currency settings:', e);
+            return false;
+        }
+    }
+};
+
+async function saveAllSettings() {
+    const shipping = document.getElementById('sett-shipping-policy')?.value || '';
+    const returns = document.getElementById('sett-return-policy')?.value || '';
+    let success = true;
+    try {
+        const res = await fetch('api/save_policies.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ shipping, returns })
+        });
+        const data = await res.json();
+        if (!data.success) success = false;
+    } catch(e) {
+        success = false;
+    }
+
+    const currencySuccess = await adminCurrency.save();
+    if (!currencySuccess) success = false;
+
+    if (success) {
+        showToast('✅ تم حفظ كافة الإعدادات بنجاح!');
+        adminCurrency.load();
+    } else {
+        showToast('❌ حدث خطأ أثناء حفظ بعض الإعدادات', 'error');
+    }
+}
+
 
 const adminNav = {
 

@@ -587,7 +587,13 @@
 <script src="auth.js?v=1785804552463"></script>
 <script src="main.js?v=1785804552463"></script>
 <script>
-const ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
+let ALL_PRODUCTS = [];
+let product = {};
+let extra = {};
+let BASE_IMG = '';
+let IMAGES = [];
+let PRODUCT_VARIANTS = null;
+let isWished = false;
 
 // Extra data per product (desc, specs, images)
 const EXTRA = {
@@ -616,22 +622,22 @@ const EXTRA = {
 
 const params = new URLSearchParams(location.search);
 const productId = parseInt(params.get('id')) || 1;
-const product = ALL_PRODUCTS.find(p => p.id === productId) || ALL_PRODUCTS[0];
-const extra = EXTRA[productId] || EXTRA.default;
 
-// Build IMAGES array: main image + any additional images saved on the product
-const BASE_IMG = product.img;
-const additionalImgs = product.images && product.images.length > 0 ? product.images : (extra.images || []);
-const IMAGES = [BASE_IMG, ...additionalImgs];
-
-// Build variants from product.variants (saved via admin)
-const PRODUCT_VARIANTS = product.variants && product.variants.length > 0 ? product.variants : null;
+function initProduct() {
+  ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
+  product = ALL_PRODUCTS.find(p => p.id === productId) || ALL_PRODUCTS[0] || {};
+  extra = EXTRA[product.id] || EXTRA.default;
+  BASE_IMG = product.img || '';
+  const additionalImgs = product.images && product.images.length > 0 ? product.images : (extra.images || []);
+  IMAGES = [BASE_IMG, ...additionalImgs];
+  PRODUCT_VARIANTS = product.variants && product.variants.length > 0 ? product.variants : null;
+  isWished = typeof state !== 'undefined' ? state.wishlist.has(product.id) : false;
+}
 
 let currentQty = 1;
 let selectedVariants = {};
 let currentColor = null;
 let currentSize  = null;
-let isWished = state.wishlist.has(product.id);
 
 function render() {
   // Title
@@ -965,15 +971,27 @@ window.addEventListener('scroll', () => {
 
 // Always wait for auth check to complete before rendering
 // This prevents showing the wrong price or blank content
-if (window.authUser !== null && window.authUser !== undefined) {
-  // Auth was already resolved synchronously (unlikely but safe)
+window.addEventListener('authLoaded', async () => {
+  if (typeof Store !== 'undefined') {
+    await Store.ensureReady();
+  }
+  initProduct();
   render();
-} else {
-  // Wait for the async auth check to complete
-  window.addEventListener('authLoaded', render, { once: true });
-}
+}, { once: true });
 </script>
 <script src="enhancements.js?v=1785804552463"></script>
+<script>
+  // Load dynamic shipping & return policies
+  fetch('api/get_policies.php?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const shEl = document.getElementById('policy-shipping-text');
+      const rtEl = document.getElementById('policy-return-text');
+      if (shEl && data.shipping) shEl.textContent = data.shipping;
+      if (rtEl && data.returns)  rtEl.textContent = data.returns;
+    })
+    .catch(() => {}); // Silently fail - default text shown
+</script>
 <script>
   // Load dynamic shipping & return policies
   fetch('api/get_policies.php?t=' + Date.now())
