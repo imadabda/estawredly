@@ -16,14 +16,34 @@ if (!isset($pdo)) {
 }
 
 try {
+    $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
     // 2. Clear all orders
     $pdo->exec("DELETE FROM orders");
     
-    // Reset SQLite auto-increment if SQLite
-    @$pdo->exec("DELETE FROM sqlite_sequence WHERE name='orders'");
+    // Reset auto-increment based on database engine
+    if ($driver === 'sqlite') {
+        try {
+            $pdo->exec("DELETE FROM sqlite_sequence WHERE name='orders'");
+        } catch (PDOException $e) {}
+    } else {
+        try {
+            $pdo->exec("ALTER TABLE orders AUTO_INCREMENT = 1");
+        } catch (PDOException $e) {}
+    }
 
     // 3. Clear all users except the admin user(s)
     $pdo->exec("DELETE FROM users WHERE role != 'admin'");
+    
+    if ($driver === 'sqlite') {
+        try {
+            $pdo->exec("DELETE FROM sqlite_sequence WHERE name='users'");
+        } catch (PDOException $e) {}
+    } else {
+        try {
+            $pdo->exec("ALTER TABLE users AUTO_INCREMENT = 1");
+        } catch (PDOException $e) {}
+    }
     
     echo json_encode([
         'success' => true, 
