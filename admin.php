@@ -2206,8 +2206,17 @@ function renderProducts(list) {
   const grid = document.getElementById('products-grid');
   if (!grid) return;
   if (!list.length) { grid.innerHTML='<div class="empty-state"><div class="es-icon">📦</div><p>لا توجد منتجات</p></div>'; return; }
+  
+  let multiplier = 1;
+  if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
+      multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
+  }
+
   grid.innerHTML = list.map(p => {
-    const disc = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100) : 0;
+    const finalPrice = parseFloat((p.price * multiplier).toFixed(2));
+    const finalOldPrice = p.oldPrice ? parseFloat((p.oldPrice * multiplier).toFixed(2)) : null;
+    const finalCostPrice = p.costPrice ? parseFloat((p.costPrice * multiplier).toFixed(2)) : 0;
+    const disc = finalOldPrice ? Math.round((1-finalPrice/finalOldPrice)*100) : 0;
     const badgeNames = {sale:`-${disc}%`,new:'جديد',hot:'رائج',best:'مميز'};
     return `
       <div class="prod-admin-card">
@@ -2224,11 +2233,11 @@ function renderProducts(list) {
           <div class="pac-cat">${p.cat}</div>
           <div class="pac-name">${p.name}</div>
           <div class="pac-price">
-            <span class="pac-price-main">₪${p.price}</span>
-            ${p.oldPrice?`<span class="pac-price-old">₪${p.oldPrice}</span>`:''}
+            <span class="pac-price-main">₪${finalPrice}</span>
+            ${finalOldPrice?`<span class="pac-price-old">₪${finalOldPrice}</span>`:''}
           </div>
           <div style="font-size:11px;color:var(--text3);margin-bottom:8px">
-            المربح: <strong style="color:var(--green)">₪${Math.max(0, p.price - (p.costPrice || 0))}</strong>
+            المربح: <strong style="color:var(--green)">₪${Math.max(0, finalPrice - finalCostPrice).toFixed(2)}</strong>
           </div>
           <div class="pac-stats">
             <span class="pac-stat">⭐ <strong>${p.stars}</strong></span>
@@ -2399,10 +2408,15 @@ function openModal(p) {
   }
   document.getElementById('f-icon-cat').value = mappedIcon;
 
+  let multiplier = 1;
+  if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
+      multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
+  }
+
   document.getElementById('f-badge').value = p?.badge || '';
-  document.getElementById('f-price').value = p?.price || '';
-  document.getElementById('f-cost-price').value = p?.costPrice || '';
-  document.getElementById('f-old-price').value = p?.oldPrice || '';
+  document.getElementById('f-price').value = p ? parseFloat((p.price * multiplier).toFixed(2)) : '';
+  document.getElementById('f-cost-price').value = (p && p.costPrice) ? parseFloat((p.costPrice * multiplier).toFixed(2)) : '';
+  document.getElementById('f-old-price').value = (p && p.oldPrice) ? parseFloat((p.oldPrice * multiplier).toFixed(2)) : '';
   document.getElementById('f-stars').value = p?.stars || '';
   document.getElementById('f-reviews').value = p?.reviews || '';
   document.getElementById('f-stock').value = (p && p.stock !== undefined) ? p.stock : '';
@@ -2463,8 +2477,19 @@ function editProduct(id) {
 function saveProduct() {
   if(typeof syncVariantsFromDOM === "function") syncVariantsFromDOM();
   const name = document.getElementById('f-name').value.trim();
-  const price = parseFloat(document.getElementById('f-price').value);
-  const costPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
+  
+  let multiplier = 1;
+  if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
+      multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
+  }
+
+  const rawPrice = parseFloat(document.getElementById('f-price').value);
+  const price = isNaN(rawPrice) ? NaN : parseFloat((rawPrice / multiplier).toFixed(4));
+  const rawCostPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
+  const costPrice = parseFloat((rawCostPrice / multiplier).toFixed(4));
+  const rawOldPrice = parseFloat(document.getElementById('f-old-price').value) || null;
+  const oldPrice = rawOldPrice ? parseFloat((rawOldPrice / multiplier).toFixed(4)) : null;
+
   const stockStr = document.getElementById('f-stock').value;
   const stock = stockStr === '' ? null : parseInt(stockStr);
   const cartonPiecesStr = document.getElementById('f-pieces-per-carton').value;
@@ -2486,7 +2511,7 @@ function saveProduct() {
     badge: document.getElementById('f-badge').value,
     price,
     costPrice,
-    oldPrice: parseFloat(document.getElementById('f-old-price').value) || null,
+    oldPrice,
     stars: parseFloat(document.getElementById('f-stars').value) || 4.5,
     reviews: parseInt(document.getElementById('f-reviews').value) || 0,
     stock: stock,
