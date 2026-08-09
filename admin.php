@@ -896,6 +896,10 @@ tr:last-child td{border-bottom:none}
               <option value="">بدون ماركة</option>
             </select>
           </div>
+          <div class="field full" style="margin-top:12px">
+            <label>📋 ملاحظات الرقم المرجعي (تظهر فقط في الفاتورة للطباعة والمعاينة)</label>
+            <input type="text" id="f-ref-note" placeholder="مثال: رقم الرف، كود المورد الداخلي، أو أي ملاحظة خاصة"/>
+          </div>
           <div class="field">
             <label>تصنيف التبويب <span style="color:var(--text3);font-size:10px">(للفلترة)</span></label>
             <select id="f-tab">
@@ -1573,6 +1577,43 @@ tr:last-child td{border-bottom:none}
               <button class="btn" style="flex:1" id="btn-currency-fetch" onclick="adminCurrency.fetchLive()">🔄 تحديث الآن من البورصة</button>
             </div>
             <div id="currency-last-update" style="font-size:11px; color:var(--text3); margin-top:8px; text-align:center;"></div>
+          </div>
+
+          <div class="setting-card">
+            <h3>🚚 نصوص التوصيل وبطاقات الثقة</h3>
+            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">تحرير نصوص التوصيل والضمان وبطاقات الأمان في صفحة المنتج.</p>
+            <div class="field"><label>عنوان التوصيل السريع</label><input type="text" id="sett-delivery-title" placeholder="مثال: وصول سريع خلال 2–5 أيام عمل"/></div>
+            <div class="field" style="margin-top:10px"><label>تفاصيل الشحن (العنوان الفرعي)</label><input type="text" id="sett-delivery-subtitle" placeholder="مثال: شحن مجاني للطلبات فوق ₪200"/></div>
+            
+            <div style="border-top:1px solid var(--border);margin-top:15px;padding-top:15px">
+              <strong style="font-size:13px;display:block;margin-bottom:10px">🔒 بطاقة الثقة 1 (🔒 دفع آمن)</strong>
+              <div class="setting-row">
+                <div class="setting-row-info"><strong>تفعيل ظهور البطاقة</strong></div>
+                <label class="toggle"><input type="checkbox" id="sett-badge1-visible" checked/><div class="toggle-slider"></div></label>
+              </div>
+              <div class="field" style="margin-top:8px"><label>العنوان الرئيسي</label><input type="text" id="sett-badge1-title" value="دفع آمن"/></div>
+              <div class="field" style="margin-top:8px"><label>العنوان الفرعي</label><input type="text" id="sett-badge1-subtitle" value="100% مشفر"/></div>
+            </div>
+
+            <div style="border-top:1px solid var(--border);margin-top:15px;padding-top:15px">
+              <strong style="font-size:13px;display:block;margin-bottom:10px">↩️ بطاقة الثقة 2 (↩️ إرجاع مجاني)</strong>
+              <div class="setting-row">
+                <div class="setting-row-info"><strong>تفعيل ظهور البطاقة</strong></div>
+                <label class="toggle"><input type="checkbox" id="sett-badge2-visible" checked/><div class="toggle-slider"></div></label>
+              </div>
+              <div class="field" style="margin-top:8px"><label>العنوان الرئيسي</label><input type="text" id="sett-badge2-title" value="إرجاع مجاني"/></div>
+              <div class="field" style="margin-top:8px"><label>العنوان الفرعي</label><input type="text" id="sett-badge2-subtitle" value="خلال 30 يوم"/></div>
+            </div>
+
+            <div style="border-top:1px solid var(--border);margin-top:15px;padding-top:15px">
+              <strong style="font-size:13px;display:block;margin-bottom:10px">🏅 بطاقة الثقة 3 (🏅 منتج أصلي)</strong>
+              <div class="setting-row">
+                <div class="setting-row-info"><strong>تفعيل ظهور البطاقة</strong></div>
+                <label class="toggle"><input type="checkbox" id="sett-badge3-visible" checked/><div class="toggle-slider"></div></label>
+              </div>
+              <div class="field" style="margin-top:8px"><label>العنوان الرئيسي</label><input type="text" id="sett-badge3-title" value="منتج أصلي"/></div>
+              <div class="field" style="margin-top:8px"><label>العنوان الفرعي</label><input type="text" id="sett-badge3-subtitle" value="ضمان الأصالة"/></div>
+            </div>
           </div>
 
           <div class="setting-card">
@@ -2377,6 +2418,7 @@ function openModal(p) {
   document.getElementById('f-pieces-per-carton').value = p?.pieces_per_carton || '';
   document.getElementById('f-product-code').value = p?.product_code || '';
   document.getElementById('f-factory-code').value = p?.factory_code || '';
+  document.getElementById('f-ref-note').value = p?.ref_note || '';
   document.getElementById('f-tab').value = p?.tab || 'all';
   document.getElementById('f-img-url').value = p?.img || '';
   document.getElementById('f-desc').value = p?.desc || '';
@@ -2451,6 +2493,7 @@ function saveProduct() {
     pieces_per_carton,
     product_code,
     factory_code,
+    ref_note: document.getElementById('f-ref-note').value.trim(),
     tab: document.getElementById('f-tab').value || 'all',
     img: document.getElementById('f-img-url').value || document.getElementById('img-preview-el').src || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
     active: pToEdit ? pToEdit.active : true,
@@ -2764,9 +2807,11 @@ function printOrder(id) {
             const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
             const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
             const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
+            const ref_note = originalProduct ? (originalProduct.ref_note || '') : '';
             const codeInfo = [
                 product_code ? `كود المنتج: ${product_code}` : '',
-                factory_code ? `كود المصنع: ${factory_code}` : ''
+                factory_code ? `كود المصنع: ${factory_code}` : '',
+                ref_note ? `الرقم المرجعي: ${ref_note}` : ''
             ].filter(Boolean).join(' | ');
             return `
                 <tr>
@@ -2866,9 +2911,11 @@ function viewOrder(id) {
             const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
             const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
             const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
+            const ref_note = originalProduct ? (originalProduct.ref_note || '') : '';
             const codeInfo = [
                 product_code ? `كود المنتج: ${product_code}` : '',
-                factory_code ? `كود المصنع: ${factory_code}` : ''
+                factory_code ? `كود المصنع: ${factory_code}` : '',
+                ref_note ? `الرقم المرجعي: ${ref_note}` : ''
             ].filter(Boolean).join(' | ');
             return `
                 <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
@@ -3181,6 +3228,36 @@ const adminPolicies = {
             const returnEl = document.getElementById('sett-return-policy');
             if (shippingEl) shippingEl.value = data.shipping || '';
             if (returnEl) returnEl.value = data.returns || '';
+
+            // Delivery Box
+            const delTitleEl = document.getElementById('sett-delivery-title');
+            const delSubEl = document.getElementById('sett-delivery-subtitle');
+            if (delTitleEl) delTitleEl.value = data.delivery_title || 'وصول سريع خلال 2–5 أيام عمل';
+            if (delSubEl) delSubEl.value = data.delivery_subtitle || 'شحن مجاني للطلبات فوق ₪200';
+
+            // Badge 1
+            const b1Visible = document.getElementById('sett-badge1-visible');
+            const b1Title = document.getElementById('sett-badge1-title');
+            const b1Sub = document.getElementById('sett-badge1-subtitle');
+            if (b1Visible) b1Visible.checked = data.badge1_visible !== false && data.badge1_visible !== 'false' && data.badge1_visible !== '';
+            if (b1Title) b1Title.value = data.badge1_title || 'دفع آمن';
+            if (b1Sub) b1Sub.value = data.badge1_subtitle || '100% مشفر';
+
+            // Badge 2
+            const b2Visible = document.getElementById('sett-badge2-visible');
+            const b2Title = document.getElementById('sett-badge2-title');
+            const b2Sub = document.getElementById('sett-badge2-subtitle');
+            if (b2Visible) b2Visible.checked = data.badge2_visible !== false && data.badge2_visible !== 'false' && data.badge2_visible !== '';
+            if (b2Title) b2Title.value = data.badge2_title || 'إرجاع مجاني';
+            if (b2Sub) b2Sub.value = data.badge2_subtitle || 'خلال 30 يوم';
+
+            // Badge 3
+            const b3Visible = document.getElementById('sett-badge3-visible');
+            const b3Title = document.getElementById('sett-badge3-title');
+            const b3Sub = document.getElementById('sett-badge3-subtitle');
+            if (b3Visible) b3Visible.checked = data.badge3_visible !== false && data.badge3_visible !== 'false' && data.badge3_visible !== '';
+            if (b3Title) b3Title.value = data.badge3_title || 'منتج أصلي';
+            if (b3Sub) b3Sub.value = data.badge3_subtitle || 'ضمان الأصالة';
         } catch(e) {
             console.error('Error loading policies:', e);
         }
@@ -3189,17 +3266,46 @@ const adminPolicies = {
     async save() {
         const shipping = document.getElementById('sett-shipping-policy')?.value || '';
         const returns = document.getElementById('sett-return-policy')?.value || '';
+        const delivery_title = document.getElementById('sett-delivery-title')?.value || '';
+        const delivery_subtitle = document.getElementById('sett-delivery-subtitle')?.value || '';
+        
+        const badge1_visible = document.getElementById('sett-badge1-visible')?.checked || false;
+        const badge1_title = document.getElementById('sett-badge1-title')?.value || '';
+        const badge1_subtitle = document.getElementById('sett-badge1-subtitle')?.value || '';
+
+        const badge2_visible = document.getElementById('sett-badge2-visible')?.checked || false;
+        const badge2_title = document.getElementById('sett-badge2-title')?.value || '';
+        const badge2_subtitle = document.getElementById('sett-badge2-subtitle')?.value || '';
+
+        const badge3_visible = document.getElementById('sett-badge3-visible')?.checked || false;
+        const badge3_title = document.getElementById('sett-badge3-title')?.value || '';
+        const badge3_subtitle = document.getElementById('sett-badge3-subtitle')?.value || '';
+
         try {
             const res = await fetch('api/save_policies.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ shipping, returns })
+                body: JSON.stringify({ 
+                    shipping, 
+                    returns,
+                    delivery_title,
+                    delivery_subtitle,
+                    badge1_visible,
+                    badge1_title,
+                    badge1_subtitle,
+                    badge2_visible,
+                    badge2_title,
+                    badge2_subtitle,
+                    badge3_visible,
+                    badge3_title,
+                    badge3_subtitle
+                })
             });
             const data = await res.json();
             if (data.success) {
-                showToast('✅ تم حفظ السياسات بنجاح!');
+                showToast('✅ تم حفظ الإعدادات بنجاح!');
             } else {
-                showToast('❌ فشل في حفظ السياسات: ' + (data.message || ''), 'error');
+                showToast('❌ فشل في حفظ الإعدادات: ' + (data.message || ''), 'error');
             }
         } catch(e) {
             showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
@@ -3312,12 +3418,41 @@ const adminCurrency = {
 async function saveAllSettings() {
     const shipping = document.getElementById('sett-shipping-policy')?.value || '';
     const returns = document.getElementById('sett-return-policy')?.value || '';
+    const delivery_title = document.getElementById('sett-delivery-title')?.value || '';
+    const delivery_subtitle = document.getElementById('sett-delivery-subtitle')?.value || '';
+    
+    const badge1_visible = document.getElementById('sett-badge1-visible')?.checked || false;
+    const badge1_title = document.getElementById('sett-badge1-title')?.value || '';
+    const badge1_subtitle = document.getElementById('sett-badge1-subtitle')?.value || '';
+
+    const badge2_visible = document.getElementById('sett-badge2-visible')?.checked || false;
+    const badge2_title = document.getElementById('sett-badge2-title')?.value || '';
+    const badge2_subtitle = document.getElementById('sett-badge2-subtitle')?.value || '';
+
+    const badge3_visible = document.getElementById('sett-badge3-visible')?.checked || false;
+    const badge3_title = document.getElementById('sett-badge3-title')?.value || '';
+    const badge3_subtitle = document.getElementById('sett-badge3-subtitle')?.value || '';
+
     let success = true;
     try {
         const res = await fetch('api/save_policies.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ shipping, returns })
+            body: JSON.stringify({ 
+                shipping, 
+                returns,
+                delivery_title,
+                delivery_subtitle,
+                badge1_visible,
+                badge1_title,
+                badge1_subtitle,
+                badge2_visible,
+                badge2_title,
+                badge2_subtitle,
+                badge3_visible,
+                badge3_title,
+                badge3_subtitle
+            })
         });
         const data = await res.json();
         if (!data.success) success = false;

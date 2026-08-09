@@ -179,7 +179,7 @@
   .share-btn:hover { border-color:var(--p); background:var(--p-light); transform:translateY(-2px); }
 
   /* Trust badges */
-  .prod-trust { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .prod-trust { display:grid; grid-template-columns:repeat(auto-fit, minmax(80px, 1fr)); gap:10px; }
   .trust-badge {
     display:flex; flex-direction:column; align-items:center; text-align:center;
     padding:14px 10px; border-radius:14px;
@@ -447,19 +447,19 @@
         </div>
 
         <!-- Delivery -->
-        <div class="delivery-box">
-          <div class="icon">ğŸšš</div>
+        <div class="delivery-box" id="delivery-box-container" style="display: none;">
+          <div class="icon">&#128666;</div>
           <div>
-            <strong>ÙˆØµÙˆÙ„ Ø³Ø±ÙŠØ¹ Ø®Ù„Ø§Ù„ 2â€“5 Ø£ÙŠØ§Ù… Ø¹Ù…Ù„</strong>
-            <small>Ø´Ø­Ù† Ù…Ø¬Ø§Ù†ÙŠ Ù„Ù„Ø·Ù„Ø¨Ø§Øª ÙÙˆÙ‚ â‚ª200</small>
+            <strong id="policy-delivery-title">æÕæá ÓÑíÚ ÎáÇá 2–5 ÃíÇã Úãá</strong>
+            <small id="policy-delivery-subtitle">ÔÍä ãÌÇäí ááØáÈÇÊ İæŞ &#8362;200</small>
           </div>
         </div>
 
         <!-- Trust -->
-        <div class="prod-trust">
-          <div class="trust-badge"><div class="tb-icon">ğŸ”’</div><strong>Ø¯ÙØ¹ Ø¢Ù…Ù†</strong>100% Ù…Ø´ÙØ±</div>
-          <div class="trust-badge"><div class="tb-icon">â†©ï¸</div><strong>Ø¥Ø±Ø¬Ø§Ø¹ Ù…Ø¬Ø§Ù†ÙŠ</strong>Ø®Ù„Ø§Ù„ 30 ÙŠÙˆÙ…</div>
-          <div class="trust-badge"><div class="tb-icon">ğŸ…</div><strong>Ù…Ù†ØªØ¬ Ø£ØµÙ„ÙŠ</strong>Ø¶Ù…Ø§Ù† Ø§Ù„Ø£ØµØ§Ù„Ø©</div>
+        <div class="prod-trust" id="prod-trust-container">
+          <div class="trust-badge" id="trust-badge-1"><div class="tb-icon">&#128274;</div><strong id="trust-title-1">ÏİÚ Âãä</strong><span id="trust-sub-1">100% ãÔİÑ</span></div>
+          <div class="trust-badge" id="trust-badge-2"><div class="tb-icon">&#8617;&#65039;</div><strong id="trust-title-2">ÅÑÌÇÚ ãÌÇäí</strong><span id="trust-sub-2">ÎáÇá 30 íæã</span></div>
+          <div class="trust-badge" id="trust-badge-3"><div class="tb-icon">&#127941;</div><strong id="trust-title-3">ãäÊÌ ÃÕáí</strong><span id="trust-sub-3">ÖãÇä ÇáÃÕÇáÉ</span></div>
         </div>
 
         <!-- Share -->
@@ -979,30 +979,74 @@ window.addEventListener('authLoaded', async () => {
   render();
 }, { once: true });
 </script>
-<script src="enhancements.js?v=1785804552463"></script>
+<script src="enhancements.js?v=1786117170000"></script>
 <script>
-  // Load dynamic shipping & return policies
+  // Load dynamic shipping, return, delivery & trust badge settings
   fetch('api/get_policies.php?t=' + Date.now())
     .then(r => r.json())
     .then(data => {
+      // Shipping tab
       const shEl = document.getElementById('policy-shipping-text');
       const rtEl = document.getElementById('policy-return-text');
       if (shEl && data.shipping) shEl.textContent = data.shipping;
       if (rtEl && data.returns)  rtEl.textContent = data.returns;
+      
+      // Delivery Box
+      const deliveryBox = document.getElementById('delivery-box-container');
+      const delTitle = document.getElementById('policy-delivery-title');
+      const delSub = document.getElementById('policy-delivery-subtitle');
+      if (deliveryBox) {
+        if (data.delivery_title || data.delivery_subtitle) {
+          if (delTitle) delTitle.textContent = data.delivery_title || '';
+          if (delSub) delSub.textContent = data.delivery_subtitle || '';
+          deliveryBox.style.display = 'flex';
+        } else {
+          deliveryBox.style.display = 'none';
+        }
+      }
+      
+      // Trust Badges
+      const badge1 = document.getElementById('trust-badge-1');
+      const badge2 = document.getElementById('trust-badge-2');
+      const badge3 = document.getElementById('trust-badge-3');
+      
+      if (badge1) {
+        if (data.badge1_visible !== false && data.badge1_visible !== 'false' && data.badge1_visible !== '') {
+          badge1.style.display = 'flex';
+          const t1 = document.getElementById('trust-title-1');
+          const s1 = document.getElementById('trust-sub-1');
+          if (t1 && data.badge1_title) t1.textContent = data.badge1_title;
+          if (s1 && data.badge1_subtitle) s1.textContent = data.badge1_subtitle;
+        } else {
+          badge1.style.display = 'none';
+        }
+      }
+      
+      if (badge2) {
+        if (data.badge2_visible !== false && data.badge2_visible !== 'false' && data.badge2_visible !== '') {
+          badge2.style.display = 'flex';
+          const t2 = document.getElementById('trust-title-2');
+          const s2 = document.getElementById('trust-sub-2');
+          if (t2 && data.badge2_title) t2.textContent = data.badge2_title;
+          if (s2 && data.badge2_subtitle) s2.textContent = data.badge2_subtitle;
+        } else {
+          badge2.style.display = 'none';
+        }
+      }
+      
+      if (badge3) {
+        if (data.badge3_visible !== false && data.badge3_visible !== 'false' && data.badge3_visible !== '') {
+          badge3.style.display = 'flex';
+          const t3 = document.getElementById('trust-title-3');
+          const s3 = document.getElementById('trust-sub-3');
+          if (t3 && data.badge3_title) t3.textContent = data.badge3_title;
+          if (s3 && data.badge3_subtitle) s3.textContent = data.badge3_subtitle;
+        } else {
+          badge3.style.display = 'none';
+        }
+      }
     })
-    .catch(() => {}); // Silently fail - default text shown
-</script>
-<script>
-  // Load dynamic shipping & return policies
-  fetch('api/get_policies.php?t=' + Date.now())
-    .then(r => r.json())
-    .then(data => {
-      const shEl = document.getElementById('policy-shipping-text');
-      const rtEl = document.getElementById('policy-return-text');
-      if (shEl && data.shipping) shEl.textContent = data.shipping;
-      if (rtEl && data.returns)  rtEl.textContent = data.returns;
-    })
-    .catch(() => {}); // Silently fail - default text shown
+    .catch(() => {});
 </script>
 <script>
   if ('serviceWorker' in navigator) {
