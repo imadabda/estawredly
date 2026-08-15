@@ -12,7 +12,7 @@
 
 
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785804552463" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-  <script src="store.js?v=1786117170000"></script>
+  <script src="store.js?v=1785804552463"></script>
   <link rel="stylesheet" href="style.css?v=1785804552463"/>
   <link rel="stylesheet" href="enhancements.css?v=1785804552463"/>
   <style>
@@ -179,7 +179,7 @@
   .share-btn:hover { border-color:var(--p); background:var(--p-light); transform:translateY(-2px); }
 
   /* Trust badges */
-  .prod-trust { display:grid; grid-template-columns:repeat(auto-fit, minmax(80px, 1fr)); gap:10px; }
+  .prod-trust { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
   .trust-badge {
     display:flex; flex-direction:column; align-items:center; text-align:center;
     padding:14px 10px; border-radius:14px;
@@ -291,9 +291,10 @@
 <body>
 
 <!-- ═══ HEADER (same as index) ═══ -->
-<div class="announce-bar" id="announce-bar" style="display:none;">
-  <div class="ticker-text-container">
-    <div class="ticker-text-scroll" id="ticker-text-content"></div>
+<div class="announce-bar" id="announce-bar">
+  <div class="announce-inner">
+    <span>🔥 شحن مجاني للطلبات فوق ₪200 – وصل حديثاً أكثر من 500 منتج جديد!</span>
+    <button class="announce-close" onclick="document.getElementById('announce-bar').remove()">✕</button>
   </div>
 </div>
 <header class="header" id="header">
@@ -374,13 +375,7 @@
       <div class="prod-info">
         <div>
           <div class="prod-badges" id="prod-badges"></div>
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-            <div class="prod-cat" id="prod-cat" style="margin-bottom:0;"></div>
-            <div id="product-brand-badge" style="display:none; align-items:center; gap:6px; background:var(--gray1); padding:4px 10px; border-radius:6px; border:1px solid var(--gray2); font-size:12px; font-weight:700; color:var(--gray7);">
-              <img id="product-brand-logo" src="" style="height:20px; max-width:40px; object-fit:contain; display:none;" />
-              <span id="product-brand-name"></span>
-            </div>
-          </div>
+          <div class="prod-cat" id="prod-cat"></div>
           <h1 class="prod-title" id="prod-title">...</h1>
           <div class="prod-rating">
             <div class="prod-stars" id="prod-stars">★★★★★</div>
@@ -452,19 +447,19 @@
         </div>
 
         <!-- Delivery -->
-        <div class="delivery-box" id="delivery-box-container" style="display: none;">
+        <div class="delivery-box">
           <div class="icon">🚚</div>
           <div>
-            <strong id="policy-delivery-title">وصول سريع خلال 2–5 أيام عمل</strong>
-            <small id="policy-delivery-subtitle">شحن مجاني للطلبات فوق ₪200</small>
+            <strong>وصول سريع خلال 2–5 أيام عمل</strong>
+            <small>شحن مجاني للطلبات فوق ₪200</small>
           </div>
         </div>
 
         <!-- Trust -->
-        <div class="prod-trust" id="prod-trust-container">
-          <div class="trust-badge" id="trust-badge-1"><div class="tb-icon">🔒</div><strong id="trust-title-1">دفع آمن</strong><span id="trust-sub-1">100% مشفر</span></div>
-          <div class="trust-badge" id="trust-badge-2"><div class="tb-icon">↩️</div><strong id="trust-title-2">إرجاع مجاني</strong><span id="trust-sub-2">خلال 30 يوم</span></div>
-          <div class="trust-badge" id="trust-badge-3"><div class="tb-icon">🏅</div><strong id="trust-title-3">منتج أصلي</strong><span id="trust-sub-3">ضمان الأصالة</span></div>
+        <div class="prod-trust">
+          <div class="trust-badge"><div class="tb-icon">🔒</div><strong>دفع آمن</strong>100% مشفر</div>
+          <div class="trust-badge"><div class="tb-icon">↩️</div><strong>إرجاع مجاني</strong>خلال 30 يوم</div>
+          <div class="trust-badge"><div class="tb-icon">🏅</div><strong>منتج أصلي</strong>ضمان الأصالة</div>
         </div>
 
         <!-- Share -->
@@ -590,15 +585,9 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script src="auth.js?v=1785804552463"></script>
-<script src="main.js?v=1786117170000"></script>
+<script src="main.js?v=1785804552463"></script>
 <script>
-let ALL_PRODUCTS = [];
-let product = {};
-let extra = {};
-let BASE_IMG = '';
-let IMAGES = [];
-let PRODUCT_VARIANTS = null;
-let isWished = false;
+const ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
 
 // Extra data per product (desc, specs, images)
 const EXTRA = {
@@ -627,22 +616,22 @@ const EXTRA = {
 
 const params = new URLSearchParams(location.search);
 const productId = parseInt(params.get('id')) || 1;
+const product = ALL_PRODUCTS.find(p => p.id === productId) || ALL_PRODUCTS[0];
+const extra = EXTRA[productId] || EXTRA.default;
 
-function initProduct() {
-  ALL_PRODUCTS = (typeof Store !== 'undefined') ? Store.getProducts() : [];
-  product = ALL_PRODUCTS.find(p => p.id === productId) || ALL_PRODUCTS[0] || {};
-  extra = EXTRA[product.id] || EXTRA.default;
-  BASE_IMG = product.img || '';
-  const additionalImgs = product.images && product.images.length > 0 ? product.images : (extra.images || []);
-  IMAGES = [BASE_IMG, ...additionalImgs];
-  PRODUCT_VARIANTS = product.variants && product.variants.length > 0 ? product.variants : null;
-  isWished = typeof state !== 'undefined' ? state.wishlist.has(product.id) : false;
-}
+// Build IMAGES array: main image + any additional images saved on the product
+const BASE_IMG = product.img;
+const additionalImgs = product.images && product.images.length > 0 ? product.images : (extra.images || []);
+const IMAGES = [BASE_IMG, ...additionalImgs];
+
+// Build variants from product.variants (saved via admin)
+const PRODUCT_VARIANTS = product.variants && product.variants.length > 0 ? product.variants : null;
 
 let currentQty = 1;
 let selectedVariants = {};
 let currentColor = null;
 let currentSize  = null;
+let isWished = state.wishlist.has(product.id);
 
 function render() {
   // Title
@@ -650,40 +639,6 @@ function render() {
   document.getElementById('bc-name').textContent = product.name;
   document.getElementById('prod-cat').textContent = product.cat;
   document.getElementById('prod-title').textContent = product.name;
-
-  // Load and render product brand logo
-  if (product.brand) {
-    fetch('api/get_brands.php?t=' + Date.now())
-      .then(res => res.json())
-      .then(brands => {
-        if (Array.isArray(brands)) {
-          const brandObj = brands.find(b => {
-            const name = typeof b === 'string' ? b : (b.name || '');
-            return name.toLowerCase() === product.brand.toLowerCase();
-          });
-          if (brandObj) {
-            const name = typeof brandObj === 'string' ? brandObj : (brandObj.name || '');
-            const logo = typeof brandObj === 'string' ? '' : (brandObj.logo || '');
-            
-            const badge = document.getElementById('product-brand-badge');
-            const logoImg = document.getElementById('product-brand-logo');
-            const nameSpan = document.getElementById('product-brand-name');
-            
-            if (badge && nameSpan) {
-              nameSpan.textContent = name;
-              if (logo) {
-                logoImg.src = logo;
-                logoImg.style.display = 'block';
-              } else {
-                logoImg.style.display = 'none';
-              }
-              badge.style.display = 'inline-flex';
-            }
-          }
-        }
-      })
-      .catch(err => console.error("Error loading brand logo:", err));
-  }
 
   // Badges
   const badges = document.getElementById('prod-badges');
@@ -1010,82 +965,26 @@ window.addEventListener('scroll', () => {
 
 // Always wait for auth check to complete before rendering
 // This prevents showing the wrong price or blank content
-window.addEventListener('authLoaded', async () => {
-  if (typeof Store !== 'undefined') {
-    await Store.ensureReady();
-  }
-  initProduct();
+if (window.authUser !== null && window.authUser !== undefined) {
+  // Auth was already resolved synchronously (unlikely but safe)
   render();
-}, { once: true });
+} else {
+  // Wait for the async auth check to complete
+  window.addEventListener('authLoaded', render, { once: true });
+}
 </script>
-<script src="enhancements.js?v=1786117170000"></script>
+<script src="enhancements.js?v=1785804552463"></script>
 <script>
-  // Load dynamic shipping, return, delivery & trust badge settings
+  // Load dynamic shipping & return policies
   fetch('api/get_policies.php?t=' + Date.now())
     .then(r => r.json())
     .then(data => {
-      // Shipping tab
       const shEl = document.getElementById('policy-shipping-text');
       const rtEl = document.getElementById('policy-return-text');
       if (shEl && data.shipping) shEl.textContent = data.shipping;
       if (rtEl && data.returns)  rtEl.textContent = data.returns;
-      
-      // Delivery Box
-      const deliveryBox = document.getElementById('delivery-box-container');
-      const delTitle = document.getElementById('policy-delivery-title');
-      const delSub = document.getElementById('policy-delivery-subtitle');
-      if (deliveryBox) {
-        if (data.delivery_title || data.delivery_subtitle) {
-          if (delTitle) delTitle.textContent = data.delivery_title || '';
-          if (delSub) delSub.textContent = data.delivery_subtitle || '';
-          deliveryBox.style.display = 'flex';
-        } else {
-          deliveryBox.style.display = 'none';
-        }
-      }
-      
-      // Trust Badges
-      const badge1 = document.getElementById('trust-badge-1');
-      const badge2 = document.getElementById('trust-badge-2');
-      const badge3 = document.getElementById('trust-badge-3');
-      
-      if (badge1) {
-        if (data.badge1_visible !== false && data.badge1_visible !== 'false' && data.badge1_visible !== '') {
-          badge1.style.display = 'flex';
-          const t1 = document.getElementById('trust-title-1');
-          const s1 = document.getElementById('trust-sub-1');
-          if (t1 && data.badge1_title) t1.textContent = data.badge1_title;
-          if (s1 && data.badge1_subtitle) s1.textContent = data.badge1_subtitle;
-        } else {
-          badge1.style.display = 'none';
-        }
-      }
-      
-      if (badge2) {
-        if (data.badge2_visible !== false && data.badge2_visible !== 'false' && data.badge2_visible !== '') {
-          badge2.style.display = 'flex';
-          const t2 = document.getElementById('trust-title-2');
-          const s2 = document.getElementById('trust-sub-2');
-          if (t2 && data.badge2_title) t2.textContent = data.badge2_title;
-          if (s2 && data.badge2_subtitle) s2.textContent = data.badge2_subtitle;
-        } else {
-          badge2.style.display = 'none';
-        }
-      }
-      
-      if (badge3) {
-        if (data.badge3_visible !== false && data.badge3_visible !== 'false' && data.badge3_visible !== '') {
-          badge3.style.display = 'flex';
-          const t3 = document.getElementById('trust-title-3');
-          const s3 = document.getElementById('trust-sub-3');
-          if (t3 && data.badge3_title) t3.textContent = data.badge3_title;
-          if (s3 && data.badge3_subtitle) s3.textContent = data.badge3_subtitle;
-        } else {
-          badge3.style.display = 'none';
-        }
-      }
     })
-    .catch(() => {});
+    .catch(() => {}); // Silently fail - default text shown
 </script>
 <script>
   if ('serviceWorker' in navigator) {
@@ -1097,23 +996,6 @@ window.addEventListener('authLoaded', async () => {
       });
     });
   }
-</script>
-
-<script>
-  // Load Announcement Ticker Bar
-  fetch('api/get_ticker.php?t=' + Date.now())
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.enabled) {
-        const bar = document.getElementById('announce-bar');
-        const content = document.getElementById('ticker-text-content');
-        if (bar && content) {
-          content.textContent = data.text;
-          bar.style.display = 'flex';
-        }
-      }
-    })
-    .catch(err => console.error("Error loading announcement ticker:", err));
 </script>
 </body>
 </html>

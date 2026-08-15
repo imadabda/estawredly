@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "base_rate": 0.50,
-  "current_rate": 0.50,
-  "auto_fetch": true,
-  "last_updated": ""
+    "enabled": true,
+    "base_rate": 0.445596,
+    "current_rate": 0.438603,
+    "auto_fetch": true,
+    "last_updated": "2026-08-15 16:30:52"
 }

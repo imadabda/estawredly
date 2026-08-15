@@ -186,9 +186,10 @@
 </head>
 <body>
 
-<div class="announce-bar" id="announce-bar" style="display:none;">
-  <div class="ticker-text-container">
-    <div class="ticker-text-scroll" id="ticker-text-content"></div>
+<div class="announce-bar" id="announce-bar">
+  <div class="announce-inner">
+    <span>🔥 تخفيضات الصيف حتى 70% – شحن مجاني لكافة محافظات فلسطين للطلبات فوق 200 ₪</span>
+    <button class="announce-close" onclick="this.closest('.announce-bar').style.display='none'">✕</button>
   </div>
 </div>
 
@@ -477,9 +478,9 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-  <script src="store.js?v=1786117170000"></script>
+  <script src="store.js?v=1785802153537"></script>
   <script src="auth.js?v=1785802153537"></script>
-<script src="main.js?v=1786117170000"></script>
+<script src="main.js?v=1785802153537"></script>
   <script>
     // Shop-specific script
     document.querySelectorAll('.cat-chip').forEach(chip => {
@@ -506,7 +507,6 @@
 
       let products = [];
       if (typeof Store !== 'undefined') {
-        await Store.ensureReady();
         products = Store.getProducts();
       }
 
@@ -607,23 +607,6 @@
       });
     });
   }
-</script>
-
-<script>
-  // Load Announcement Ticker Bar
-  fetch('api/get_ticker.php?t=' + Date.now())
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.enabled) {
-        const bar = document.getElementById('announce-bar');
-        const content = document.getElementById('ticker-text-content');
-        if (bar && content) {
-          content.textContent = data.text;
-          bar.style.display = 'flex';
-        }
-      }
-    })
-    .catch(err => console.error("Error loading announcement ticker:", err));
 </script>
 </body>
 </html>

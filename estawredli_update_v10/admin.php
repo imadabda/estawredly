@@ -18,7 +18,7 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
 <script src="products_db.js?v=1785803845471<?= time() ?>">
 </script>
-<script src="store.js?v=1786117170000">
+<script src="store.js?v=1785803845471">
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -896,10 +896,6 @@ tr:last-child td{border-bottom:none}
               <option value="">بدون ماركة</option>
             </select>
           </div>
-          <div class="field full" style="margin-top:12px">
-            <label>📋 ملاحظات الرقم المرجعي (تظهر فقط في الفاتورة للطباعة والمعاينة)</label>
-            <input type="text" id="f-ref-note" placeholder="مثال: رقم الرف، كود المورد الداخلي، أو أي ملاحظة خاصة"/>
-          </div>
           <div class="field">
             <label>تصنيف التبويب <span style="color:var(--text3);font-size:10px">(للفلترة)</span></label>
             <select id="f-tab">
@@ -1432,31 +1428,16 @@ tr:last-child td{border-bottom:none}
       <div class="page" id="page-icons">
         <div class="page-header">
           <div>
-            <div class="breadcrumb-admin">المحتوى <span>›</span> أيقونات الصفحة الرئيسية</div>
-            <h1 class="page-title">إدارة أيقونات الصفحة الرئيسية</h1>
-            <p class="page-sub">تعديل أسماء الأيقونات وصورها، وتحديد المنتجات المرتبطة بكل أيقونة</p>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> أيقونات الرئيسية</div>
+            <h1 class="page-title">إدارة تصنيفات الأيقونات</h1>
+            <p class="page-sub">تحديد المنتجات التي تظهر عند الضغط على كل أيقونة في الصفحة الرئيسية</p>
           </div>
-        </div>
-
-        <!-- Section 1: Names and Images Manager -->
-        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="margin:0; color:var(--text1);">✏️ تعديل أسماء وصور الأيقونات</h3>
-                <button class="btn" style="background:var(--blue); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="adminHomepageCategories.save()">💾 حفظ الأسماء والصور</button>
-            </div>
-            <div id="admin-homepage-categories-builder" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:15px;">
-                <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text3)">جاري تحميل تصنيفات الأيقونات...</div>
-            </div>
+          <button class="btn-add" onclick="adminIcons.saveIconsToServer()" style="background:var(--blue)">💾 حفظ التغييرات</button>
         </div>
         
-        <!-- Section 2: Product Mapping Manager -->
         <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="margin:0; color:var(--text1);">🔗 ربط منتجات محددة بالأيقونات (تخصيص يدوي)</h3>
-                <button class="btn" style="background:var(--blue); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="adminIcons.saveIconsToServer()">💾 حفظ ربط المنتجات</button>
-            </div>
             <div id="admin-icons-builder" style="display:flex; flex-direction:column; gap:15px;">
-                <div style="text-align:center; padding:40px; color:var(--text3)">جاري تحميل ربط المنتجات...</div>
+                <div style="text-align:center; padding:40px; color:var(--text3)">جاري تحميل الأيقونات...</div>
             </div>
         </div>
       </div>
@@ -1512,7 +1493,7 @@ tr:last-child td{border-bottom:none}
             <h1 class="page-title">إعدادات المتجر</h1>
             <p class="page-sub">تخصيص الهوية البصرية والإعدادات العامة</p>
           </div>
-          <button class="btn-add" onclick="saveAllSettings()">💾 حفظ التغييرات</button>
+          <button class="btn-add" onclick="adminPolicies.save()">💾 حفظ التغييرات</button>
         </div>
         <div class="settings-grid">
           <div class="setting-card">
@@ -1567,83 +1548,7 @@ tr:last-child td{border-bottom:none}
                <label>سياسة الارتجاع</label>
                <textarea id="sett-return-policy" style="min-height:80px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1); font-family:inherit;"></textarea>
              </div>
-            </div>
-
-          <div class="setting-card">
-            <h3>🔗 ربط العملة بالرنمينبي الصيني (RMB/CNY)</h3>
-            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">اربط أسعار منتجاتك بالشيكل مع سعر الصرف الصيني لحمايتك من تقلبات العملة تلقائياً.</p>
-            <div class="setting-row">
-              <div class="setting-row-info"><strong>تفعيل ربط الأسعار</strong><small>تطبيق معامل التغير على أسعار المتجر</small></div>
-              <label class="toggle"><input type="checkbox" id="sett-currency-enabled" onchange="adminCurrency.toggleFields()"/><div class="toggle-slider"></div></label>
-            </div>
-            <div class="setting-row">
-              <div class="setting-row-info"><strong>التحديث التلقائي</strong><small>جلب سعر الصرف تلقائياً من البورصة</small></div>
-              <label class="toggle"><input type="checkbox" id="sett-currency-auto" onchange="adminCurrency.toggleFields()"/><div class="toggle-slider"></div></label>
-            </div>
-            <div class="field" style="margin-top:12px">
-              <label>سعر الصرف الأساسي (Base Exchange Rate)</label>
-              <input type="number" id="sett-currency-base" step="0.0001" placeholder="مثال: 0.50" value="0.50"/>
-            </div>
-            <div class="field" style="margin-top:12px">
-              <label>سعر الصرف الحالي (Current Exchange Rate)</label>
-              <input type="number" id="sett-currency-current" step="0.0001" placeholder="مثال: 0.51" value="0.50"/>
-            </div>
-            <div style="margin-top:12px; display:flex; gap:10px;">
-              <button class="btn" style="flex:1" id="btn-currency-fetch" onclick="adminCurrency.fetchLive()">🔄 تحديث الآن من البورصة</button>
-            </div>
-            <div id="currency-last-update" style="font-size:11px; color:var(--text3); margin-top:8px; text-align:center;"></div>
-          </div>
-
-          <div class="setting-card">
-            <h3>🚚 نصوص التوصيل وبطاقات الثقة</h3>
-            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">تحرير نصوص التوصيل والضمان وبطاقات الأمان في صفحة المنتج.</p>
-            <div class="field"><label>عنوان التوصيل السريع</label><input type="text" id="sett-delivery-title" placeholder="مثال: وصول سريع خلال 2–5 أيام عمل"/></div>
-            <div class="field" style="margin-top:10px"><label>تفاصيل الشحن (العنوان الفرعي)</label><input type="text" id="sett-delivery-subtitle" placeholder="مثال: شحن مجاني للطلبات فوق ₪200"/></div>
-            
-            <div style="border-top:1px solid var(--border);margin-top:15px;padding-top:15px">
-              <strong style="font-size:13px;display:block;margin-bottom:10px">🔒 بطاقة الثقة 1 (🔒 دفع آمن)</strong>
-              <div class="setting-row">
-                <div class="setting-row-info"><strong>تفعيل ظهور البطاقة</strong></div>
-                <label class="toggle"><input type="checkbox" id="sett-badge1-visible" checked/><div class="toggle-slider"></div></label>
-              </div>
-              <div class="field" style="margin-top:8px"><label>العنوان الرئيسي</label><input type="text" id="sett-badge1-title" value="دفع آمن"/></div>
-              <div class="field" style="margin-top:8px"><label>العنوان الفرعي</label><input type="text" id="sett-badge1-subtitle" value="100% مشفر"/></div>
-            </div>
-
-            <div style="border-top:1px solid var(--border);margin-top:15px;padding-top:15px">
-              <strong style="font-size:13px;display:block;margin-bottom:10px">↩️ بطاقة الثقة 2 (↩️ إرجاع مجاني)</strong>
-              <div class="setting-row">
-                <div class="setting-row-info"><strong>تفعيل ظهور البطاقة</strong></div>
-                <label class="toggle"><input type="checkbox" id="sett-badge2-visible" checked/><div class="toggle-slider"></div></label>
-              </div>
-              <div class="field" style="margin-top:8px"><label>العنوان الرئيسي</label><input type="text" id="sett-badge2-title" value="إرجاع مجاني"/></div>
-              <div class="field" style="margin-top:8px"><label>العنوان الفرعي</label><input type="text" id="sett-badge2-subtitle" value="خلال 30 يوم"/></div>
-            </div>
-
-            <div style="border-top:1px solid var(--border);margin-top:15px;padding-top:15px">
-              <strong style="font-size:13px;display:block;margin-bottom:10px">🏅 بطاقة الثقة 3 (🏅 منتج أصلي)</strong>
-              <div class="setting-row">
-                <div class="setting-row-info"><strong>تفعيل ظهور البطاقة</strong></div>
-                <label class="toggle"><input type="checkbox" id="sett-badge3-visible" checked/><div class="toggle-slider"></div></label>
-              </div>
-              <div class="field" style="margin-top:8px"><label>العنوان الرئيسي</label><input type="text" id="sett-badge3-title" value="منتج أصلي"/></div>
-              <div class="field" style="margin-top:8px"><label>العنوان الفرعي</label><input type="text" id="sett-badge3-subtitle" value="ضمان الأصالة"/></div>
-            </div>
-          </div>
-
-          <div class="setting-card">
-            <h3>📢 شريط الإعلانات المتحرك</h3>
-            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">تحرير شريط التنويه المتحرك الذي يظهر في أعلى الموقع.</p>
-            <div class="setting-row">
-              <div class="setting-row-info"><strong>تفعيل الشريط</strong><small>إظهار أو إخفاء الشريط في أعلى المتجر</small></div>
-              <label class="toggle"><input type="checkbox" id="sett-ticker-enabled"/><div class="toggle-slider"></div></label>
-            </div>
-            <div class="field" style="margin-top:12px">
-              <label>نص الإعلان</label>
-              <textarea id="sett-ticker-text" style="min-height:60px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1); font-family:inherit;"></textarea>
-            </div>
-          </div>
-
+           </div>
           <div class="setting-card">
             <h3>🔔 الإشعارات</h3>
             <div class="setting-row"><div class="setting-row-info"><strong>إشعار طلبية جديدة</strong><small>إشعار فوري عند كل طلبية</small></div><label class="toggle"><input type="checkbox" checked/><div class="toggle-slider"></div></label></div>
@@ -1787,10 +1692,7 @@ function showPage(id, el) {
   if (id === 'hero')  adminSliders.load();
   if (id === 'banners')  adminBanners.load();
   if (id === 'brands')  adminBrands.load();
-  if (id === 'settings') {
-      adminPolicies.load();
-      adminCurrency.load();
-  }
+  if (id === 'settings') adminPolicies.load();
 
   if (id === 'categories') renderCategories();
   if (id === 'notifications') renderNotifs();
@@ -2234,17 +2136,8 @@ function renderProducts(list) {
   const grid = document.getElementById('products-grid');
   if (!grid) return;
   if (!list.length) { grid.innerHTML='<div class="empty-state"><div class="es-icon">📦</div><p>لا توجد منتجات</p></div>'; return; }
-  
-  let multiplier = 1;
-  if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
-      multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
-  }
-
   grid.innerHTML = list.map(p => {
-    const finalPrice = parseFloat((p.price * multiplier).toFixed(2));
-    const finalOldPrice = p.oldPrice ? parseFloat((p.oldPrice * multiplier).toFixed(2)) : null;
-    const finalCostPrice = p.costPrice ? parseFloat((p.costPrice * multiplier).toFixed(2)) : 0;
-    const disc = finalOldPrice ? Math.round((1-finalPrice/finalOldPrice)*100) : 0;
+    const disc = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100) : 0;
     const badgeNames = {sale:`-${disc}%`,new:'جديد',hot:'رائج',best:'مميز'};
     return `
       <div class="prod-admin-card">
@@ -2261,11 +2154,11 @@ function renderProducts(list) {
           <div class="pac-cat">${p.cat}</div>
           <div class="pac-name">${p.name}</div>
           <div class="pac-price">
-            <span class="pac-price-main">₪${finalPrice}</span>
-            ${finalOldPrice?`<span class="pac-price-old">₪${finalOldPrice}</span>`:''}
+            <span class="pac-price-main">₪${p.price}</span>
+            ${p.oldPrice?`<span class="pac-price-old">₪${p.oldPrice}</span>`:''}
           </div>
           <div style="font-size:11px;color:var(--text3);margin-bottom:8px">
-            المربح: <strong style="color:var(--green)">₪${Math.max(0, finalPrice - finalCostPrice).toFixed(2)}</strong>
+            المربح: <strong style="color:var(--green)">₪${Math.max(0, p.price - (p.costPrice || 0))}</strong>
           </div>
           <div class="pac-stats">
             <span class="pac-stat">⭐ <strong>${p.stars}</strong></span>
@@ -2436,15 +2329,10 @@ function openModal(p) {
   }
   document.getElementById('f-icon-cat').value = mappedIcon;
 
-  let multiplier = 1;
-  if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
-      multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
-  }
-
   document.getElementById('f-badge').value = p?.badge || '';
-  document.getElementById('f-price').value = p ? parseFloat((p.price * multiplier).toFixed(2)) : '';
-  document.getElementById('f-cost-price').value = (p && p.costPrice) ? parseFloat((p.costPrice * multiplier).toFixed(2)) : '';
-  document.getElementById('f-old-price').value = (p && p.oldPrice) ? parseFloat((p.oldPrice * multiplier).toFixed(2)) : '';
+  document.getElementById('f-price').value = p?.price || '';
+  document.getElementById('f-cost-price').value = p?.costPrice || '';
+  document.getElementById('f-old-price').value = p?.oldPrice || '';
   document.getElementById('f-stars').value = p?.stars || '';
   document.getElementById('f-reviews').value = p?.reviews || '';
   document.getElementById('f-stock').value = (p && p.stock !== undefined) ? p.stock : '';
@@ -2453,17 +2341,13 @@ function openModal(p) {
   const brandSelect = document.getElementById('f-brand');
   if (brandSelect) {
       brandSelect.innerHTML = '<option value="">بدون ماركة</option>' +
-          (adminBrands.brands || []).map(b => {
-              const name = typeof b === 'string' ? b : (b.name || '');
-              return `<option value="${name}">${name}</option>`;
-          }).join('');
+          (adminBrands.brands || []).map(b => `<option value="${b}">${b}</option>`).join('');
   }
   document.getElementById('f-brand').value = p?.brand || '';
 
   document.getElementById('f-pieces-per-carton').value = p?.pieces_per_carton || '';
   document.getElementById('f-product-code').value = p?.product_code || '';
   document.getElementById('f-factory-code').value = p?.factory_code || '';
-  document.getElementById('f-ref-note').value = p?.ref_note || '';
   document.getElementById('f-tab').value = p?.tab || 'all';
   document.getElementById('f-img-url').value = p?.img || '';
   document.getElementById('f-desc').value = p?.desc || '';
@@ -2508,19 +2392,8 @@ function editProduct(id) {
 function saveProduct() {
   if(typeof syncVariantsFromDOM === "function") syncVariantsFromDOM();
   const name = document.getElementById('f-name').value.trim();
-  
-  let multiplier = 1;
-  if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
-      multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
-  }
-
-  const rawPrice = parseFloat(document.getElementById('f-price').value);
-  const price = isNaN(rawPrice) ? NaN : parseFloat((rawPrice / multiplier).toFixed(4));
-  const rawCostPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
-  const costPrice = parseFloat((rawCostPrice / multiplier).toFixed(4));
-  const rawOldPrice = parseFloat(document.getElementById('f-old-price').value) || null;
-  const oldPrice = rawOldPrice ? parseFloat((rawOldPrice / multiplier).toFixed(4)) : null;
-
+  const price = parseFloat(document.getElementById('f-price').value);
+  const costPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
   const stockStr = document.getElementById('f-stock').value;
   const stock = stockStr === '' ? null : parseInt(stockStr);
   const cartonPiecesStr = document.getElementById('f-pieces-per-carton').value;
@@ -2542,14 +2415,13 @@ function saveProduct() {
     badge: document.getElementById('f-badge').value,
     price,
     costPrice,
-    oldPrice,
+    oldPrice: parseFloat(document.getElementById('f-old-price').value) || null,
     stars: parseFloat(document.getElementById('f-stars').value) || 4.5,
     reviews: parseInt(document.getElementById('f-reviews').value) || 0,
     stock: stock,
     pieces_per_carton,
     product_code,
     factory_code,
-    ref_note: document.getElementById('f-ref-note').value.trim(),
     tab: document.getElementById('f-tab').value || 'all',
     img: document.getElementById('f-img-url').value || document.getElementById('img-preview-el').src || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
     active: pToEdit ? pToEdit.active : true,
@@ -2863,11 +2735,9 @@ function printOrder(id) {
             const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
             const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
             const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
-            const ref_note = originalProduct ? (originalProduct.ref_note || '') : '';
             const codeInfo = [
                 product_code ? `كود المنتج: ${product_code}` : '',
-                factory_code ? `كود المصنع: ${factory_code}` : '',
-                ref_note ? `الرقم المرجعي: ${ref_note}` : ''
+                factory_code ? `كود المصنع: ${factory_code}` : ''
             ].filter(Boolean).join(' | ');
             return `
                 <tr>
@@ -2967,11 +2837,9 @@ function viewOrder(id) {
             const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
             const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
             const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
-            const ref_note = originalProduct ? (originalProduct.ref_note || '') : '';
             const codeInfo = [
                 product_code ? `كود المنتج: ${product_code}` : '',
-                factory_code ? `كود المصنع: ${factory_code}` : '',
-                ref_note ? `الرقم المرجعي: ${ref_note}` : ''
+                factory_code ? `كود المصنع: ${factory_code}` : ''
             ].filter(Boolean).join(' | ');
             return `
                 <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
@@ -3215,17 +3083,8 @@ const adminBrands = {
     async load() {
         try {
             const res = await fetch('api/get_brands.php?t=' + Date.now());
-            let rawBrands = await res.json();
-            if (!Array.isArray(rawBrands)) rawBrands = [];
-            
-            // Normalize old format [ "Name1", "Name2" ] to [ { name: "Name1", logo: "" } ]
-            this.brands = rawBrands.map(b => {
-                if (typeof b === 'string') {
-                    return { name: b, logo: '' };
-                }
-                return { name: b.name || '', logo: b.logo || '' };
-            });
-            
+            this.brands = await res.json();
+            if (!Array.isArray(this.brands)) this.brands = [];
             this.render();
         } catch (e) {
             console.error("Error loading brands:", e);
@@ -3241,61 +3100,21 @@ const adminBrands = {
             return;
         }
         
-        container.innerHTML = this.brands.map((b, i) => {
-            const logoSrc = b.logo || 'https://via.placeholder.com/60?text=LOGO';
-            return `
-                <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:15px; display:flex; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:10px;">
-                    <span style="font-weight:bold; color:var(--text3); min-width:30px;">#${i+1}</span>
-                    
-                    <!-- Logo Preview -->
-                    <div style="width:60px; height:60px; border-radius:8px; border:1px solid var(--border); overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative;" onclick="document.getElementById('brand-file-input-${i}').click()" title="تغيير الشعار">
-                        <img src="${logoSrc}" id="brand-logo-preview-${i}" style="max-width:100%; max-height:100%; object-fit:contain;" />
-                        <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.5); color:#fff; font-size:9px; text-align:center; padding:2px 0;">تعديل</div>
-                    </div>
-                    <input type="file" id="brand-file-input-${i}" accept="image/*" style="display:none;" onchange="adminBrands.handleLogoUpload(${i}, this)">
-                    
-                    <!-- Name Input -->
-                    <div style="flex:1; min-width:200px; display:flex; flex-direction:column; gap:4px;">
-                        <label style="font-size:11px; color:var(--text3); font-weight:bold;">اسم الماركة</label>
-                        <input type="text" value="${b.name}" onchange="adminBrands.updateName(${i}, this.value)" placeholder="اسم الماركة التجارية" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
-                    </div>
-                    
-                    <!-- Logo URL Input -->
-                    <div style="flex:1.5; min-width:250px; display:flex; flex-direction:column; gap:4px;">
-                        <label style="font-size:11px; color:var(--text3); font-weight:bold;">رابط الشعار (أو رفعه بالضغط على الصورة)</label>
-                        <input type="text" value="${b.logo}" onchange="adminBrands.updateLogo(${i}, this.value)" placeholder="رابط صورة الشعار (URL)" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
-                    </div>
-                    
-                    <button class="btn" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; margin-top:15px;" onclick="adminBrands.delete(${i})">🗑️ حذف</button>
-                </div>
-            `;
-        }).join('');
+        container.innerHTML = this.brands.map((b, i) => `
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:10px 15px; display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:bold; color:var(--text3); min-width:30px;">#${i+1}</span>
+                <input type="text" value="${b}" onchange="adminBrands.update(${i}, this.value)" style="flex:1; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                <button class="btn" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="adminBrands.delete(${i})">🗑️ حذف</button>
+            </div>
+        `).join('');
     },
     
-    updateName(index, value) {
-        this.brands[index].name = value.trim();
-    },
-
-    updateLogo(index, value) {
-        this.brands[index].logo = value.trim();
-        const img = document.getElementById(`brand-logo-preview-${index}`);
-        if (img) img.src = value.trim() || 'https://via.placeholder.com/60?text=LOGO';
-    },
-
-    handleLogoUpload(index, input) {
-        if (!input.files[0]) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-            const base64 = e.target.result;
-            this.brands[index].logo = base64;
-            const img = document.getElementById(`brand-logo-preview-${index}`);
-            if (img) img.src = base64;
-        };
-        reader.readAsDataURL(input.files[0]);
+    update(index, value) {
+        this.brands[index] = value.trim();
     },
     
     add() {
-        this.brands.push({ name: "ماركة جديدة", logo: "" });
+        this.brands.push("ماركة جديدة");
         this.render();
     },
     
@@ -3333,48 +3152,6 @@ const adminPolicies = {
             const returnEl = document.getElementById('sett-return-policy');
             if (shippingEl) shippingEl.value = data.shipping || '';
             if (returnEl) returnEl.value = data.returns || '';
-
-            // Delivery Box
-            const delTitleEl = document.getElementById('sett-delivery-title');
-            const delSubEl = document.getElementById('sett-delivery-subtitle');
-            if (delTitleEl) delTitleEl.value = data.delivery_title || 'وصول سريع خلال 2–5 أيام عمل';
-            if (delSubEl) delSubEl.value = data.delivery_subtitle || 'شحن مجاني للطلبات فوق ₪200';
-
-            // Badge 1
-            const b1Visible = document.getElementById('sett-badge1-visible');
-            const b1Title = document.getElementById('sett-badge1-title');
-            const b1Sub = document.getElementById('sett-badge1-subtitle');
-            if (b1Visible) b1Visible.checked = data.badge1_visible !== false && data.badge1_visible !== 'false' && data.badge1_visible !== '';
-            if (b1Title) b1Title.value = data.badge1_title || 'دفع آمن';
-            if (b1Sub) b1Sub.value = data.badge1_subtitle || '100% مشفر';
-
-            // Badge 2
-            const b2Visible = document.getElementById('sett-badge2-visible');
-            const b2Title = document.getElementById('sett-badge2-title');
-            const b2Sub = document.getElementById('sett-badge2-subtitle');
-            if (b2Visible) b2Visible.checked = data.badge2_visible !== false && data.badge2_visible !== 'false' && data.badge2_visible !== '';
-            if (b2Title) b2Title.value = data.badge2_title || 'إرجاع مجاني';
-            if (b2Sub) b2Sub.value = data.badge2_subtitle || 'خلال 30 يوم';
-
-            // Badge 3
-            const b3Visible = document.getElementById('sett-badge3-visible');
-            const b3Title = document.getElementById('sett-badge3-title');
-            const b3Sub = document.getElementById('sett-badge3-subtitle');
-            if (b3Visible) b3Visible.checked = data.badge3_visible !== false && data.badge3_visible !== 'false' && data.badge3_visible !== '';
-            if (b3Title) b3Title.value = data.badge3_title || 'منتج أصلي';
-            if (b3Sub) b3Sub.value = data.badge3_subtitle || 'ضمان الأصالة';
-
-            // Load Ticker settings
-            try {
-                const tickerRes = await fetch('api/get_ticker.php?t=' + Date.now());
-                const tickerData = await tickerRes.json();
-                const tickerEnabledEl = document.getElementById('sett-ticker-enabled');
-                const tickerTextEl = document.getElementById('sett-ticker-text');
-                if (tickerEnabledEl) tickerEnabledEl.checked = tickerData.enabled !== false;
-                if (tickerTextEl) tickerTextEl.value = tickerData.text || '';
-            } catch (err) {
-                console.error("Error loading ticker settings in admin:", err);
-            }
         } catch(e) {
             console.error('Error loading policies:', e);
         }
@@ -3383,224 +3160,23 @@ const adminPolicies = {
     async save() {
         const shipping = document.getElementById('sett-shipping-policy')?.value || '';
         const returns = document.getElementById('sett-return-policy')?.value || '';
-        const delivery_title = document.getElementById('sett-delivery-title')?.value || '';
-        const delivery_subtitle = document.getElementById('sett-delivery-subtitle')?.value || '';
-        
-        const badge1_visible = document.getElementById('sett-badge1-visible')?.checked || false;
-        const badge1_title = document.getElementById('sett-badge1-title')?.value || '';
-        const badge1_subtitle = document.getElementById('sett-badge1-subtitle')?.value || '';
-
-        const badge2_visible = document.getElementById('sett-badge2-visible')?.checked || false;
-        const badge2_title = document.getElementById('sett-badge2-title')?.value || '';
-        const badge2_subtitle = document.getElementById('sett-badge2-subtitle')?.value || '';
-
-        const badge3_visible = document.getElementById('sett-badge3-visible')?.checked || false;
-        const badge3_title = document.getElementById('sett-badge3-title')?.value || '';
-        const badge3_subtitle = document.getElementById('sett-badge3-subtitle')?.value || '';
-
-        // Save Ticker settings
-        const ticker_enabled = document.getElementById('sett-ticker-enabled')?.checked || false;
-        const ticker_text = document.getElementById('sett-ticker-text')?.value || '';
-        try {
-            await fetch('api/save_ticker.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ enabled: ticker_enabled, text: ticker_text })
-            });
-        } catch (err) {
-            console.error("Error saving ticker settings in admin:", err);
-        }
-
         try {
             const res = await fetch('api/save_policies.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    shipping, 
-                    returns,
-                    delivery_title,
-                    delivery_subtitle,
-                    badge1_visible,
-                    badge1_title,
-                    badge1_subtitle,
-                    badge2_visible,
-                    badge2_title,
-                    badge2_subtitle,
-                    badge3_visible,
-                    badge3_title,
-                    badge3_subtitle
-                })
+                body: JSON.stringify({ shipping, returns })
             });
             const data = await res.json();
             if (data.success) {
-                showToast('✅ تم حفظ الإعدادات بنجاح!');
+                showToast('✅ تم حفظ السياسات بنجاح!');
             } else {
-                showToast('❌ فشل في حفظ الإعدادات: ' + (data.message || ''), 'error');
+                showToast('❌ فشل في حفظ السياسات: ' + (data.message || ''), 'error');
             }
         } catch(e) {
             showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
         }
     }
 };
-
-const adminCurrency = {
-    async load() {
-        try {
-            const res = await fetch('api/get_currency.php?t=' + Date.now());
-            const data = await res.json();
-            
-            const enabledEl = document.getElementById('sett-currency-enabled');
-            const autoEl = document.getElementById('sett-currency-auto');
-            const baseEl = document.getElementById('sett-currency-base');
-            const currentEl = document.getElementById('sett-currency-current');
-            const updateEl = document.getElementById('currency-last-update');
-            
-            if (enabledEl) enabledEl.checked = data.enabled || false;
-            if (autoEl) autoEl.checked = data.auto_fetch || false;
-            if (baseEl) baseEl.value = data.base_rate || 0.50;
-            if (currentEl) currentEl.value = data.current_rate || 0.50;
-            if (updateEl && data.last_updated) {
-                updateEl.textContent = 'آخر تحديث تلقائي: ' + data.last_updated;
-            } else if (updateEl) {
-                updateEl.textContent = '';
-            }
-            this.toggleFields();
-        } catch(e) {
-            console.error('Error loading currency settings:', e);
-        }
-    },
-
-    toggleFields() {
-        const enabled = document.getElementById('sett-currency-enabled')?.checked || false;
-        const auto = document.getElementById('sett-currency-auto')?.checked || false;
-        
-        const autoEl = document.getElementById('sett-currency-auto');
-        const baseEl = document.getElementById('sett-currency-base');
-        const currentEl = document.getElementById('sett-currency-current');
-        const fetchBtn = document.getElementById('btn-currency-fetch');
-        
-        if (autoEl) autoEl.disabled = !enabled;
-        if (baseEl) baseEl.disabled = !enabled;
-        
-        if (currentEl) {
-            currentEl.disabled = !enabled || auto;
-        }
-        if (fetchBtn) {
-            fetchBtn.disabled = !enabled || !auto;
-        }
-    },
-
-    async fetchLive() {
-        const fetchBtn = document.getElementById('btn-currency-fetch');
-        if (fetchBtn) {
-            fetchBtn.disabled = true;
-            fetchBtn.textContent = '⏳ جاري الجلب...';
-        }
-        try {
-            const res = await fetch('api/save_currency.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ force_fetch: true })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast('✅ تم جلب سعر الصرف وتحديثه بنجاح!');
-                this.load();
-            } else {
-                showToast('❌ فشل الجلب: ' + (data.message || ''), 'error');
-            }
-        } catch(e) {
-            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
-        } finally {
-            if (fetchBtn) {
-                fetchBtn.textContent = '🔄 تحديث الآن من البورصة';
-                this.toggleFields();
-            }
-        }
-    },
-
-    async save() {
-        const enabled = document.getElementById('sett-currency-enabled')?.checked || false;
-        const auto = document.getElementById('sett-currency-auto')?.checked || false;
-        const base = parseFloat(document.getElementById('sett-currency-base')?.value || '0.50');
-        const current = parseFloat(document.getElementById('sett-currency-current')?.value || '0.50');
-        
-        try {
-            const res = await fetch('api/save_currency.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    enabled,
-                    auto_fetch: auto,
-                    base_rate: base,
-                    current_rate: current
-                })
-            });
-            const data = await res.json();
-            return data.success;
-        } catch(e) {
-            console.error('Error saving currency settings:', e);
-            return false;
-        }
-    }
-};
-
-async function saveAllSettings() {
-    const shipping = document.getElementById('sett-shipping-policy')?.value || '';
-    const returns = document.getElementById('sett-return-policy')?.value || '';
-    const delivery_title = document.getElementById('sett-delivery-title')?.value || '';
-    const delivery_subtitle = document.getElementById('sett-delivery-subtitle')?.value || '';
-    
-    const badge1_visible = document.getElementById('sett-badge1-visible')?.checked || false;
-    const badge1_title = document.getElementById('sett-badge1-title')?.value || '';
-    const badge1_subtitle = document.getElementById('sett-badge1-subtitle')?.value || '';
-
-    const badge2_visible = document.getElementById('sett-badge2-visible')?.checked || false;
-    const badge2_title = document.getElementById('sett-badge2-title')?.value || '';
-    const badge2_subtitle = document.getElementById('sett-badge2-subtitle')?.value || '';
-
-    const badge3_visible = document.getElementById('sett-badge3-visible')?.checked || false;
-    const badge3_title = document.getElementById('sett-badge3-title')?.value || '';
-    const badge3_subtitle = document.getElementById('sett-badge3-subtitle')?.value || '';
-
-    let success = true;
-    try {
-        const res = await fetch('api/save_policies.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                shipping, 
-                returns,
-                delivery_title,
-                delivery_subtitle,
-                badge1_visible,
-                badge1_title,
-                badge1_subtitle,
-                badge2_visible,
-                badge2_title,
-                badge2_subtitle,
-                badge3_visible,
-                badge3_title,
-                badge3_subtitle
-            })
-        });
-        const data = await res.json();
-        if (!data.success) success = false;
-    } catch(e) {
-        success = false;
-    }
-
-    const currencySuccess = await adminCurrency.save();
-    if (!currencySuccess) success = false;
-
-    if (success) {
-        showToast('✅ تم حفظ كافة الإعدادات بنجاح!');
-        adminCurrency.load();
-    } else {
-        showToast('❌ حدث خطأ أثناء حفظ بعض الإعدادات', 'error');
-    }
-}
-
 
 const adminNav = {
 
@@ -3912,107 +3488,9 @@ const adminIcons = {
     }
 };
 
-const adminHomepageCategories = {
-    categories: [],
-    
-    async load() {
-        try {
-            const res = await fetch('api/get_homepage_categories.php?t=' + Date.now());
-            this.categories = await res.json();
-            if (!Array.isArray(this.categories)) this.categories = [];
-            this.render();
-        } catch(e) {
-            console.error("Error loading homepage categories:", e);
-        }
-    },
-    
-    render() {
-        const container = document.getElementById('admin-homepage-categories-builder');
-        if (!container) return;
-        
-        if (this.categories.length === 0) {
-            container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text3); padding:20px;">لا يوجد تصنيفات حالياً.</div>';
-            return;
-        }
-        
-        container.innerHTML = this.categories.map((c, i) => {
-            const isEmoji = c.img && (c.img.length <= 4 || !c.img.includes('/') && !c.img.startsWith('data:'));
-            const imgHtml = isEmoji 
-                ? `<div style="font-size:32px; width:60px; height:60px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:8px; background:#fff;">${c.img}</div>`
-                : `<img src="${c.img || 'https://via.placeholder.com/60?text=ICON'}" id="cat-img-preview-${i}" style="width:60px; height:60px; object-fit:cover; border:1px solid var(--border); border-radius:8px; background:#fff;" />`;
-            
-            return `
-                <div style="background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:15px; display:flex; gap:12px; align-items:center; position:relative;">
-                    <!-- Image/Emoji preview -->
-                    <div style="cursor:pointer; position:relative;" onclick="document.getElementById('cat-file-input-${i}').click()" title="رفع صورة جديدة">
-                        ${imgHtml}
-                        <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.5); color:#fff; font-size:8px; text-align:center; padding:1px 0; border-bottom-left-radius:8px; border-bottom-right-radius:8px;">تعديل</div>
-                    </div>
-                    <input type="file" id="cat-file-input-${i}" accept="image/*" style="display:none;" onchange="adminHomepageCategories.handleImageUpload(${i}, this)">
-                    
-                    <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
-                        <!-- Name Input -->
-                        <div style="display:flex; flex-direction:column; gap:2px;">
-                            <span style="font-size:10px; color:var(--text3); font-weight:bold;">اسم الأيقونة (بالعربية)</span>
-                            <input type="text" value="${c.title}" onchange="adminHomepageCategories.updateTitle(${i}, this.value)" style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-family:inherit;">
-                        </div>
-                        
-                        <!-- ID/Key Info -->
-                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
-                            <span style="color:var(--text3);">مفتاح الربط: <strong style="color:var(--p);">${c.id}</strong></span>
-                            <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
-                                <input type="checkbox" ${c.active ? 'checked' : ''} onchange="adminHomepageCategories.updateActive(${i}, this.checked)" style="width:14px; height:14px;"> إظهار
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    },
-    
-    updateTitle(index, value) {
-        this.categories[index].title = value.trim();
-    },
-    
-    updateActive(index, value) {
-        this.categories[index].active = value;
-    },
-    
-    handleImageUpload(index, input) {
-        if (!input.files[0]) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-            const base64 = e.target.result;
-            this.categories[index].img = base64;
-            this.render();
-        };
-        reader.readAsDataURL(input.files[0]);
-    },
-    
-    async save() {
-        try {
-            const res = await fetch('api/save_homepage_categories.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.categories)
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast('✅ تم حفظ أسماء وصور الأيقونات بنجاح!');
-                this.load();
-            } else {
-                showToast('❌ فشل حفظ التعديلات: ' + data.message, 'error');
-            }
-        } catch(e) {
-            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
-        }
-    }
-};
-
 const originalLoadIcons = adminNav.load;
 adminNav.load = async function() {
     await originalLoadIcons.call(adminNav);
-    adminHomepageCategories.load();
     adminIcons.load();
     adminBrands.load();
 };

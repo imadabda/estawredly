@@ -1,4 +1,15 @@
 {
     "shipping": "لا",
-    "returns": "اه"
+    "returns": "لا",
+    "delivery_title": "وصول سريع خلال 3–5 أيام عمل",
+    "delivery_subtitle": "شحن مجاني للطلبات فوق ₪300",
+    "badge1_visible": true,
+    "badge1_title": "دفع آمن",
+    "badge1_subtitle": "100% مشفر",
+    "badge2_visible": true,
+    "badge2_title": "إرجاع مجاني",
+    "badge2_subtitle": "خلال 60 يوم",
+    "badge3_visible": false,
+    "badge3_title": "منتج أصلي",
+    "badge3_subtitle": "ضمان الأصالة"
 }

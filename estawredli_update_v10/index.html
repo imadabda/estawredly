@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-  <script src="store.js?v=1786117170000"></script>
+  <script src="store.js?v=1785802153537"></script>
   <link rel="stylesheet" href="style.css?v=1785802153537"/>
   <link rel="stylesheet" href="enhancements.css?v=1785802153537"/>
 <link rel="manifest" href="manifest.json" />
@@ -19,9 +19,9 @@
 </head>
 <body>
 
-<div class="announce-bar" id="announce-bar" style="display:none;">
-  <div class="ticker-text-container">
-    <div class="ticker-text-scroll" id="ticker-text-content"></div>
+<div class="announce-bar" id="announce-bar">
+  <div class="announce-inner">
+    <span>🔥 تخفيضات الصيف حتى 70% – شحن مجاني لكافة محافظات فلسطين للطلبات فوق 200 ₪</span>
   </div>
 </div>
 
@@ -111,34 +111,66 @@
 
 <section class="taobao-cats-sec" style="margin-top: 15px; margin-bottom: 15px;">
   <div class="container">
-    <div class="taobao-cats" id="homepage-categories-list">
-      <!-- Dynamic Categories -->
-    </div>
-    </div>
-  </div>
-</section>
-
-<section class="brands-sec">
-  <div class="container">
-    <h2 class="sec-title text-center">أبرز الماركات</h2>
-    <div class="brands-track">
-      <div class="brands-inner">
-        <div class="brand-item">NIKE</div>
-        <div class="brand-item">SAMSUNG</div>
-        <div class="brand-item">APPLE</div>
-        <div class="brand-item">ZARA</div>
-        <div class="brand-item">ADIDAS</div>
-        <div class="brand-item">H&M</div>
-        <div class="brand-item">SONY</div>
-        <div class="brand-item">LG</div>
-        <div class="brand-item">IKEA</div>
-        <div class="brand-item">GUCCI</div>
-        <!-- Duplicate for infinite scroll -->
-        <div class="brand-item">NIKE</div>
-        <div class="brand-item">SAMSUNG</div>
-        <div class="brand-item">APPLE</div>
-        <div class="brand-item">ZARA</div>
-        <div class="brand-item">ADIDAS</div>
+    <div class="taobao-cats">
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=squeegees'">
+        <div class="tc-icon"><img src="assets/categories/icon_squeegee.jpg" alt="قشاطات"></div>
+        <div class="tc-name">قشاطات</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=brooms'">
+        <div class="tc-icon"><img src="assets/categories/icon_broom.jpg" alt="مكانس"></div>
+        <div class="tc-name">مكانس</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=sponges'">
+        <div class="tc-icon"><img src="assets/categories/icon_sponge.jpg" alt="ليفة جلي"></div>
+        <div class="tc-name">ليفة جلي</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=loofahs'">
+        <div class="tc-icon"><img src="assets/categories/icon_loofah.jpg" alt="ليف حمام"></div>
+        <div class="tc-name">ليف حمام</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=scissors'">
+        <div class="tc-icon"><img src="assets/categories/icon_scissors.jpg" alt="مقصات"></div>
+        <div class="tc-name">مقصات</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=personal_care'">
+        <div class="tc-icon"><img src="assets/categories/icon_personal_care.jpg" alt="عناية شخصية"></div>
+        <div class="tc-name">عناية شخصية</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=dusters'">
+        <div class="tc-icon"><img src="assets/categories/icon_duster.jpg" alt="منفضة غبار"></div>
+        <div class="tc-name">منفضة غبار</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=cosmetics'">
+        <div class="tc-icon"><img src="assets/categories/icon_cosmetics.jpg" alt="كورمتكس"></div>
+        <div class="tc-name">كورمتكس</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=scales'">
+        <div class="tc-icon"><img src="assets/categories/icon_scale.jpg" alt="موازين"></div>
+        <div class="tc-name">موازين</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=party'">
+        <div class="tc-icon"><img src="assets/categories/icon_party.jpg" alt="أعياد ميلاد"></div>
+        <div class="tc-name">حفلات</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=foil'">
+        <div class="tc-icon"><img src="assets/categories/icon_aluminum_foil.jpg" alt="منتجات قصدير"></div>
+        <div class="tc-name">قصدير</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=plastic'">
+        <div class="tc-icon"><img src="assets/categories/icon_plastic_products.jpg" alt="منتجات بلاستيك"></div>
+        <div class="tc-name">بلاستيك</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=nylon_bags'">
+        <div class="tc-icon"><img src="assets/categories/icon_plastic_bags.jpg" alt="أكياس نايلون"></div>
+        <div class="tc-name">أكياس نايلون</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=batteries'">
+        <div class="tc-icon" style="font-size:28px">🔋</div>
+        <div class="tc-name">بطاريات</div>
+      </div>
+      <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=microfiber'">
+        <div class="tc-icon" style="font-size:28px">🧹</div>
+        <div class="tc-name">مايكروفايبر</div>
       </div>
     </div>
   </div>
@@ -231,29 +263,6 @@
       console.error('Error loading banners:', e);
     }
 
-    // 3. Load Homepage Categories dynamically
-    try {
-      const res = await fetch('api/get_homepage_categories.php?t=' + Date.now());
-      const cats = await res.json();
-      const container = document.getElementById('homepage-categories-list');
-      if (container && Array.isArray(cats) && cats.length > 0) {
-        container.innerHTML = cats.filter(c => c.active).map(c => {
-          const isEmoji = c.img && (c.img.length <= 4 || !c.img.includes('/') && !c.img.startsWith('data:'));
-          const imgHtml = isEmoji 
-              ? `<span style="font-size:28px;">${c.img}</span>`
-              : `<img src="${c.img}" alt="${c.title}">`;
-          return `
-            <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=${c.id}'">
-              <div class="tc-icon">${imgHtml}</div>
-              <div class="tc-name">${c.title}</div>
-            </div>
-          `;
-        }).join('');
-      }
-    } catch(e) {
-      console.error('Error loading homepage categories:', e);
-    }
-
     // 2. Load Brands dynamically
     try {
       const res = await fetch('api/get_brands.php?t=' + Date.now());
@@ -261,23 +270,7 @@
       const container = document.querySelector('.brands-inner');
       if (container && Array.isArray(brands) && brands.length > 0) {
         const allBrands = [...brands, ...brands];
-        container.innerHTML = allBrands.map(b => {
-          const name = typeof b === 'string' ? b : (b.name || '');
-          const logo = typeof b === 'string' ? '' : (b.logo || '');
-          if (logo) {
-            return `
-              <div class="brand-item logo-brand" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'" style="cursor:pointer; display:flex; align-items:center; justify-content:center; background:#fff; padding:5px 15px; border-radius:10px; border:1.5px solid var(--gray2); height:55px; min-width:110px;">
-                <img src="${logo}" alt="${name}" style="max-height:100%; max-width:100%; object-fit:contain;" />
-              </div>
-            `;
-          } else {
-            return `
-              <div class="brand-item text-brand" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'" style="cursor:pointer; font-weight:700; color:var(--gray7); font-size:15px; display:flex; align-items:center; justify-content:center; background:var(--gray1); padding:10px 20px; border-radius:10px; border:1.5px solid var(--gray2); height:55px; min-width:110px;">
-                ${name}
-              </div>
-            `;
-          }
-        }).join('');
+        container.innerHTML = allBrands.map(b => `<div class="brand-item" onclick="window.location.href='shop.html?brand=${encodeURIComponent(b)}'" style="cursor:pointer;">${b}</div>`).join('');
       }
     } catch (e) {
       console.error('Error loading brands:', e);
@@ -489,7 +482,31 @@
   </div>
 </div>
 
-
+<section class="brands-sec">
+  <div class="container">
+    <h2 class="sec-title text-center">أبرز الماركات</h2>
+    <div class="brands-track">
+      <div class="brands-inner">
+        <div class="brand-item">NIKE</div>
+        <div class="brand-item">SAMSUNG</div>
+        <div class="brand-item">APPLE</div>
+        <div class="brand-item">ZARA</div>
+        <div class="brand-item">ADIDAS</div>
+        <div class="brand-item">H&M</div>
+        <div class="brand-item">SONY</div>
+        <div class="brand-item">LG</div>
+        <div class="brand-item">IKEA</div>
+        <div class="brand-item">GUCCI</div>
+        <!-- Duplicate for infinite scroll -->
+        <div class="brand-item">NIKE</div>
+        <div class="brand-item">SAMSUNG</div>
+        <div class="brand-item">APPLE</div>
+        <div class="brand-item">ZARA</div>
+        <div class="brand-item">ADIDAS</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="new-arrivals">
   <div class="container">
@@ -707,7 +724,7 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script src="auth.js?v=1785802153537"></script>
-<script src="main.js?v=1786117170000"></script>
+<script src="main.js?v=1785802153537"></script>
 <script src="enhancements.js?v=1785802153537"></script>
 <script>
   if ('serviceWorker' in navigator) {
@@ -719,23 +736,6 @@
       });
     });
   }
-</script>
-
-<script>
-  // Load Announcement Ticker Bar
-  fetch('api/get_ticker.php?t=' + Date.now())
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.enabled) {
-        const bar = document.getElementById('announce-bar');
-        const content = document.getElementById('ticker-text-content');
-        if (bar && content) {
-          content.textContent = data.text;
-          bar.style.display = 'flex';
-        }
-      }
-    })
-    .catch(err => console.error("Error loading announcement ticker:", err));
 </script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+[
+  { "id": "squeegees", "title": "قشاطات", "img": "assets/categories/icon_squeegee.jpg", "active": true },
+  { "id": "brooms", "title": "مكانس", "img": "assets/categories/icon_broom.jpg", "active": true },
+  { "id": "sponges", "title": "ليفة جلي", "img": "assets/categories/icon_sponge.jpg", "active": true },
+  { "id": "loofahs", "title": "ليف حمام", "img": "assets/categories/icon_loofah.jpg", "active": true },
+  { "id": "scissors", "title": "مقصات", "img": "assets/categories/icon_scissors.jpg", "active": true },
+  { "id": "personal_care", "title": "عناية شخصية", "img": "assets/categories/icon_personal_care.jpg", "active": true },
+  { "id": "dusters", "title": "منفضة غبار", "img": "assets/categories/icon_duster.jpg", "active": true },
+  { "id": "cosmetics", "title": "كورمتكس", "img": "assets/categories/icon_cosmetics.jpg", "active": true },
+  { "id": "scales", "title": "موازين", "img": "assets/categories/icon_scale.jpg", "active": true },
+  { "id": "party", "title": "حفلات", "img": "assets/categories/icon_party.jpg", "active": true },
+  { "id": "foil", "title": "قصدير", "img": "assets/categories/icon_aluminum_foil.jpg", "active": true },
+  { "id": "plastic", "title": "بلاستيك", "img": "assets/categories/icon_plastic_products.jpg", "active": true },
+  { "id": "nylon_bags", "title": "أكياس نايلون", "img": "assets/categories/icon_plastic_bags.jpg", "active": true },
+  { "id": "batteries", "title": "بطاريات", "img": "🔋", "active": true },
+  { "id": "microfiber", "title": "مايكروفايبر", "img": "🧹", "active": true }
+]

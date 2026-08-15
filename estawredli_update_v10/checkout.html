@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>استوردلي | إتمام الشراء</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+
+
+<button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
+  <script src="store.js?v=1785802153537"></script>
+  <link rel="stylesheet" href="style.css?v=1785802153537"/>
+  <style>
+    body { background: var(--bg2); padding-top: 100px; }
+    .checkout-wrap { max-width: 800px; margin: 0 auto 40px; padding: 20px; }
+    .checkout-card { background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .checkout-title { font-size: 24px; font-weight: 800; margin-bottom: 20px; color: var(--gray9); border-bottom: 2px solid var(--gray1); padding-bottom: 10px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; color: var(--gray7); }
+    .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--gray3); border-radius: 8px; font-family: inherit; font-size: 14px; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--p); outline: none; }
+    .checkout-items { margin-bottom: 20px; }
+    .ci-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--gray2); }
+    .ci-row:last-child { border-bottom: none; }
+    .ci-total { display: flex; justify-content: space-between; padding: 15px 0; border-top: 2px solid var(--gray2); font-weight: 800; font-size: 18px; margin-top: 10px; }
+    .btn-submit { display: block; width: 100%; background: var(--p); color: #fff; padding: 16px; border: none; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; text-align: center; }
+  </style>
+<link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+  <link rel="apple-touch-icon" href="logo.jpg" />
+</head>
+<body>
+  <!-- HEADER (Simplified) -->
+  <header class="hdr-main" style="position:fixed;top:0;left:0;right:0;background:#fff;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+    <div class="container">
+      <div class="hdr-main-inner" style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;">
+        <a href="index.html" class="logo" style="font-size:24px;font-weight:900;text-decoration:none;color:var(--gray9);">إستوردلي <span style="color:var(--p)">.</span></a>
+        <a href="index.html" style="color:var(--p);font-weight:600;text-decoration:none;">← العودة للمتجر</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container checkout-wrap">
+    <form id="checkout-form">
+      <div class="checkout-card">
+        <h2 class="checkout-title">🧾 ملخص الطلب</h2>
+        <div class="checkout-items" id="co-items"></div>
+        <div class="ci-row" style="margin-top:12px">
+          <span>التوصيل:</span>
+          <span id="co-shipping">₪0</span>
+        </div>
+        <div class="ci-row" style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px; font-weight:800; color:var(--p)">
+          <span>المجموع الكلي:</span>
+          <span id="co-total">₪0</span>
+        </div>
+      </div>
+
+      <div class="checkout-card">
+        <h2 class="checkout-title">📍 تفاصيل التوصيل</h2>
+        <div class="form-group">
+          <label>الاسم الكامل</label>
+          <input type="text" id="co-name" required />
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف <span style="color:var(--red)">*</span></label>
+          <input type="tel" id="co-phone" required placeholder="ضروري جداً للتواصل معك" />
+        </div>
+        <div class="form-group">
+          <label>منطقة التوصيل <span style="color:var(--red)">*</span></label>
+          <select id="co-zone" required onchange="updateTotalWithShipping()">
+            <option value="" data-price="0">اختر منطقة التوصيل</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>المدينة / العنوان بالتفصيل</label>
+          <textarea id="co-address" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>ملاحظات إضافية (اختياري)</label>
+          <textarea id="co-notes" rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn-submit">تأكيد الطلب 🚀</button>
+      </div>
+    </form>
+
+  <!-- Cart + Wish Drawers -->
+  <div class="drawer-mask" id="cart-mask"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="drawer-header"><h3>🛒 سلتي</h3><button class="drawer-close" id="cart-close">✕</button></div>
+    <div class="drawer-body" id="cart-body">
+      <div class="drawer-empty" id="cart-empty"><div class="empty-icon">🛒</div><p>سلتك فارغة!</p><a href="shop.html" class="btn btn-primary">ابدأ التسوق</a></div>
+      <div id="cart-items-list"></div>
+    </div>
+    <div class="drawer-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal"><span>المجموع الفرعي</span><strong id="cart-subtotal">₪0.00</strong></div>
+      <div class="cart-shipping"><span>الشحن</span><strong id="cart-shipping">مجاني 🎉</strong></div>
+      <div class="cart-divider"></div>
+      <div class="cart-total-row"><span>الإجمالي</span><strong id="cart-total-price" class="total-big">₪0.00</strong></div>
+      <a href="checkout.html" class="btn btn-primary w-full btn-lg checkout-btn">إتمام الشراء →</a>
+      <button class="continue-btn" id="continue-shopping">متابعة التسوق</button>
+    </div>
+  </aside>
+
+  <div class="drawer-mask" id="wish-mask"></div>
+  <aside class="cart-drawer wish-drawer" id="wish-drawer">
+    <div class="drawer-header">
+      <h3>❤️ المفضلة</h3>
+      <button class="drawer-close" id="wish-close">✕</button>
+    </div>
+    <div class="drawer-body" id="wish-body">
+      <div class="drawer-empty" id="wish-empty">
+        <div class="empty-icon">❤️</div>
+        <p>لا توجد منتجات في المفضلة</p>
+      </div>
+      <div id="wish-items-list"></div>
+    </div>
+  </aside>
+
+  <div class="modal-mask" id="qv-mask"></div>
+  <div class="qv-modal" id="qv-modal">
+    <button class="qv-close" id="qv-close">✕</button>
+    <div class="qv-inner" id="qv-inner"></div>
+  </div>
+
+  <div id="toast-wrap"></div>
+
+  <script src="auth.js?v=1785802153537"></script>
+<script src="main.js?v=1785802153537"></script>
+  <script>
+    window.addEventListener('authLoaded', () => {
+      // 0. Check if user is active
+      if (!window.authUser || window.authUser.status !== 'active') {
+        alert('يرجى تسجيل الدخول بعضوية مفعلة لإتمام الطلب.');
+        window.location = 'index.html';
+        return;
+      }
+
+      // 1. Check if cart is empty
+      const cart = state.cart;
+      if (!cart || cart.length === 0) {
+        alert('السلة فارغة! سيتم إعادتك للمتجر.');
+        window.location = 'index.html';
+        return;
+      }
+      
+      // 2. Render items
+      const itemsContainer = document.getElementById('co-items');
+      itemsContainer.innerHTML = cart.map(i => {
+        const qty = i.qty || 1;
+        const pcs = i.pieces_per_carton || 1;
+        return `
+          <div class="ci-row" style="align-items: flex-start;">
+            <div>
+              ${i.name} <strong>(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</strong>
+              ${pcs > 1 ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
+            </div>
+            <div>₪${(i.price * qty * pcs).toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+      
+      let currentShipping = 0;
+      const zoneSelect = document.getElementById('co-zone');
+      
+      // Populate Zones
+      zoneSelect.innerHTML = '<option value="" data-price="0">اختر منطقة التوصيل</option>';
+      if (typeof Store !== 'undefined') {
+        const zones = Store.getDeliveryZones();
+        zones.forEach(z => {
+          const opt = document.createElement('option');
+          opt.value = z.name;
+          opt.dataset.price = z.price;
+          opt.textContent = `${z.name} (+₪${z.price})`;
+          zoneSelect.appendChild(opt);
+        });
+      }
+
+      window.updateTotalWithShipping = function() {
+        const opt = zoneSelect.options[zoneSelect.selectedIndex];
+        currentShipping = opt ? parseFloat(opt.dataset.price) || 0 : 0;
+        document.getElementById('co-shipping').textContent = '₪' + currentShipping.toLocaleString();
+        const newTotal = state.cartTotal() + currentShipping;
+        document.getElementById('co-total').textContent = '₪' + newTotal.toLocaleString();
+      };
+      
+      updateTotalWithShipping(); // Init
+
+      // 3. (تم إزالة التحقق من تسجيل الدخول - يمكن لأي شخص الطلب)
+
+      // 4. Handle Submit
+      if (!window.checkoutSubmitAttached) {
+        window.checkoutSubmitAttached = true;
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+        
+        const phone = document.getElementById('co-phone').value.trim();
+        if (!phone) {
+          alert('❌ يرجى إدخال رقم الهاتف للضرورة!');
+          return;
+        }
+        
+        if (!zoneSelect.value) {
+          alert('❌ يرجى اختيار منطقة التوصيل!');
+          return;
+        }
+
+        const name = document.getElementById('co-name').value.trim();
+        const address = document.getElementById('co-address').value.trim();
+        const notes = document.getElementById('co-notes').value.trim();
+        const zone = zoneSelect.value;
+        
+        if (!name || !phone || !zone) {
+          alert('❌ يرجى تعبئة الحقول الأساسية: الاسم، رقم الهاتف، ومنطقة التوصيل.');
+          return;
+        }
+
+        const orderData = {
+          name: name,
+          phone: phone,
+          address: address,
+          zone: zone,
+          notes: notes,
+          items: cart.map(i => ({ 
+            id: i.id, 
+            name: i.name, 
+            price: i.price, 
+            qty: i.qty,
+            pieces_per_carton: i.pieces_per_carton || 1,
+            product_code: i.product_code || '',
+            factory_code: i.factory_code || ''
+          })),
+          subtotal: state.cartTotal(),
+          shipping_cost: currentShipping,
+          total: state.cartTotal() + currentShipping
+        };
+
+        const btnSubmit = e.target.querySelector('button[type="submit"]');
+        const oldText = btnSubmit.textContent;
+        btnSubmit.textContent = 'جاري الإرسال...';
+        btnSubmit.disabled = true;
+
+        fetch('api/submit_order.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          btnSubmit.textContent = oldText;
+          btnSubmit.disabled = false;
+          
+          if (data.success) {
+            state.cart = [];
+            state.saveCart();
+            alert('✅ ' + data.message + ' (طلب رقم ' + data.order_id + ')');
+            window.location = 'index.html';
+          } else if (data.message && data.message.includes("فشل الاتصال بقاعدة البيانات")) {
+            const newOrder = typeof Store !== 'undefined' ? Store.addOrder(orderData) : { id: 'محلي' };
+            state.cart = [];
+            state.saveCart();
+            alert('✅ تم إرسال الطلب بنجاح! (تم الحفظ محلياً)');
+            window.location = 'index.html';
+          } else {
+            alert('❌ خطأ: ' + data.message);
+          }
+        })
+        .catch(err => {
+          btnSubmit.textContent = oldText;
+          btnSubmit.disabled = false;
+          alert('❌ حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.');
+        });
+      });
+      }
+    });
+  </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('SW registered: ', reg.scope);
+      }).catch(err => {
+        console.log('SW registration failed: ', err);
+      });
+    });
+  }
+</script>
+</body>
+</html>
