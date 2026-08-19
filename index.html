@@ -12,10 +12,57 @@
   <script src="store.js?v=1786117170000"></script>
   <link rel="stylesheet" href="style.css?v=1786978000000"/>
   <link rel="stylesheet" href="enhancements.css?v=1785802153537"/>
-<link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="logo.jpg" />
+  <style>
+    .announce-bar {
+      background: linear-gradient(90deg, #0b1528 0%, #1e3a8a 50%, #0b1528 100%) !important;
+      color: #ffffff !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      display: flex !important;
+      align-items: center !important;
+      overflow: hidden !important;
+      position: relative !important;
+      z-index: 1001 !important;
+      border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      direction: ltr !important;
+    }
+    .ticker-text-container {
+      width: 100% !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+    .ticker-text-scroll {
+      display: inline-block !important;
+      white-space: nowrap !important;
+      padding-left: 100% !important;
+      animation: marqueeTicker 25s linear infinite !important;
+      -webkit-animation: marqueeTicker 25s linear infinite !important;
+      direction: rtl !important;
+      will-change: transform !important;
+    }
+    .ticker-text-scroll:hover {
+      animation-play-state: paused !important;
+    }
+    @keyframes marqueeTicker {
+      0%   { transform: translate3d(0, 0, 0); -webkit-transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); -webkit-transform: translate3d(-100%, 0, 0); }
+    }
+    @-webkit-keyframes marqueeTicker {
+      0%   { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+      100% { -webkit-transform: translate3d(-100%, 0, 0); transform: translate3d(-100%, 0, 0); }
+    }
+  </style>
 </head>
 <body>
 

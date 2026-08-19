@@ -841,6 +841,151 @@ async function initPopupBanner() {
             }
         }
         
+        // Inject foolproof popup modal styles directly if not already present
+        if (!document.getElementById('pb-dynamic-styles')) {
+            const styleTag = document.createElement('style');
+            styleTag.id = 'pb-dynamic-styles';
+            styleTag.textContent = `
+                #popup-banner-modal {
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    bottom: 0 !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    z-index: 999999 !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 16px !important;
+                    box-sizing: border-box !important;
+                    opacity: 0;
+                    visibility: hidden;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease, visibility 0.3s ease;
+                }
+                #popup-banner-modal.active {
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    pointer-events: auto !important;
+                }
+                .pb-backdrop {
+                    position: absolute !important;
+                    inset: 0 !important;
+                    background: rgba(3, 7, 18, 0.75) !important;
+                    backdrop-filter: blur(8px) !important;
+                    -webkit-backdrop-filter: blur(8px) !important;
+                    cursor: pointer !important;
+                }
+                .pb-dialog {
+                    position: relative !important;
+                    width: 100% !important;
+                    max-width: 480px !important;
+                    background: #0f172a !important;
+                    background: rgba(15, 23, 42, 0.96) !important;
+                    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+                    border-radius: 20px !important;
+                    padding: 26px 22px 20px !important;
+                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
+                    text-align: center !important;
+                    z-index: 10 !important;
+                    box-sizing: border-box !important;
+                    color: #fff !important;
+                    font-family: inherit !important;
+                    transform: scale(0.92);
+                    transition: transform 0.3s ease;
+                }
+                #popup-banner-modal.active .pb-dialog {
+                    transform: scale(1) !important;
+                }
+                .pb-close-btn {
+                    position: absolute !important;
+                    top: 12px !important;
+                    left: 12px !important;
+                    width: 32px !important;
+                    height: 32px !important;
+                    border-radius: 50% !important;
+                    background: rgba(255, 255, 255, 0.1) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                    color: #94a3b8 !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    font-size: 16px !important;
+                    cursor: pointer !important;
+                    z-index: 20 !important;
+                }
+                .pb-close-btn:hover {
+                    background: rgba(239, 68, 68, 0.25) !important;
+                    color: #ef4444 !important;
+                }
+                .pb-tag-badge {
+                    display: inline-block !important;
+                    padding: 4px 14px !important;
+                    border-radius: 99px !important;
+                    background: rgba(59, 130, 246, 0.2) !important;
+                    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+                    color: #60a5fa !important;
+                    font-size: 12px !important;
+                    font-weight: 800 !important;
+                    margin-bottom: 12px !important;
+                }
+                .pb-img-wrapper {
+                    width: 100% !important;
+                    max-height: 180px !important;
+                    border-radius: 12px !important;
+                    overflow: hidden !important;
+                    margin-bottom: 14px !important;
+                }
+                .pb-img-wrapper img {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    display: block !important;
+                }
+                .pb-title {
+                    font-size: 18px !important;
+                    font-weight: 800 !important;
+                    color: #f8fafc !important;
+                    margin: 0 0 10px 0 !important;
+                }
+                .pb-body-text {
+                    font-size: 13.5px !important;
+                    color: #cbd5e1 !important;
+                    line-height: 1.6 !important;
+                    margin: 0 0 18px 0 !important;
+                    text-align: right !important;
+                }
+                .pb-actions {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 8px !important;
+                }
+                .pb-btn-cta {
+                    display: block !important;
+                    width: 100% !important;
+                    padding: 11px 16px !important;
+                    border-radius: 10px !important;
+                    background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+                    color: #ffffff !important;
+                    font-size: 14px !important;
+                    font-weight: 800 !important;
+                    text-decoration: none !important;
+                    box-sizing: border-box !important;
+                }
+                .pb-btn-dismiss {
+                    background: transparent !important;
+                    border: none !important;
+                    color: #94a3b8 !important;
+                    font-size: 12.5px !important;
+                    cursor: pointer !important;
+                    padding: 6px !important;
+                }
+            `;
+            document.head.appendChild(styleTag);
+        }
+        
         // Build Modal Element
         const modal = document.createElement('div');
         modal.id = 'popup-banner-modal';

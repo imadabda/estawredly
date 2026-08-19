@@ -1,4 +1,4 @@
-const CACHE_NAME = 'estawredly-cache-v21';
+const CACHE_NAME = 'estawredly-cache-v25-clean';
 const urlsToCache = [
   './',
   './index.html',
@@ -12,13 +12,6 @@ const urlsToCache = [
 
 self.addEventListener('install', event => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-      .catch(err => console.log('SW install cache bypassed:', err))
-  );
 });
 
 self.addEventListener('activate', event => {
@@ -44,15 +37,18 @@ self.addEventListener('fetch', event => {
     return;
   }
   
+  // Network first: always fetch newest version from network, fallback to cache if offline
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        if (response) {
-          return response;
+        if (response && response.status === 200) {
+          const resClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
         }
-        return fetch(event.request).catch(err => {
-          return new Response('', { status: 408, statusText: 'Offline' });
-        });
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request);
       })
   );
 });
