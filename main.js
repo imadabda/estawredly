@@ -1023,17 +1023,26 @@ async function initPopupBanner() {
             </div>
         `;
         
+        // Remove any existing popup modal before creating a new one
+        const existingModal = document.getElementById('popup-banner-modal');
+        if (existingModal && existingModal.parentNode) {
+            existingModal.parentNode.removeChild(existingModal);
+        }
+        
         document.body.appendChild(modal);
         
         // Dismiss function - stores in sessionStorage ONLY when user explicitly closes it
         function dismissPopup() {
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
             modal.classList.remove('active');
             try {
                 sessionStorage.setItem('pb_dismissed_now', '1');
             } catch(e){}
             setTimeout(() => {
                 if (modal.parentNode) modal.parentNode.removeChild(modal);
-            }, 400);
+            }, 250);
         }
         
         // Attach click listeners to dismiss elements
