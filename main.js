@@ -827,10 +827,13 @@ async function initPopupBanner() {
         const urlParams = new URLSearchParams(window.location.search);
         const isTest = urlParams.get('test_popup') === '1';
         
-        // Show ONLY on home page (index.html or root /) unless testing
-        const path = window.location.pathname;
-        const isHome = path.endsWith('index.html') || path.endsWith('/') || path === '' || !path.includes('.html');
-        if (!isHome && !isTest) {
+        // Clean any old obsolete storage locks
+        try {
+            localStorage.removeItem('estawredly_pb_dismissed_v1');
+        } catch(e){}
+        
+        // If user already explicitly closed the banner in this tab session, don't reopen
+        if (!isTest && sessionStorage.getItem('pb_dismissed_now') === '1') {
             return;
         }
         
@@ -838,16 +841,10 @@ async function initPopupBanner() {
         if (!res.ok) return;
         const config = await res.json();
         
-        if (!config || config.enabled === false) return;
+        if (!config) return;
+        const isEnabled = config.enabled === true || config.enabled === "1" || config.enabled === 1 || config.enabled === "true";
+        if (!isEnabled && !isTest) return;
         if (!config.title && !config.message) return;
-        
-        // Clean any old obsolete storage locks
-        localStorage.removeItem('estawredly_pb_dismissed_v1');
-        
-        const bannerKey = 'estawredly_pb_' + encodeURIComponent((config.title || '') + '_' + (config.tag || '')).slice(0, 30);
-        if (!isTest && sessionStorage.getItem(bannerKey) === '1') {
-            return;
-        }
         
         // Inject foolproof popup modal styles directly if not already present
         if (!document.getElementById('pb-dynamic-styles')) {
@@ -1027,12 +1024,12 @@ async function initPopupBanner() {
         
         document.body.appendChild(modal);
         
-        // Dismiss function - stores in sessionStorage so popup never reappears during current session
+        // Dismiss function - stores in sessionStorage ONLY when user explicitly closes it
         function dismissPopup() {
             modal.classList.remove('active');
-            if (config.show_once) {
-                sessionStorage.setItem(bannerKey, '1');
-            }
+            try {
+                sessionStorage.setItem('pb_dismissed_now', '1');
+            } catch(e){}
             setTimeout(() => {
                 if (modal.parentNode) modal.parentNode.removeChild(modal);
             }, 400);
@@ -1056,11 +1053,10 @@ async function initPopupBanner() {
             }
         });
         
-        // Show with subtle delay and mark as shown for session
+        // Show with subtle delay
         setTimeout(() => {
             modal.classList.add('active');
-            sessionStorage.setItem(bannerKey, '1');
-        }, 350);
+        }, 300);
         
     } catch (err) {
         console.error("Popup banner init error:", err);
