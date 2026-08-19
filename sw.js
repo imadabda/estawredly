@@ -1,4 +1,4 @@
-const CACHE_NAME = 'estawredly-cache-v20';
+const CACHE_NAME = 'estawredly-cache-v21';
 const urlsToCache = [
   './',
   './index.html',
