@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>من نحن | إستوردلي - عالم الاستيراد والتنظيف المتكامل</title>
+  <link rel="stylesheet" href="style.css?v=1786971500000"/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="announce-bar" id="announce-bar" style="display:none;">
+  <div class="ticker-text-container">
+    <div class="ticker-text-scroll" id="ticker-text-content"></div>
+  </div>
+</div>
+
+<header class="header" id="header">
+  <div class="hdr-top">
+    <div class="container hdr-top-inner">
+      <nav class="hdr-links">
+        <a href="about.html" style="color:#fff;font-weight:700;">من نحن</a>
+        <a href="contact.html">اتصل بنا</a>
+        <a href="shop.html?sale=true">العروض</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="hdr-main">
+    <div class="container hdr-main-inner">
+      <!-- Logo -->
+      <a href="index.html" class="logo">
+        <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
+          <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+        </div>
+        <div class="logo-name">
+          <span class="logo-ar">إستوردلي</span>
+          <span class="logo-en">ESTAWREDLY</span>
+        </div>
+      </a>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <input type="text" id="search-input" class="search-input" placeholder="ابحث عن أي منتج..."/>
+          <button class="search-btn" id="search-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="hdr-actions">
+        <button class="hdr-icon-btn" id="auth-btn" title="حسابي" onclick="openModal('auth')">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="badge" id="wishlist-count">0</span>
+        </button>
+        <button class="hdr-icon-btn cart-trigger" id="cart-btn" title="السلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="badge cart-badge" id="cart-count">0</span>
+        </button>
+        <button class="menu-btn" id="menu-btn">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="main-nav" id="main-nav">
+    <div class="nav-close-btn" onclick="document.getElementById('main-nav').classList.remove('open')">✕ إغلاق</div>
+    <div class="container nav-inner">
+      <ul class="nav-list"></ul>
+    </div>
+  </nav>
+</header>
+
+<!-- Breadcrumb -->
+<div class="page-breadcrumb">
+  <div class="container">
+    <a href="index.html">الرئيسية</a>
+    <span>/</span>
+    <span class="current">من نحن</span>
+  </div>
+</div>
+
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-badge" id="about-badge">🌐 بوابتك الأولى للاستيراد المباشر</div>
+    <h1 class="page-hero-title" id="about-main-heading">نحن رواد الاستيراد المباشر من المصانع العالمية</h1>
+    <p class="page-hero-desc" id="about-desc">
+      منصة إستوردلي هي الوجهة الأولى للتجار والشركات والأفراد لتوفير أجود المنتجات ومستلزمات التنظيف والأدوات مباشرة من المصدر.
+    </p>
+  </div>
+</section>
+
+<!-- About Content -->
+<section class="about-section">
+  <div class="container">
+    
+    <!-- Stats Grid -->
+    <div class="about-stats-grid" id="about-stats-container">
+      <div class="stat-box">
+        <div class="stat-num">+500</div>
+        <div class="stat-lbl">منتج متنوع</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">+12</div>
+        <div class="stat-lbl">دولة موردة</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">+1500</div>
+        <div class="stat-lbl">عميل راضٍ</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-lbl">ضمان الجودة</div>
+      </div>
+    </div>
+
+    <!-- Vision & Mission -->
+    <div class="vision-mission-grid">
+      <div class="vm-box">
+        <h3 id="about-vision-title">🎯 رؤيتنا</h3>
+        <p id="about-vision-text">
+          أن نكون الخيار الأول والمنصة الرائدة في المنطقة للاستيراد الذكي والتوريد المباشر بأعلى معايير الجودة والشفافية.
+        </p>
+      </div>
+      <div class="vm-box">
+        <h3 id="about-mission-title">🚀 رسالتنا</h3>
+        <p id="about-mission-text">
+          تمكين عملائنا من الوصول إلى أفضل المنتجات والأسعار العالمية بضمان كامل وشحن آمن حتى باب المستودع أو المنزل.
+        </p>
+      </div>
+    </div>
+
+    <!-- Features Heading -->
+    <div style="text-align: center; margin-top: 50px; margin-bottom: 24px;">
+      <h2 style="font-size: 26px; font-weight: 900; color: var(--gray8);">لماذا يفضل العملاء "إستوردلي"؟</h2>
+      <p style="color: var(--gray6); font-size: 14.5px;">مزايا حصرية تجعل تجربة استيرادك وتسوقك أكثر ربحية وأماناً</p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="about-features-grid" id="about-features-container">
+      <div class="about-feat-card">
+        <div class="feat-icon-wrap">🤝</div>
+        <h3>استيراد مباشر من المصدر</h3>
+        <p>نوفر لك التعامل المباشر مع المصانع المعتمدة دون وسطاء لضمان أفضل تكلفة وجودة.</p>
+      </div>
+      <div class="about-feat-card">
+        <div class="feat-icon-wrap">🛡️</div>
+        <h3>فحص الجودة والمطابقة</h3>
+        <p>فريق متخصص لفحص البضائع قبل الشحن لضمان مطابقتها لأعلى المعايير والمواصفات.</p>
+      </div>
+      <div class="about-feat-card">
+        <div class="feat-icon-wrap">⚡</div>
+        <h3>شحن وتخليص سريع</h3>
+        <p>إجراءات جمركية وشحن دولي سريع حتى باب بيتك أو مستودعك بأمان تام.</p>
+      </div>
+      <div class="about-feat-card">
+        <div class="feat-icon-wrap">💰</div>
+        <h3>أفضل الأسعار التنافسية</h3>
+        <p>أسعار جملة وتجزئة حصرية تضمن لك أعلى هامش ربح وأقصى توفير ممكن.</p>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div style="background: linear-gradient(135deg, var(--p), #1d4ed8); border-radius: var(--r2); padding: 40px; text-align: center; color: #fff; margin-top: 50px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);">
+      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px;">هل لديك طلب استيراد مخصص أو استفسار؟</h2>
+      <p style="color: rgba(255,255,255,0.9); font-size: 15px; max-width: 600px; margin: 0 auto 24px; line-height: 1.6;">
+        فريقنا جاهز لمساعدتك في استيراد أي منتج تريده من المصانع العالمية بأفضل الأسعار وأعلى سرعة.
+      </p>
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a href="contact.html" class="btn btn-white btn-lg" style="font-weight: 800;">تواصل معنا الآن</a>
+        <a href="shop.html" class="btn btn-outline-white btn-lg" style="font-weight: 800;">تصفح منتجاتنا</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <a href="index.html" class="logo">
+          <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
+            <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+          </div>
+          <div class="logo-name">
+            <span class="logo-ar">إستوردلي</span>
+            <span class="logo-en">ESTAWREDLY</span>
+          </div>
+        </a>
+        <p class="footer-desc">بوابتك الأولى لاستيراد أفضل المنتجات ومستلزمات التنظيف والأدوات مباشرة من المصدر بأعلى جودة وأفضل الأسعار.</p>
+      </div>
+      <div>
+        <h4 class="footer-col-title">روابط سريعة</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="shop.html">المتجر</a></li>
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">خدمة العملاء</h4>
+        <ul class="footer-links">
+          <li><a href="contact.html">الدعم الفني</a></li>
+          <li><a href="contact.html">الاستيراد الخاص</a></li>
+          <li><a href="shop.html?sale=true">العروض الخاصة</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom text-center">
+      <p>© 2026 إستوردلي. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Modals -->
+<div class="modal-overlay" id="auth-modal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>تسجيل الدخول</h3>
+      <button class="modal-close" onclick="closeModal('auth')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">دخول</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">حساب جديد</button>
+      </div>
+      <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="login-email" required placeholder="name@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="login-pwd" required placeholder="••••••••"/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="products_db.js?v=1785802153537"></script>
+<script src="store.js?v=1786117170000"></script>
+<script src="auth.js?v=1785802153537"></script>
+<script src="main.js?v=1786971500000"></script>
+
+<script>
+  // Load dynamic page content from API
+  async function loadAboutContent() {
+    try {
+      const res = await fetch('api/get_pages_content.php?t=' + Date.now());
+      const data = await res.json();
+      if (data && data.about) {
+        const a = data.about;
+        if (a.title) document.title = a.title;
+        if (a.badge) document.getElementById('about-badge').textContent = a.badge;
+        if (a.main_heading) document.getElementById('about-main-heading').textContent = a.main_heading;
+        if (a.description) document.getElementById('about-desc').textContent = a.description;
+        if (a.vision_title) document.getElementById('about-vision-title').textContent = '🎯 ' + a.vision_title;
+        if (a.vision_text) document.getElementById('about-vision-text').textContent = a.vision_text;
+        if (a.mission_title) document.getElementById('about-mission-title').textContent = '🚀 ' + a.mission_title;
+        if (a.mission_text) document.getElementById('about-mission-text').textContent = a.mission_text;
+        
+        // Stats
+        if (Array.isArray(a.stats) && a.stats.length > 0) {
+          const statsContainer = document.getElementById('about-stats-container');
+          if (statsContainer) {
+            statsContainer.innerHTML = a.stats.map(s => `
+              <div class="stat-box">
+                <div class="stat-num">${s.number}</div>
+                <div class="stat-lbl">${s.label}</div>
+              </div>
+            `).join('');
+          }
+        }
+
+        // Features
+        if (Array.isArray(a.features) && a.features.length > 0) {
+          const featsContainer = document.getElementById('about-features-container');
+          if (featsContainer) {
+            featsContainer.innerHTML = a.features.map(f => `
+              <div class="about-feat-card">
+                <div class="feat-icon-wrap">${f.icon || '✨'}</div>
+                <h3>${f.title}</h3>
+                <p>${f.desc}</p>
+              </div>
+            `).join('');
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error loading about content:", e);
+    }
+  }
+
+  // Load Announcement Ticker Bar
+  fetch('api/get_ticker.php?t=' + Date.now())
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.enabled) {
+        const bar = document.getElementById('announce-bar');
+        const content = document.getElementById('ticker-text-content');
+        if (bar && content) {
+          content.textContent = data.text;
+          bar.style.display = 'flex';
+        }
+      }
+    })
+    .catch(err => console.error("Error loading ticker:", err));
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadAboutContent();
+  });
+</script>
+</body>
+</html>

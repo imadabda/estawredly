@@ -886,7 +886,7 @@ tr:last-child td{border-bottom:none}
             <input type="text" id="f-name" placeholder="مثال: سماعات Sony WH-1000XM5"/>
           </div>
           <div class="field">
-            <label>تصنيف الشريط العلوي <span style="color:var(--red)">*</span></label>
+            <label>التصنيف</label>
             <input type="text" id="f-cat" list="cats-list" placeholder="اكتب أو اختر..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1);">
             <datalist id="cats-list"></datalist>
           </div>
@@ -901,20 +901,6 @@ tr:last-child td{border-bottom:none}
             <input type="text" id="f-ref-note" placeholder="مثال: رقم الرف، كود المورد الداخلي، أو أي ملاحظة خاصة"/>
           </div>
           <div class="field">
-            <label>تصنيف التبويب <span style="color:var(--text3);font-size:10px">(للفلترة)</span></label>
-            <select id="f-tab">
-              <option value="all">الكل</option>
-              <option value="squeegees">قشاطات</option>
-              <option value="brooms">مكانس</option>
-              <option value="sponges">ليفة جلي</option>
-              <option value="loofahs">ليف حمام</option>
-              <option value="scissors">مقصات</option>
-              <option value="personal_care">عناية شخصية</option>
-              <option value="dusters">منفضة غبار</option>
-              <option value="microfiber">مايكروفايبر</option>
-            </select>
-          </div>
-          <div class="field">
             <label>الشارة الإعلانية</label>
             <select id="f-badge">
               <option value="">بدون شارة</option>
@@ -922,27 +908,6 @@ tr:last-child td{border-bottom:none}
               <option value="sale">🔥 تخفيض</option>
               <option value="hot">⚡ رائج</option>
               <option value="best">⭐ مميز</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>أيقونة الرئيسية (اختياري)</label>
-            <select id="f-icon-cat" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1);">
-              <option value="">لا يتبع لأيقونة محددة</option>
-              <option value="squeegees">قشاطات</option>
-              <option value="brooms">مكانس</option>
-              <option value="sponges">ليفة جلي</option>
-              <option value="loofahs">ليف حمام</option>
-              <option value="scissors">مقصات</option>
-              <option value="personal_care">عناية شخصية</option>
-              <option value="dusters">منفضة غبار</option>
-              <option value="cosmetics">كورمتكس</option>
-              <option value="scales">موازين</option>
-              <option value="party">حفلات</option>
-              <option value="foil">قصدير</option>
-              <option value="plastic">بلاستيك</option>
-              <option value="nylon_bags">أكياس نايلون</option>
-              <option value="batteries">بطاريات</option>
-              <option value="microfiber">مايكروفايبر</option>
             </select>
           </div>
           <div class="field full">
@@ -1072,17 +1037,32 @@ tr:last-child td{border-bottom:none}
         <button class="sb-item" onclick="showPage('banners',this)">
           <span class="sb-icon">🏷️</span> إدارة البنرات
         </button>
+        <button class="sb-item" onclick="showPage('popup-banner',this)">
+          <span class="sb-icon">📢</span> البنر الترحيبي المنبثق
+        </button>
         <button class="sb-item" onclick="showPage('icons',this)">
           <span class="sb-icon">🖼️</span> أيقونات الرئيسية
         </button>
         <button class="sb-item" onclick="showPage('hero',this)">
-          <span class="sb-icon">🎨</span> السلايدر الرئيسي
+          <span class="sb-icon">🖼️</span> غلاف الرئيسية (Hero)
         </button>
         <button class="sb-item" onclick="showPage('categories',this)">
           <span class="sb-icon">🗂️</span> التصنيفات
         </button>
         <button class="sb-item" onclick="showPage('brands',this)">
           <span class="sb-icon">🏷️</span> إدارة الماركات
+        </button>
+        <button class="sb-item" onclick="showPage('import-sections',this)">
+          <span class="sb-icon">🌐</span> أقسام الاستيراد
+        </button>
+        <button class="sb-item" onclick="showPage('import-countries',this)">
+          <span class="sb-icon">🌍</span> دول الاستيراد
+        </button>
+        <button class="sb-item" onclick="showPage('footer-settings',this)">
+          <span class="sb-icon">📱</span> الفوتر والتواصل
+        </button>
+        <button class="sb-item" onclick="showPage('pages-content',this)">
+          <span class="sb-icon">📄</span> من نحن & اتصل بنا
         </button>
       </div>
 
@@ -1372,17 +1352,588 @@ tr:last-child td{border-bottom:none}
         <div class="media-grid" id="media-grid"></div>
       </div>
 
-      <!-- ══ HERO ══ -->
+      <!-- ══ HERO BANNER (DESKTOP & MOBILE) ══ -->
       <div class="page" id="page-hero">
         <div class="page-header">
           <div>
-            <div class="breadcrumb-admin">المحتوى <span>›</span> السلايدر</div>
-            <h1 class="page-title">السلايدر الرئيسي</h1>
-            <p class="page-sub">تعديل صور وعناوين الصفحة الرئيسية</p>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> غلاف الرئيسية</div>
+            <h1 class="page-title">غلاف الصفحة الرئيسية (Hero Banner)</h1>
+            <p class="page-sub">تعديل صور الغلاف المخصصة لشاشات الكمبيوتر ولشاشات الموبايل ورابط التوجيه</p>
           </div>
-          <div><button class="btn-outline" onclick="adminSliders.addSlide()" style="background:transparent; margin-left:10px;">+ شريحة جديدة</button><button class="btn-add" onclick="adminSliders.save()">💾 حفظ السلايدر</button></div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-outline" onclick="adminHeroBanner.resetDefault()" style="background:transparent;">🔄 استعادة الافتراضي</button>
+            <button class="btn-add" onclick="adminHeroBanner.save()" style="background:var(--blue); font-weight:800;">💾 حفظ الغلاف</button>
+          </div>
         </div>
-        <div id="hero-slides-list" style="display:flex;flex-direction:column;gap:16px"></div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px;">
+          
+          <!-- Desktop Banner Card -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                <span>🖥️</span> غلاف شاشات الكمبيوتر واللابتوب (16:9)
+              </h3>
+              <span style="font-size:11.5px; background:rgba(59,130,246,0.15); color:var(--blue); padding:3px 8px; border-radius:6px; font-weight:700;">Desktop</span>
+            </div>
+
+            <!-- Preview Desktop -->
+            <div style="width:100%; aspect-ratio:16/9; background:#0f172a; border:1px solid var(--border); border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; position:relative;">
+              <img id="hero-preview-desktop" src="assets/hero_banner_import.png" alt="Desktop Preview" style="width:100%; height:100%; object-fit:cover;" />
+            </div>
+
+            <div>
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">رابط الصورة أو المسار</label>
+              <input type="text" id="hero-desktop-img" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;" oninput="adminHeroBanner.updatePreview('desktop', this.value)" />
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <button class="btn" style="background:var(--bg3); color:var(--text); border:1px solid var(--border); padding:8px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; width:100%;" onclick="document.getElementById('hero-upload-desktop').click()">
+                📷 رفع صورة جديدة للكمبيوتر
+              </button>
+              <input type="file" id="hero-upload-desktop" accept="image/*" style="display:none;" onchange="adminHeroBanner.handleUpload('desktop', this)" />
+            </div>
+          </div>
+
+          <!-- Mobile Banner Card -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                <span>📱</span> غلاف شاشات الموبايل والهاتف (4:3)
+              </h3>
+              <span style="font-size:11.5px; background:rgba(34,197,94,0.15); color:#22c55e; padding:3px 8px; border-radius:6px; font-weight:700;">Mobile</span>
+            </div>
+
+            <!-- Preview Mobile -->
+            <div style="width:100%; aspect-ratio:4/3; max-height:240px; margin:0 auto; background:#0f172a; border:1px solid var(--border); border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; position:relative;">
+              <img id="hero-preview-mobile" src="assets/hero_banner_import_mobile.png" alt="Mobile Preview" style="width:100%; height:100%; object-fit:cover;" />
+            </div>
+
+            <div>
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">رابط الصورة أو المسار</label>
+              <input type="text" id="hero-mobile-img" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;" oninput="adminHeroBanner.updatePreview('mobile', this.value)" />
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <button class="btn" style="background:var(--bg3); color:var(--text); border:1px solid var(--border); padding:8px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; width:100%;" onclick="document.getElementById('hero-upload-mobile').click()">
+                📷 رفع صورة جديدة للموبايل
+              </button>
+              <input type="file" id="hero-upload-mobile" accept="image/*" style="display:none;" onchange="adminHeroBanner.handleUpload('mobile', this)" />
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Banner Settings & Link -->
+        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; margin-top:20px;">
+          <h3 style="margin:0 0 16px; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+            <span>🔗</span> إعدادات رابط التوجيه عند النقر على الغلاف
+          </h3>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div>
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">رابط الصفحة المستهدفة (Target Link)</label>
+              <input type="text" id="hero-link" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;" placeholder="مثال: contact.html أو shop.html" />
+            </div>
+            <div>
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">النص البديل للصورة (Alt Text)</label>
+              <input type="text" id="hero-alt" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;" placeholder="مثال: إستوردلي - نستورد لك ما تحتاجه من المصدر" />
+            </div>
+          </div>
+
+          <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+            <button class="btn-add" onclick="adminHeroBanner.save()" style="background:var(--blue); font-weight:800; padding:12px 24px;">💾 حفظ وتطبيق الغلاف فوراً</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ IMPORT SECTIONS MANAGER ══ -->
+      <div class="page" id="page-import-sections">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> أقسام ومميزات الاستيراد</div>
+            <h1 class="page-title">إدارة أقسام ومميزات الاستيراد</h1>
+            <p class="page-sub">تعديل النصوص، الإحصائيات، الكروت والصور التوضيحية لقسمي شبكة الاستيراد العالمية والاستيراد المباشر</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-add" onclick="adminImportSections.resetDefault()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text);">🔄 استعادة الافتراضي</button>
+            <button class="btn-add" onclick="adminImportSections.save()" style="background:var(--blue); font-weight:800;">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px; margin-top:20px;">
+          <!-- 1. Global Network Section -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">🌐 1. قسم: شبكة استيراد عالمية</h3>
+              <span style="font-size:12px; color:var(--text3);">شريط الخريطة والمميزات</span>
+            </div>
+
+            <!-- Background Image -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">صورة الخلفية (خريطة العالم)</label>
+              <div id="ais-gn-bg-preview" style="width:100%; height:120px; border-radius:8px; border:1px solid var(--border); background:#0b1329; background-size:cover; background-position:center; margin-bottom:8px;"></div>
+              <input type="text" id="ais-gn-bg" oninput="adminImportSections.updatePreview('gn-bg', this.value)" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:6px;">
+              <button type="button" class="btn" style="background:var(--bg); border:1px solid var(--border); color:var(--text); padding:7px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; width:100%;" onclick="document.getElementById('ais-gn-bg-file').click()">
+                📷 رفع صورة خلفية جديدة
+              </button>
+              <input type="file" id="ais-gn-bg-file" accept="image/*" style="display:none;" onchange="adminImportSections.handleUpload('gn-bg', this)">
+            </div>
+
+            <!-- Tag & Title -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">الشارة (Tag)</label>
+                <input type="text" id="ais-gn-tag" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">العنوان الرئيسي</label>
+                <input type="text" id="ais-gn-title" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr; gap:10px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">النص الملون بالعنوان (Highlight)</label>
+                <input type="text" id="ais-gn-highlight" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">الوصف الفرعي</label>
+                <textarea id="ais-gn-desc" rows="2" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; resize:vertical;"></textarea>
+              </div>
+            </div>
+
+            <!-- Stats 3 -->
+            <div style="border-top:1px solid var(--border); padding-top:10px;">
+              <label style="font-size:13px; font-weight:800; color:var(--text); display:block; margin-bottom:8px;">📊 الأرقام والإحصائيات (3 أرقام)</label>
+              <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border);">
+                  <input type="text" id="ais-gn-stat-num-0" placeholder="50+" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:800; margin-bottom:4px;">
+                  <input type="text" id="ais-gn-stat-lbl-0" placeholder="دولة مصدر" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:11px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border);">
+                  <input type="text" id="ais-gn-stat-num-1" placeholder="500+" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:800; margin-bottom:4px;">
+                  <input type="text" id="ais-gn-stat-lbl-1" placeholder="مورد موثوق" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:11px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border);">
+                  <input type="text" id="ais-gn-stat-num-2" placeholder="50K+" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:800; margin-bottom:4px;">
+                  <input type="text" id="ais-gn-stat-lbl-2" placeholder="منتج مستورد" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:11px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Cards 4 -->
+            <div style="border-top:1px solid var(--border); padding-top:10px;">
+              <label style="font-size:13px; font-weight:800; color:var(--text); display:block; margin-bottom:8px;">💎 كروت المميزات الأربعة (Cards)</label>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; gap:4px;">
+                    <input type="text" id="ais-gn-card-icon-0" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                    <input type="text" id="ais-gn-card-title-0" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  </div>
+                  <input type="text" id="ais-gn-card-desc-0" style="width:100%; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; gap:4px;">
+                    <input type="text" id="ais-gn-card-icon-1" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                    <input type="text" id="ais-gn-card-title-1" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  </div>
+                  <input type="text" id="ais-gn-card-desc-1" style="width:100%; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; gap:4px;">
+                    <input type="text" id="ais-gn-card-icon-2" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                    <input type="text" id="ais-gn-card-title-2" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  </div>
+                  <input type="text" id="ais-gn-card-desc-2" style="width:100%; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; gap:4px;">
+                    <input type="text" id="ais-gn-card-icon-3" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                    <input type="text" id="ais-gn-card-title-3" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  </div>
+                  <input type="text" id="ais-gn-card-desc-3" style="width:100%; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Direct Import Section -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">📦 2. قسم: منتجات أصلية من المصنع لباب بيتك</h3>
+              <span style="font-size:12px; color:var(--text3);">صورة 3D والمميزات</span>
+            </div>
+
+            <!-- Illustration Image -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">الصورة التوضيحية (3D Illustration)</label>
+              <div style="width:100%; height:180px; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:#0f172a; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
+                <img id="ais-di-img-preview" src="assets/import_direct_3d.jpg" alt="Preview" style="width:100%; height:100%; object-fit:cover;" />
+              </div>
+              <input type="text" id="ais-di-img" oninput="adminImportSections.updatePreview('di-img', this.value)" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:6px;">
+              <button type="button" class="btn" style="background:var(--bg); border:1px solid var(--border); color:var(--text); padding:7px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; width:100%;" onclick="document.getElementById('ais-di-img-file').click()">
+                📷 رفع صورة توضيحية جديدة
+              </button>
+              <input type="file" id="ais-di-img-file" accept="image/*" style="display:none;" onchange="adminImportSections.handleUpload('di-img', this)">
+            </div>
+
+            <!-- Floating Badge On Image -->
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:10px;">
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">الشارة العائمة فوق الصورة (Badge)</label>
+              <div style="display:grid; grid-template-columns: 50px 1fr 1fr; gap:6px;">
+                <input type="text" id="ais-di-badge-icon" placeholder="✈️" style="text-align:center; padding:6px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                <input type="text" id="ais-di-badge-title" placeholder="شحن يومي" style="padding:6px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                <input type="text" id="ais-di-badge-desc" placeholder="من جميع الدول" style="padding:6px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:12px;">
+              </div>
+            </div>
+
+            <!-- Tag & Title -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">الشارة (Tag)</label>
+                <input type="text" id="ais-di-tag" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">العنوان الرئيسي</label>
+                <input type="text" id="ais-di-title" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr; gap:10px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">النص المائل/المميز بالعنوان (Highlight)</label>
+                <input type="text" id="ais-di-highlight" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">الوصف الفرعي</label>
+                <textarea id="ais-di-desc" rows="2" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; resize:vertical;"></textarea>
+              </div>
+            </div>
+
+            <!-- Features 3 -->
+            <div style="border-top:1px solid var(--border); padding-top:10px;">
+              <label style="font-size:13px; font-weight:800; color:var(--text); display:block; margin-bottom:8px;">⭐ نقاط ومميزات الاستيراد (3 نقاط)</label>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; gap:6px; align-items:center;">
+                  <input type="text" id="ais-di-feat-icon-0" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                  <input type="text" id="ais-di-feat-title-0" style="width:140px; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  <input type="text" id="ais-di-feat-desc-0" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:12px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; gap:6px; align-items:center;">
+                  <input type="text" id="ais-di-feat-icon-1" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                  <input type="text" id="ais-di-feat-title-1" style="width:140px; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  <input type="text" id="ais-di-feat-desc-1" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:12px;">
+                </div>
+                <div style="background:var(--bg3); padding:8px; border-radius:8px; border:1px solid var(--border); display:flex; gap:6px; align-items:center;">
+                  <input type="text" id="ais-di-feat-icon-2" style="width:40px; text-align:center; padding:5px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                  <input type="text" id="ais-di-feat-title-2" style="width:140px; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; font-size:12px;">
+                  <input type="text" id="ais-di-feat-desc-2" style="flex:1; padding:5px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text2); font-size:12px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Button CTA -->
+            <div style="border-top:1px solid var(--border); padding-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">نص الزر (CTA)</label>
+                <input type="text" id="ais-di-btn-text" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">رابط الزر</label>
+                <input type="text" id="ais-di-btn-link" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:25px; display:flex; justify-content:flex-end; gap:12px;">
+          <button class="btn-add" onclick="adminImportSections.resetDefault()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:12px 20px;">🔄 استعادة الافتراضي</button>
+          <button class="btn-add" onclick="adminImportSections.save()" style="background:var(--blue); font-weight:800; padding:12px 28px;">💾 حفظ وتطبيق التغييرات فوراً</button>
+        </div>
+      </div>
+
+      <!-- ══ FOOTER & SOCIAL MEDIA MANAGER ══ -->
+      <div class="page" id="page-footer-settings">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">الإعدادات <span>›</span> إعدادات الفوتر والتواصل الاجتماعي</div>
+            <h1 class="page-title">إدارة الفوتر والتواصل الاجتماعي</h1>
+            <p class="page-sub">تعديل روابط مواقع التواصل الاجتماعي، تطبيقات الهواتف، نصوص الفوتر وحقوق الملكية</p>
+          </div>
+          <div>
+            <button class="btn-add" onclick="adminFooterSettings.save()">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px; margin-top:20px;">
+          <!-- Social Media -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">📱 روابط التواصل الاجتماعي</h3>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">📘 فيسبوك (Facebook URL)</label>
+                <input type="url" id="footer-fb-url" placeholder="https://facebook.com/yourpage" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; direction:ltr;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">📸 انستغرام (Instagram URL)</label>
+                <input type="url" id="footer-ig-url" placeholder="https://instagram.com/yourpage" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; direction:ltr;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">🎵 تيك توك (TikTok URL)</label>
+                <input type="url" id="footer-tt-url" placeholder="https://tiktok.com/@yourpage" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; direction:ltr;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">▶️ يوتيوب (YouTube URL)</label>
+                <input type="url" id="footer-yt-url" placeholder="https://youtube.com/@yourchannel" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; direction:ltr;">
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--border); padding-top:16px; display:flex; flex-direction:column; gap:12px;">
+              <h4 style="margin:0; font-size:14px; font-weight:800; color:var(--text);">📲 روابط تطبيقات الهواتف</h4>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">🍎 رابط App Store</label>
+                <input type="url" id="footer-appstore-url" placeholder="https://apps.apple.com/app/..." style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; direction:ltr;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">🤖 رابط Google Play</label>
+                <input type="url" id="footer-gplay-url" placeholder="https://play.google.com/store/apps/..." style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; direction:ltr;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Texts -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">✏️ نصوص الفوتر</h3>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">📝 نبذة عن المتجر (About Text)</label>
+                <textarea id="footer-about-admin" rows="4" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; resize:vertical;">متجرك المفضل لكل شيء. نقدم آلاف المنتجات بأفضل الأسعار مع توصيل سريع وخدمة عملاء استثنائية.</textarea>
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">©️ نص حقوق الملكية (Copyright)</label>
+                <input type="text" id="footer-copyright-admin" placeholder="© جميع الحقوق محفوظة – إستوردلي 2024" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+              </div>
+            </div>
+
+            <!-- Preview Card -->
+            <div style="border-top:1px solid var(--border); padding-top:16px;">
+              <h4 style="margin:0 0 10px 0; font-size:13px; font-weight:800; color:var(--text3);">👁️ معاينة سريعة للفوتر</h4>
+              <div style="background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                <p id="footer-preview-about" style="font-size:12px; color:var(--text3); margin:0 0 12px 0; line-height:1.6;"></p>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+                  <span style="background:var(--bg); border:1px solid var(--border); padding:5px 10px; border-radius:6px; font-size:11px; color:var(--text2);">📘 FB</span>
+                  <span style="background:var(--bg); border:1px solid var(--border); padding:5px 10px; border-radius:6px; font-size:11px; color:var(--text2);">📸 IG</span>
+                  <span style="background:var(--bg); border:1px solid var(--border); padding:5px 10px; border-radius:6px; font-size:11px; color:var(--text2);">🎵 TT</span>
+                  <span style="background:var(--bg); border:1px solid var(--border); padding:5px 10px; border-radius:6px; font-size:11px; color:var(--text2);">▶️ YT</span>
+                </div>
+                <p id="footer-preview-copyright" style="font-size:11px; color:var(--text3); margin:0;"></p>
+              </div>
+            </div>
+
+            <button class="btn-add" onclick="adminFooterSettings.save()" style="margin-top:auto;">💾 حفظ إعدادات الفوتر</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ IMPORT COUNTRIES MANAGER ══ -->
+      <div class="page" id="page-import-countries">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> دول الاستيراد</div>
+            <h1 class="page-title">إدارة قسم "نستورد من الأفضل"</h1>
+            <p class="page-sub">إضافة وتعديل وحذف الدول التي تظهر في قسم مصادر الاستيراد في الصفحة الرئيسية</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-add" onclick="adminImportCountries.addCountry()" style="background:var(--green);">+ إضافة دولة</button>
+            <button class="btn-add" onclick="adminImportCountries.save()">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+
+        <!-- Section Settings -->
+        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:18px; margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">عنوان القسم</label>
+            <input type="text" id="import-sec-title" placeholder="نستورد من الأفضل 🌏" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:5px;">وصف القسم</label>
+            <input type="text" id="import-sec-subtitle" placeholder="شراكات مع كبرى المصانع والموردين حول العالم" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+          </div>
+        </div>
+
+        <!-- Countries List -->
+        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+            <h3 style="margin:0; font-size:15px; font-weight:800;">🌍 قائمة الدول</h3>
+            <small style="color:var(--text3);">اضغط على العلم أو الاسم لتعديله مباشرة</small>
+          </div>
+          <div id="admin-import-countries-builder" style="display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; padding:30px; color:var(--text3);">جاري التحميل...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ POPUP BANNER MANAGER ══ -->
+      <div class="page" id="page-popup-banner">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> البنر الترحيبي المنبثق</div>
+            <h1 class="page-title">إدارة البنر الترحيبي والتنبيهي المنبثق</h1>
+            <p class="page-sub">عرض نافذة إشعار أو تنبيه أو ترحيب أو عرض ترويجي منبثق للزائر فور فتح المتجر، مع إمكانية الإغلاق بسهولة بالضغط على زر ✕ أو في أي مكان خارج النافذة.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-add" onclick="adminPopupBanner.testPopup()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text);">👁️ معاينة فورية</button>
+            <button class="btn-add" onclick="adminPopupBanner.save()" style="background:var(--blue); font-weight:800;">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:25px; margin-top:20px;">
+          <!-- 1. Form Settings -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:18px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">⚙️ خيارات ومحتوى البنر</h3>
+              <span style="font-size:12px; color:var(--text3);">التحكم بالعرض والنصوص</span>
+            </div>
+
+            <!-- Enable / Disable Switch -->
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:var(--bg3); border-radius:10px; border:1px solid var(--border);">
+              <div>
+                <strong style="display:block; font-size:14px; color:var(--text);">حالة البنر المنبثق</strong>
+                <small style="color:var(--text3); font-size:12px;">تفعيل أو تعطيل ظهور البنر لزوار الموقع</small>
+              </div>
+              <label style="position:relative; display:inline-block; width:50px; height:26px; cursor:pointer;">
+                <input type="checkbox" id="apb-enabled" onchange="adminPopupBanner.updateLivePreview()" style="opacity:0; width:0; height:0;">
+                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:var(--bg); border:1px solid var(--border2); transition:.3s; border-radius:34px;" id="apb-enabled-slider"></span>
+              </label>
+            </div>
+
+            <!-- Show Once Switch -->
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:var(--bg3); border-radius:10px; border:1px solid var(--border);">
+              <div>
+                <strong style="display:block; font-size:14px; color:var(--text);">إظهار مرة واحدة في كل جلسة</strong>
+                <small style="color:var(--text3); font-size:12px;">عدم إظهاره مجدداً لنفس الزائر بعد الإغلاق حتى يغلق المتصفح</small>
+              </div>
+              <label style="position:relative; display:inline-block; width:50px; height:26px; cursor:pointer;">
+                <input type="checkbox" id="apb-show-once" style="opacity:0; width:0; height:0;">
+                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:var(--bg); border:1px solid var(--border2); transition:.3s; border-radius:34px;" id="apb-once-slider"></span>
+              </label>
+            </div>
+
+            <!-- Tag / Badge -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">الشارة العلوية (Badge / Tag)</label>
+              <input type="text" id="apb-tag" placeholder="مثال: تنبيه هام 📢 أو عرض خاص 🔥" oninput="adminPopupBanner.updateLivePreview()" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+            </div>
+
+            <!-- Title -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">العنوان الرئيسي للبنر <span style="color:var(--red)">*</span></label>
+              <input type="text" id="apb-title" placeholder="مثال: أهلاً بكم في متجر استوردلي" oninput="adminPopupBanner.updateLivePreview()" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-weight:700;">
+            </div>
+
+            <!-- Message / Notes Text -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">نص الإشعار / الملاحظة / المحتوى <span style="color:var(--red)">*</span></label>
+              <textarea id="apb-message" rows="4" placeholder="اكتب هنا أي ملاحظة، تنبيه، تفاصيل العرض، مواعيد العمل، إلخ..." oninput="adminPopupBanner.updateLivePreview()" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; resize:vertical; font-size:13px; line-height:1.6;"></textarea>
+            </div>
+
+            <!-- Image (Optional) -->
+            <div style="border-top:1px solid var(--border); padding-top:14px;">
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">صورة توضيحية للبنر (اختياري)</label>
+              <div style="display:flex; gap:8px; margin-bottom:8px;">
+                <input type="text" id="apb-image" placeholder="رابط الصورة أو ارفع من جهازك" oninput="adminPopupBanner.updateLivePreview()" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
+                <button type="button" class="btn" style="background:var(--blue-bg); border:1px solid var(--blue); color:var(--blue); padding:7px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; white-space:nowrap;" onclick="document.getElementById('apb-img-file').click()">
+                  📷 رفع صورة
+                </button>
+                <button type="button" class="btn" style="background:var(--red-bg); border:1px solid rgba(239,68,68,.3); color:var(--red); padding:7px 10px; border-radius:6px; cursor:pointer; font-size:12px;" onclick="adminPopupBanner.clearImage()" title="حذف الصورة">
+                  ✕
+                </button>
+              </div>
+              <input type="file" id="apb-img-file" accept="image/*" style="display:none;" onchange="adminPopupBanner.handleUpload(this)">
+            </div>
+
+            <!-- CTA Button (Optional) -->
+            <div style="border-top:1px solid var(--border); padding-top:14px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">نص زر الإجراء (اختياري)</label>
+                <input type="text" id="apb-btn-text" placeholder="مثال: تصفح العروض" oninput="adminPopupBanner.updateLivePreview()" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">رابط الزر (Link)</label>
+                <input type="text" id="apb-btn-link" placeholder="مثال: shop.html" oninput="adminPopupBanner.updateLivePreview()" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
+              </div>
+            </div>
+
+            <div style="margin-top:10px; display:flex; justify-content:flex-end; gap:10px;">
+              <button class="btn-add" onclick="adminPopupBanner.resetDefault()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:10px 16px;">🔄 الافتراضي</button>
+              <button class="btn-add" onclick="adminPopupBanner.save()" style="background:var(--blue); font-weight:800; padding:10px 24px;">💾 حفظ الإعدادات</button>
+            </div>
+          </div>
+
+          <!-- 2. Live Mockup Preview -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--green);">📱 المعاينة الحية للنافذة المنبثقة</h3>
+              <span id="apb-preview-status" style="font-size:11px; padding:3px 8px; border-radius:6px; background:var(--green-bg); color:var(--green); font-weight:700;">مفعل</span>
+            </div>
+
+            <!-- Mockup Screen Container with dark backdrop blur -->
+            <div style="position:relative; width:100%; min-height:460px; background:radial-gradient(circle at center, #111827 0%, #030712 100%); border-radius:12px; border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; padding:20px; overflow:hidden; box-shadow:inset 0 0 30px rgba(0,0,0,0.8);">
+              
+              <!-- Mockup Dismissable Card -->
+              <div id="apb-mockup-card" style="width:100%; max-width:380px; background:rgba(17, 24, 39, 0.95); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(59, 130, 246, 0.35); border-radius:20px; padding:22px; box-shadow:0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(59, 130, 246, 0.15); position:relative; text-align:center; animation:modalPop 0.3s ease-out;">
+                
+                <!-- Mock Close X Button -->
+                <div style="position:absolute; top:12px; left:12px; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; font-weight:bold;">
+                  ✕
+                </div>
+
+                <!-- Mock Badge -->
+                <div id="apb-mock-tag" style="display:inline-block; padding:4px 12px; border-radius:50px; background:rgba(59, 130, 246, 0.15); border:1px solid rgba(59, 130, 246, 0.3); color:#60a5fa; font-size:11px; font-weight:800; margin-bottom:12px;">
+                  تنبيه هام 📢
+                </div>
+
+                <!-- Mock Image -->
+                <div id="apb-mock-img-wrap" style="width:100%; max-height:160px; border-radius:12px; overflow:hidden; margin-bottom:14px; border:1px solid rgba(255,255,255,0.1); display:none;">
+                  <img id="apb-mock-img" src="" alt="Banner" style="width:100%; height:100%; object-fit:cover; display:block;">
+                </div>
+
+                <!-- Mock Title -->
+                <h4 id="apb-mock-title" style="margin:0 0 10px 0; font-size:17px; font-weight:900; color:#f8fafc; line-height:1.4;">
+                  أهلاً بكم في متجر استوردلي
+                </h4>
+
+                <!-- Mock Message -->
+                <p id="apb-mock-msg" style="margin:0 0 16px 0; font-size:13px; color:#cbd5e1; line-height:1.6; white-space:pre-line; text-align:right;">
+                  يسعدنا خدمتكم وتوفير أفضل منتجات الشواء والأدوات الأصلية مع شحن سريع لجميع المدن والمناطق.
+                </p>
+
+                <!-- Mock CTA Button -->
+                <div id="apb-mock-btn-wrap" style="display:flex; flex-direction:column; gap:8px;">
+                  <a id="apb-mock-btn" href="#" onclick="return false;" style="display:block; padding:10px 16px; border-radius:10px; background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; font-size:13px; font-weight:800; text-decoration:none; box-shadow:0 6px 20px rgba(37,99,235,0.35);">
+                    تصفح العروض
+                  </a>
+                  <button type="button" style="background:transparent; border:none; color:#94a3b8; font-size:12px; cursor:pointer; font-family:inherit; padding:4px;">
+                    إغلاق الملاحظة
+                  </button>
+                </div>
+
+              </div>
+            </div>
+            
+            <small style="color:var(--text3); text-align:center; font-size:12px;">
+              💡 يمكن للزائر إغلاق هذه النافذة فوراً عبر الضغط على أيقونة (✕) أو النقر على الخلفية المظلمة أو الضغط على زر ESC بلوحة المفاتيح.
+            </small>
+          </div>
+        </div>
       </div>
 
       <!-- ══ CATEGORIES ══ -->
@@ -1479,6 +2030,116 @@ tr:last-child td{border-bottom:none}
             <div id="admin-brands-builder" style="display:flex; flex-direction:column; gap:10px; max-width: 600px;">
                 <div style="text-align:center; padding:40px; color:var(--text3)">جاري تحميل الماركات...</div>
             </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGES CONTENT (ABOUT & CONTACT) ══ -->
+      <div class="page" id="page-pages-content">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> إدارة الصفحات</div>
+            <h1 class="page-title">محتوى صفحتي "من نحن" و "اتصل بنا"</h1>
+            <p class="page-sub">تعديل كافة النصوص، العناوين، معلومات الاتصال، وأرقام الواتساب والهاتف التي تظهر للزوار</p>
+          </div>
+          <div>
+            <button class="btn-add" onclick="adminPagesContent.save()" style="background:var(--blue); font-weight:800;">💾 حفظ كافة التعديلات</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px;">
+          
+          <!-- About Us Section -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:24px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+              <span>🌐</span> إعدادات صفحة "من نحن"
+            </h2>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">شارة البداية (Badge)</label>
+              <input type="text" id="adm-about-badge" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="مثال: بوابتك الأولى للاستيراد المباشر" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">العنوان الرئيسي</label>
+              <input type="text" id="adm-about-heading" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="مثال: نحن رواد الاستيراد المباشر من المصانع العالمية" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">النص التعريفي والقصة</label>
+              <textarea id="adm-about-desc" rows="4" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="اكتب نبذة عن الشركة..."></textarea>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">عنوان الرؤية</label>
+                <input type="text" id="adm-about-vision-title" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
+              </div>
+              <div>
+                <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">عنوان الرسالة</label>
+                <input type="text" id="adm-about-mission-title" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">نص الرؤية</label>
+              <textarea id="adm-about-vision-text" rows="2" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);"></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">نص الرسالة</label>
+              <textarea id="adm-about-mission-text" rows="2" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);"></textarea>
+            </div>
+          </div>
+
+          <!-- Contact Us Section -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:24px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+              <span>📞</span> إعدادات صفحة "اتصل بنا" ومعلومات التواصل
+            </h2>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">رقم الهاتف المباشر</label>
+                <input type="text" id="adm-contact-phone" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="+970 59-000-0000" />
+              </div>
+              <div>
+                <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">رقم الواتساب (مع كود الدولة دون +)</label>
+                <input type="text" id="adm-contact-whatsapp" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="970590000000" />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">البريد الإلكتروني للتواصل</label>
+              <input type="email" id="adm-contact-email" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="info@estawredly.com" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">العنوان وموقع المستودعات</label>
+              <input type="text" id="adm-contact-address" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="فلسطين - الضفة الغربية / كافة المدن" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">ساعات العمل وأيام الدوام</label>
+              <input type="text" id="adm-contact-hours" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="السبت - الخميس: 9:00 ص - 6:00 م" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">نص زر الواتساب</label>
+              <input type="text" id="adm-contact-wa-cta" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="تواصل عبر واتساب مباشرة" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">عنوان نموذج المراسلة</label>
+              <input type="text" id="adm-contact-form-heading" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="أرسل لنا رسالة أو طلب استيراد خاص" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">الوصف أسفل العنوان</label>
+              <textarea id="adm-contact-desc" rows="2" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);"></textarea>
+            </div>
+
+          </div>
+
         </div>
       </div>
 
@@ -1645,6 +2306,35 @@ tr:last-child td{border-bottom:none}
           </div>
 
           <div class="setting-card">
+            <h3>🌍 شريط الدول المستورد منها</h3>
+            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">التحكم في شريط "نستورد من" الذي يظهر في الصفحة الرئيسية.</p>
+            <div class="setting-row">
+              <div class="setting-row-info"><strong>تفعيل الشريط</strong><small>إظهار أو إخفاء شريط الدول المستورد منها</small></div>
+              <label class="toggle"><input type="checkbox" id="sett-import-ticker-enabled"/><div class="toggle-slider"></div></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-row-info"><strong>تفعيل الحركة الدائرية (Marquee)</strong><small>جعل النص يتحرك بشكل مستمر</small></div>
+              <label class="toggle"><input type="checkbox" id="sett-import-ticker-marquee"/><div class="toggle-slider"></div></label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-row-info"><strong>عرض زر الإغلاق (X)</strong><small>السماح للزوار بإغلاق الشريط مؤقتاً</small></div>
+              <label class="toggle"><input type="checkbox" id="sett-import-ticker-close"/><div class="toggle-slider"></div></label>
+            </div>
+            <div class="field" style="margin-top:12px">
+              <label>عنوان الشريط</label>
+              <input type="text" id="sett-import-ticker-label" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1);"/>
+            </div>
+            <div class="field" style="margin-top:12px">
+              <label>قائمة الدول / النص (افصل بينها بـ | )</label>
+              <textarea id="sett-import-ticker-text" style="min-height:60px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1); font-family:inherit;"></textarea>
+            </div>
+            <div class="field" style="margin-top:12px">
+              <label>سرعة الحركة (بالثواني - كلما قل الرقم زادت السرعة)</label>
+              <input type="number" id="sett-import-ticker-speed" min="5" max="120" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text1);"/>
+            </div>
+          </div>
+
+          <div class="setting-card">
             <h3>🔔 الإشعارات</h3>
             <div class="setting-row"><div class="setting-row-info"><strong>إشعار طلبية جديدة</strong><small>إشعار فوري عند كل طلبية</small></div><label class="toggle"><input type="checkbox" checked/><div class="toggle-slider"></div></label></div>
             <div class="setting-row"><div class="setting-row-info"><strong>نفاد المخزون</strong><small>تنبيه عند أقل من 5 قطع</small></div><label class="toggle"><input type="checkbox" checked/><div class="toggle-slider"></div></label></div>
@@ -1784,9 +2474,12 @@ function showPage(id, el) {
   if (id === 'customers') renderCustomers();
   if (id === 'media')    renderMedia();
   
-  if (id === 'hero')  adminSliders.load();
+  if (id === 'hero')  adminHeroBanner.load();
+  if (id === 'import-sections') adminImportSections.load();
   if (id === 'banners')  adminBanners.load();
+  if (id === 'popup-banner') adminPopupBanner.load();
   if (id === 'brands')  adminBrands.load();
+  if (id === 'pages-content') adminPagesContent.load();
   if (id === 'settings') {
       adminPolicies.load();
       adminCurrency.load();
@@ -2009,6 +2702,7 @@ function renderOrders(list) {
           </select>
           <button class="view-btn" onclick="viewOrder('${o.id}')" title="معاينة الطلبية">👁️</button>
           <button class="print-btn" onclick="printOrder('${o.id}')" title="طباعة الفاتورة">🖨️</button>
+          <button class="del-btn" onclick="deleteOrder('${o.id}')" title="مسح الطلبية نهائياً" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">🗑️</button>
         </div>
       </td>
     </tr>`;
@@ -2035,6 +2729,30 @@ async function changeOrderStatus(id, newStatus) {
     }
   } catch (e) {
     showToast('❌ فشل الاتصال بالخادم');
+  }
+}
+
+async function deleteOrder(id) {
+  if (!confirm(`هل أنت متأكد من مسح الطلبية رقم #${id} نهائياً؟\nسيتم تحديث الإحصائيات والأرباح فوراً.`)) return;
+  try {
+    const formData = new FormData();
+    formData.append('order_id', id);
+    const res = await fetch('api/delete_order.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.success) {
+      if (typeof Store !== 'undefined' && typeof Store.deleteOrder === 'function') {
+        Store.deleteOrder(id);
+      }
+      showToast('🗑️ تم مسح الطلبية بنجاح وتحديث الحسابات');
+      await fetchLiveOrders(); // Recalculates stats, profit, and re-renders orders
+      if (typeof renderRecentOrders === 'function') renderRecentOrders();
+      if (typeof renderBigChart === 'function') renderBigChart();
+    } else {
+      showToast('❌ خطأ: ' + (data.message || 'فشل مسح الطلبية'));
+    }
+  } catch (e) {
+    console.error("Error deleting order:", e);
+    showToast('❌ فشل الاتصال بالخادم لمسح الطلبية');
   }
 }
 
@@ -2424,6 +3142,17 @@ function openModal(p) {
   document.getElementById('f-name').value = p?.name || '';
   document.getElementById('f-cat').value = p?.cat || '';
   
+  // Populate Category Datalist from all products & nav
+  const datalist = document.getElementById('cats-list');
+  if (datalist && Array.isArray(adminProducts)) {
+    const existingCats = [...new Set(adminProducts.map(x => x.cat).filter(Boolean))];
+    existingCats.forEach(c => {
+      if (!datalist.querySelector(`option[value="${c}"]`)) {
+        datalist.insertAdjacentHTML('beforeend', `<option value="${c}">`);
+      }
+    });
+  }
+
   // Find if product belongs to any icon
   let mappedIcon = '';
   if (p && adminIcons && adminIcons.mapping) {
@@ -2434,7 +3163,7 @@ function openModal(p) {
           }
       }
   }
-  document.getElementById('f-icon-cat').value = mappedIcon;
+
 
   let multiplier = 1;
   if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
@@ -2464,7 +3193,7 @@ function openModal(p) {
   document.getElementById('f-product-code').value = p?.product_code || '';
   document.getElementById('f-factory-code').value = p?.factory_code || '';
   document.getElementById('f-ref-note').value = p?.ref_note || '';
-  document.getElementById('f-tab').value = p?.tab || 'all';
+
   document.getElementById('f-img-url').value = p?.img || '';
   document.getElementById('f-desc').value = p?.desc || '';
 
@@ -2501,7 +3230,7 @@ function openModal(p) {
 function closeModal() { document.getElementById('product-modal').classList.remove('open'); }
 
 function editProduct(id) {
-  const p = adminProducts.find(x=>x.id===id);
+  const p = adminProducts.find(x => String(x.id) === String(id));
   if (p) { showPage('products',null); openModal(p); }
 }
 
@@ -2532,12 +3261,12 @@ function saveProduct() {
   
   if (!name || isNaN(price)) { showToast('⚠️ الاسم والسعر مطلوبان!','warn'); return; }
 
-  const pToEdit = editingId ? adminProducts.find(x=>x.id===editingId) : null;
+  const pToEdit = editingId ? adminProducts.find(x => String(x.id) === String(editingId)) : null;
   const product = {
     id: editingId || (Date.now()),
     name,
     desc: document.getElementById('f-desc').value.trim() || '',
-    cat: document.getElementById('f-cat').value,
+    cat: document.getElementById('f-cat').value.trim(),
     brand,
     badge: document.getElementById('f-badge').value,
     price,
@@ -2550,31 +3279,25 @@ function saveProduct() {
     product_code,
     factory_code,
     ref_note: document.getElementById('f-ref-note').value.trim(),
-    tab: document.getElementById('f-tab').value || 'all',
+    tab: 'all',
     img: document.getElementById('f-img-url').value || document.getElementById('img-preview-el').src || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
     active: pToEdit ? pToEdit.active : true,
 
     images: currentProductImages.length > 0 ? [...currentProductImages] : null,
     variants: currentProductVariants.length > 0 ? JSON.parse(JSON.stringify(currentProductVariants)) : null,
-
   };
 
   if (editingId) {
-    const idx = adminProducts.findIndex(p=>p.id===editingId);
-    if (idx !== -1) adminProducts[idx] = product;
+    const idx = adminProducts.findIndex(p => String(p.id) === String(editingId));
+    if (idx !== -1) {
+      adminProducts[idx] = product;
+    } else {
+      adminProducts.unshift(product);
+    }
     showToast('✅ تم تحديث المنتج بنجاح!');
   } else {
     adminProducts.unshift(product);
     showToast('✅ تم إضافة المنتج للمتجر!');
-  }
-  
-  const iconCat = document.getElementById('f-icon-cat').value;
-  if (iconCat && adminIcons.mapping) {
-      if(!adminIcons.mapping[iconCat]) adminIcons.mapping[iconCat] = [];
-      if(!adminIcons.mapping[iconCat].includes(String(product.id))) {
-          adminIcons.mapping[iconCat].push(String(product.id));
-          adminIcons.saveIconsToServer(); // Auto-save mapping
-      }
   }
 
   saveAdminProducts();
@@ -2585,7 +3308,7 @@ function saveProduct() {
 
 function deleteProduct(id) {
   if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
-  adminProducts = adminProducts.filter(p=>p.id!==id);
+  adminProducts = adminProducts.filter(p => String(p.id) !== String(id));
   saveAdminProducts();
   renderProducts();
   updateStats();
@@ -2593,7 +3316,7 @@ function deleteProduct(id) {
 }
 
 function toggleProduct(id, active) {
-  const p = adminProducts.find(x=>x.id===id);
+  const p = adminProducts.find(x => String(x.id) === String(id));
   if (p) { p.active=active; saveAdminProducts(); showToast(active?'✅ المنتج منشور':'⛔ المنتج مخفي'); }
 }
 
@@ -3027,111 +3750,555 @@ function closeOrderModal() {
 
 
 // ==========================================
-// BANNERS MANAGER
+// HERO BANNER MANAGER (DESKTOP & MOBILE)
 // ==========================================
 
-const adminSliders = {
-    slides: [],
-    
+const adminHeroBanner = {
+    data: {
+        desktop_image: 'assets/hero_banner_import.png',
+        mobile_image: 'assets/hero_banner_import_mobile.png',
+        link: 'contact.html',
+        alt_text: 'إستوردلي - نستورد لك ما تحتاجه من المصدر'
+    },
+
     async load() {
         try {
-            const res = await fetch('api/get_sliders.php');
-            this.slides = await res.json();
-            this.render();
+            const res = await fetch('api/get_hero_banner.php?t=' + Date.now());
+            const json = await res.json();
+            if (json && typeof json === 'object') {
+                this.data = {
+                    desktop_image: json.desktop_image || 'assets/hero_banner_import.png',
+                    mobile_image: json.mobile_image || 'assets/hero_banner_import_mobile.png',
+                    link: json.link || 'contact.html',
+                    alt_text: json.alt_text || 'إستوردلي - نستورد لك ما تحتاجه من المصدر'
+                };
+            }
+            this.populate();
         } catch(e) {
-            console.error('Failed to load sliders', e);
+            console.error('Failed to load hero banner', e);
         }
     },
-    
-    render() {
-        const container = document.getElementById('hero-slides-list');
-        if (!container) return;
-        
-        if (!this.slides || this.slides.length === 0) {
-            container.innerHTML = '<div style="text-align:center;color:var(--text3);">لا يوجد شرائح حالياً.</div>';
-            return;
-        }
-        
-        container.innerHTML = this.slides.map((s, i) => `
-            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:15px; display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:5px;">
-                    <h3 style="margin-bottom:0;">شريحة رقم ${i+1}</h3>
-                    <button onclick="adminSliders.removeSlide(${i})" style="background:red; color:white; border:none; border-radius:4px; cursor:pointer; padding:4px 8px; font-size:12px;">حذف</button>
-                </div>
-                
-                <label style="font-size:12px; color:var(--text2);">صورة الخلفية (رابط)</label>
-                <input type="text" value="${s.img || ''}" onchange="adminSliders.update(${i}, 'img', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
-                
-                <label style="font-size:12px; color:var(--text2);">الشارة (Tag)</label>
-                <input type="text" value="${s.tag || ''}" onchange="adminSliders.update(${i}, 'tag', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
-                
-                <label style="font-size:12px; color:var(--text2);">العنوان الرئيسي (استخدم &lt;br/&gt; للسطر الجديد و &lt;em&gt; للكلمات المميزة)</label>
-                <input type="text" value="${(s.title || '').replace(/"/g, '&quot;')}" onchange="adminSliders.update(${i}, 'title', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
-                
-                <label style="font-size:12px; color:var(--text2);">الوصف والتفاصيل</label>
-                <input type="text" value="${s.desc || ''}" onchange="adminSliders.update(${i}, 'desc', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div>
-                        <label style="font-size:12px; color:var(--text2);">زر 1: النص</label>
-                        <input type="text" value="${s.btn1_text || ''}" onchange="adminSliders.update(${i}, 'btn1_text', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="font-size:12px; color:var(--text2);">زر 1: الرابط</label>
-                        <input type="text" value="${s.btn1_link || ''}" onchange="adminSliders.update(${i}, 'btn1_link', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
-                    </div>
-                </div>
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div>
-                        <label style="font-size:12px; color:var(--text2);">زر 2: النص</label>
-                        <input type="text" value="${s.btn2_text || ''}" onchange="adminSliders.update(${i}, 'btn2_text', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="font-size:12px; color:var(--text2);">زر 2: الرابط</label>
-                        <input type="text" value="${s.btn2_link || ''}" onchange="adminSliders.update(${i}, 'btn2_link', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
-                    </div>
-                </div>
-            </div>
-        `).join('');
+
+    populate() {
+        const dImg = document.getElementById('hero-desktop-img');
+        const mImg = document.getElementById('hero-mobile-img');
+        const link = document.getElementById('hero-link');
+        const alt = document.getElementById('hero-alt');
+        const dPrev = document.getElementById('hero-preview-desktop');
+        const mPrev = document.getElementById('hero-preview-mobile');
+
+        if (dImg) dImg.value = this.data.desktop_image;
+        if (mImg) mImg.value = this.data.mobile_image;
+        if (link) link.value = this.data.link;
+        if (alt) alt.value = this.data.alt_text;
+
+        if (dPrev) dPrev.src = this.data.desktop_image;
+        if (mPrev) mPrev.src = this.data.mobile_image;
     },
-    
-    update(index, field, value) {
-        this.slides[index][field] = value;
-    },
-    
-    addSlide() {
-        this.slides.push({
-            img: '', tag: '', title: '', desc: '', 
-            btn1_text: 'تسوق الآن', btn1_link: 'shop.html', btn1_class: 'btn btn-primary btn-lg',
-            btn2_text: '', btn2_link: '', btn2_class: ''
-        });
-        this.render();
-    },
-    
-    removeSlide(index) {
-        if(confirm('هل أنت متأكد من حذف هذه الشريحة؟')) {
-            this.slides.splice(index, 1);
-            this.render();
+
+    updatePreview(type, val) {
+        if (type === 'desktop') {
+            this.data.desktop_image = val;
+            const p = document.getElementById('hero-preview-desktop');
+            if (p) p.src = val;
+        } else if (type === 'mobile') {
+            this.data.mobile_image = val;
+            const p = document.getElementById('hero-preview-mobile');
+            if (p) p.src = val;
         }
     },
-    
+
+    handleUpload(type, input) {
+        if (!input.files || !input.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const base64 = e.target.result;
+            if (type === 'desktop') {
+                this.data.desktop_image = base64;
+                const dImg = document.getElementById('hero-desktop-img');
+                const dPrev = document.getElementById('hero-preview-desktop');
+                if (dImg) dImg.value = base64;
+                if (dPrev) dPrev.src = base64;
+            } else if (type === 'mobile') {
+                this.data.mobile_image = base64;
+                const mImg = document.getElementById('hero-mobile-img');
+                const mPrev = document.getElementById('hero-preview-mobile');
+                if (mImg) mImg.value = base64;
+                if (mPrev) mPrev.src = base64;
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    },
+
+    resetDefault() {
+        if (confirm('هل تريد استعادة صور وروابط الغلاف الأصلية الافتراضية؟')) {
+            this.data = {
+                desktop_image: 'assets/hero_banner_import.png',
+                mobile_image: 'assets/hero_banner_import_mobile.png',
+                link: 'contact.html',
+                alt_text: 'إستوردلي - نستورد لك ما تحتاجه من المصدر'
+            };
+            this.populate();
+        }
+    },
+
     async save() {
+        const dImg = document.getElementById('hero-desktop-img');
+        const mImg = document.getElementById('hero-mobile-img');
+        const link = document.getElementById('hero-link');
+        const alt = document.getElementById('hero-alt');
+
+        this.data.desktop_image = dImg ? dImg.value : this.data.desktop_image;
+        this.data.mobile_image = mImg ? mImg.value : this.data.mobile_image;
+        this.data.link = link ? link.value : this.data.link;
+        this.data.alt_text = alt ? alt.value : this.data.alt_text;
+
         try {
-            const res = await fetch('api/save_sliders.php', {
+            const res = await fetch('api/save_hero_banner.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.slides)
+                body: JSON.stringify(this.data)
             });
             const data = await res.json();
-            if(data.success) {
-                alert('✅ تم حفظ السلايدر بنجاح!');
+            if (data.success) {
+                alert('✅ تم حفظ وتحديث غلاف الرئيسية بنجاح!');
             } else {
                 alert('❌ ' + data.message);
             }
         } catch (e) {
-            alert('❌ فشل الاتصال بالخادم!');
+            alert('❌ فشل الاتصال بالخادم لحفظ الغلاف!');
         }
+    }
+};
+
+const adminImportSections = {
+    data: null,
+    
+    async load() {
+        try {
+            const res = await fetch('api/get_import_sections.php?t=' + Date.now());
+            this.data = await res.json();
+            if (!this.data || !this.data.global_network) {
+                this.resetDefault(false);
+            } else {
+                this.populate();
+            }
+        } catch (e) {
+            console.error("Error loading import sections:", e);
+        }
+    },
+    
+    populate() {
+        if (!this.data) return;
+        const gn = this.data.global_network || {};
+        const di = this.data.direct_import || {};
+        
+        function setVal(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.value = (val !== undefined && val !== null) ? val : '';
+        }
+        
+        // Section 1
+        setVal('ais-gn-bg', gn.bg_image || '');
+        setVal('ais-gn-tag', gn.tag || '');
+        setVal('ais-gn-title', gn.title || '');
+        setVal('ais-gn-highlight', gn.title_highlight || '');
+        setVal('ais-gn-desc', gn.desc || '');
+        
+        this.updatePreview('gn-bg', gn.bg_image || '');
+        
+        // Stats
+        if (Array.isArray(gn.stats)) {
+            gn.stats.forEach((s, idx) => {
+                setVal(`ais-gn-stat-num-${idx}`, s.num || '');
+                setVal(`ais-gn-stat-lbl-${idx}`, s.label || '');
+            });
+        }
+        
+        // Cards
+        if (Array.isArray(gn.cards)) {
+            gn.cards.forEach((c, idx) => {
+                setVal(`ais-gn-card-icon-${idx}`, c.icon || '');
+                setVal(`ais-gn-card-title-${idx}`, c.title || '');
+                setVal(`ais-gn-card-desc-${idx}`, c.desc || '');
+            });
+        }
+        
+        // Section 2
+        setVal('ais-di-img', di.image || '');
+        setVal('ais-di-tag', di.tag || '');
+        setVal('ais-di-title', di.title || '');
+        setVal('ais-di-highlight', di.title_highlight || '');
+        setVal('ais-di-desc', di.desc || '');
+        setVal('ais-di-badge-icon', di.badge_icon || '');
+        setVal('ais-di-badge-title', di.badge_title || '');
+        setVal('ais-di-badge-desc', di.badge_desc || '');
+        setVal('ais-di-btn-text', di.btn_text || '');
+        setVal('ais-di-btn-link', di.btn_link || '');
+        
+        this.updatePreview('di-img', di.image || '');
+        
+        // Features
+        if (Array.isArray(di.features)) {
+            di.features.forEach((f, idx) => {
+                setVal(`ais-di-feat-icon-${idx}`, f.icon || '');
+                setVal(`ais-di-feat-title-${idx}`, f.title || '');
+                setVal(`ais-di-feat-desc-${idx}`, f.desc || '');
+            });
+        }
+    },
+    
+    updatePreview(type, url) {
+        if (type === 'gn-bg') {
+            const el = document.getElementById('ais-gn-bg-preview');
+            if (el) {
+                el.style.backgroundImage = url ? `url('${url}')` : 'none';
+            }
+        } else if (type === 'di-img') {
+            const el = document.getElementById('ais-di-img-preview');
+            if (el) {
+                el.src = url || '';
+                el.style.display = url ? 'block' : 'none';
+            }
+        }
+    },
+    
+    handleUpload(type, input) {
+        if (!input.files || !input.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const base64 = e.target.result;
+            if (type === 'gn-bg') {
+                const textInput = document.getElementById('ais-gn-bg');
+                if (textInput) textInput.value = base64;
+                this.updatePreview('gn-bg', base64);
+            } else if (type === 'di-img') {
+                const textInput = document.getElementById('ais-di-img');
+                if (textInput) textInput.value = base64;
+                this.updatePreview('di-img', base64);
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    },
+    
+    collectData() {
+        function getVal(id) {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : '';
+        }
+        
+        return {
+            global_network: {
+                tag: getVal('ais-gn-tag'),
+                title: getVal('ais-gn-title'),
+                title_highlight: getVal('ais-gn-highlight'),
+                desc: getVal('ais-gn-desc'),
+                bg_image: getVal('ais-gn-bg'),
+                stats: [
+                    { num: getVal('ais-gn-stat-num-0'), label: getVal('ais-gn-stat-lbl-0') },
+                    { num: getVal('ais-gn-stat-num-1'), label: getVal('ais-gn-stat-lbl-1') },
+                    { num: getVal('ais-gn-stat-num-2'), label: getVal('ais-gn-stat-lbl-2') }
+                ],
+                cards: [
+                    { icon: getVal('ais-gn-card-icon-0'), title: getVal('ais-gn-card-title-0'), desc: getVal('ais-gn-card-desc-0') },
+                    { icon: getVal('ais-gn-card-icon-1'), title: getVal('ais-gn-card-title-1'), desc: getVal('ais-gn-card-desc-1') },
+                    { icon: getVal('ais-gn-card-icon-2'), title: getVal('ais-gn-card-title-2'), desc: getVal('ais-gn-card-desc-2') },
+                    { icon: getVal('ais-gn-card-icon-3'), title: getVal('ais-gn-card-title-3'), desc: getVal('ais-gn-card-desc-3') }
+                ]
+            },
+            direct_import: {
+                tag: getVal('ais-di-tag'),
+                title: getVal('ais-di-title'),
+                title_highlight: getVal('ais-di-highlight'),
+                desc: getVal('ais-di-desc'),
+                image: getVal('ais-di-img'),
+                badge_icon: getVal('ais-di-badge-icon'),
+                badge_title: getVal('ais-di-badge-title'),
+                badge_desc: getVal('ais-di-badge-desc'),
+                features: [
+                    { icon: getVal('ais-di-feat-icon-0'), title: getVal('ais-di-feat-title-0'), desc: getVal('ais-di-feat-desc-0') },
+                    { icon: getVal('ais-di-feat-icon-1'), title: getVal('ais-di-feat-title-1'), desc: getVal('ais-di-feat-desc-1') },
+                    { icon: getVal('ais-di-feat-icon-2'), title: getVal('ais-di-feat-title-2'), desc: getVal('ais-di-feat-desc-2') }
+                ],
+                btn_text: getVal('ais-di-btn-text'),
+                btn_link: getVal('ais-di-btn-link')
+            }
+        };
+    },
+    
+    async save() {
+        const payload = this.collectData();
+        try {
+            const res = await fetch('api/save_import_sections.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.data = payload;
+                alert('✅ ' + data.message);
+            } else {
+                alert('❌ ' + data.message);
+            }
+        } catch (e) {
+            alert('❌ فشل الاتصال بالخادم لحفظ أقسام الاستيراد!');
+        }
+    },
+    
+    resetDefault(doConfirm = true) {
+        if (doConfirm && !confirm('هل أنت متأكد من استعادة النصوص والصور الافتراضية لأقسام الاستيراد؟')) return;
+        this.data = {
+            global_network: {
+                tag: "🌐 شبكة استيراد عالمية",
+                title: "نجلب لك أفضل المنتجات",
+                title_highlight: "من كل أنحاء العالم",
+                desc: "منتجاتنا مستوردة مباشرة من أكثر من 50 دولة، بأعلى معايير الجودة وأفضل الأسعار",
+                bg_image: "import_world.jpg",
+                stats: [
+                    { num: "50+", label: "دولة مصدر" },
+                    { num: "500+", label: "مورد موثوق" },
+                    { num: "50K+", label: "منتج مستورد" }
+                ],
+                cards: [
+                    { icon: "🔍", title: "فحص الجودة", desc: "كل منتج مفحوص قبل الإرسال" },
+                    { icon: "🚢", title: "شحن دولي", desc: "وصول ضمان في 15–30 يوم" },
+                    { icon: "🏷️", title: "سعر المصنع", desc: "بدون وسطاء – مباشرة لك" },
+                    { icon: "🔒", title: "ضمان الأصالة", desc: "100% منتجات أصلية مضمونة" }
+                ]
+            },
+            direct_import: {
+                tag: "📦 مستورد مباشرة",
+                title: "منتجات أصلية",
+                title_highlight: "من المصنع لباب بيتك",
+                desc: "نتخطى كل الوسطاء ونتعامل مباشرة مع المصانع والموردين العالميين لنقدم لك أفضل سعر وأعلى جودة في السوق.",
+                image: "assets/import_direct_3d.jpg",
+                badge_icon: "✈️",
+                badge_title: "شحن يومي",
+                badge_desc: "من جميع الدول",
+                features: [
+                    { icon: "🌍", title: "50+ دولة مصدر", desc: "شبكة موردين معتمدين حول العالم" },
+                    { icon: "⚡", title: "توصيل سريع", desc: "من 7 إلى 30 يوم حسب البلد" },
+                    { icon: "🏷️", title: "أسعار لا تُنافَس", desc: "مباشرة من المصنع بلا هامش وسيط" }
+                ],
+                btn_text: "تسوق المنتجات المستوردة",
+                btn_link: "shop.html"
+            }
+        };
+        this.populate();
+    }
+};
+
+const adminPopupBanner = {
+    data: null,
+    
+    async load() {
+        try {
+            const res = await fetch('api/get_popup_banner.php?t=' + Date.now());
+            this.data = await res.json();
+            if (!this.data) {
+                this.resetDefault(false);
+            } else {
+                this.populate();
+            }
+        } catch (e) {
+            console.error("Error loading popup banner:", e);
+            this.resetDefault(false);
+        }
+    },
+    
+    populate() {
+        if (!this.data) return;
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = (val !== undefined && val !== null) ? val : '';
+        };
+        const setChecked = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.checked = !!val;
+        };
+        
+        setChecked('apb-enabled', this.data.enabled !== false);
+        setChecked('apb-show-once', !!this.data.show_once);
+        setVal('apb-tag', this.data.tag || '');
+        setVal('apb-title', this.data.title || '');
+        setVal('apb-message', this.data.message || '');
+        setVal('apb-image', this.data.image || '');
+        setVal('apb-btn-text', this.data.btn_text || '');
+        setVal('apb-btn-link', this.data.btn_link || '');
+        
+        this.updateLivePreview();
+    },
+    
+    updateLivePreview() {
+        const enabled = document.getElementById('apb-enabled') ? document.getElementById('apb-enabled').checked : true;
+        const tag = (document.getElementById('apb-tag')?.value || '').trim();
+        const title = (document.getElementById('apb-title')?.value || '').trim();
+        const msg = (document.getElementById('apb-message')?.value || '').trim();
+        const img = (document.getElementById('apb-image')?.value || '').trim();
+        const btnText = (document.getElementById('apb-btn-text')?.value || '').trim();
+        const btnLink = (document.getElementById('apb-btn-link')?.value || '').trim();
+        
+        // Status badge
+        const statusEl = document.getElementById('apb-preview-status');
+        if (statusEl) {
+            statusEl.textContent = enabled ? 'مفعل' : 'معطل';
+            statusEl.style.background = enabled ? 'var(--green-bg)' : 'var(--red-bg)';
+            statusEl.style.color = enabled ? 'var(--green)' : 'var(--red)';
+        }
+        
+        // Mockup elements
+        const mockTag = document.getElementById('apb-mock-tag');
+        if (mockTag) {
+            mockTag.textContent = tag || 'تنبيه';
+            mockTag.style.display = tag ? 'inline-block' : 'none';
+        }
+        
+        const mockTitle = document.getElementById('apb-mock-title');
+        if (mockTitle) {
+            mockTitle.textContent = title || 'عنوان البنر المنبثق';
+        }
+        
+        const mockMsg = document.getElementById('apb-mock-msg');
+        if (mockMsg) {
+            mockMsg.textContent = msg || 'نص الملاحظة أو الإشعار سيظهر هنا بالكامل وبشكل منسق.';
+        }
+        
+        const mockImgWrap = document.getElementById('apb-mock-img-wrap');
+        const mockImg = document.getElementById('apb-mock-img');
+        if (mockImgWrap && mockImg) {
+            if (img) {
+                mockImg.src = img;
+                mockImgWrap.style.display = 'block';
+            } else {
+                mockImgWrap.style.display = 'none';
+            }
+        }
+        
+        const mockBtn = document.getElementById('apb-mock-btn');
+        if (mockBtn) {
+            if (btnText) {
+                mockBtn.textContent = btnText;
+                mockBtn.href = btnLink || '#';
+                mockBtn.style.display = 'block';
+            } else {
+                mockBtn.style.display = 'none';
+            }
+        }
+        
+        // Update slider switch UI
+        const enSlider = document.getElementById('apb-enabled-slider');
+        if (enSlider) {
+            enSlider.style.background = enabled ? 'var(--blue)' : 'var(--bg)';
+        }
+        const onceSlider = document.getElementById('apb-once-slider');
+        const showOnce = document.getElementById('apb-show-once')?.checked;
+        if (onceSlider) {
+            onceSlider.style.background = showOnce ? 'var(--blue)' : 'var(--bg)';
+        }
+    },
+    
+    clearImage() {
+        const input = document.getElementById('apb-image');
+        if (input) input.value = '';
+        this.updateLivePreview();
+    },
+    
+    handleUpload(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 1000;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                const imgInput = document.getElementById('apb-image');
+                if (imgInput) imgInput.value = dataUrl;
+                this.updateLivePreview();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    },
+    
+    collectData() {
+        return {
+            enabled: document.getElementById('apb-enabled') ? document.getElementById('apb-enabled').checked : true,
+            show_once: document.getElementById('apb-show-once') ? document.getElementById('apb-show-once').checked : false,
+            tag: (document.getElementById('apb-tag')?.value || '').trim(),
+            title: (document.getElementById('apb-title')?.value || '').trim(),
+            message: (document.getElementById('apb-message')?.value || '').trim(),
+            image: (document.getElementById('apb-image')?.value || '').trim(),
+            btn_text: (document.getElementById('apb-btn-text')?.value || '').trim(),
+            btn_link: (document.getElementById('apb-btn-link')?.value || '').trim()
+        };
+    },
+    
+    async save() {
+        const payload = this.collectData();
+        if (!payload.title && !payload.message) {
+            alert('⚠️ يرجى إدخال العنوان أو نص الرسالة للبنر المنبثق على الأقل.');
+            return;
+        }
+        try {
+            const res = await fetch('api/save_popup_banner.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.data = payload;
+                const toast = document.getElementById('admin-toast');
+                if (toast) {
+                    toast.textContent = '✅ ' + data.message;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                } else {
+                    alert('✅ ' + data.message);
+                }
+            } else {
+                alert('❌ ' + data.message);
+            }
+        } catch (e) {
+            alert('❌ فشل الاتصال بالخادم لحفظ البنر المنبثق!');
+        }
+    },
+    
+    resetDefault(doConfirm = true) {
+        if (doConfirm && !confirm('هل أنت متأكد من استعادة المحتوى الافتراضي للبنر المنبثق؟')) return;
+        this.data = {
+            enabled: true,
+            show_once: false,
+            tag: "تنبيه هام 📢",
+            title: "أهلاً بكم في متجر استوردلي",
+            message: "يسعدنا خدمتكم وتوفير أفضل منتجات الشواء والأدوات الأصلية مع شحن سريع لجميع المدن والمناطق.",
+            image: "",
+            btn_text: "تصفح العروض",
+            btn_link: "shop.html"
+        };
+        this.populate();
+    },
+    
+    testPopup() {
+        window.open('index.html?test_popup=1', '_blank');
     }
 };
 
@@ -3159,35 +4326,101 @@ const adminBanners = {
         }
         
         container.innerHTML = this.banners.map((b, i) => `
-            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:15px; display:flex; flex-direction:column; gap:10px;">
-                <h3 style="margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:5px;">بنر رقم ${i+1} ${b.is_big ? '(كبير)' : ''}</h3>
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                    <h3 style="margin:0; font-size:15px; font-weight:800;">بنر رقم ${i+1} ${b.is_big ? '<span style="font-size:11px; background:rgba(59,130,246,0.15); color:var(--blue); padding:2px 6px; border-radius:4px; margin-right:6px;">كبير</span>' : ''}</h3>
+                    <span style="font-size:12px; color:var(--text2);">موقع البنر: الرئيسية</span>
+                </div>
+
+                <!-- Preview Image -->
+                <div style="width:100%; height:130px; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:#0f172a; position:relative; display:flex; align-items:center; justify-content:center;">
+                    <img id="banner-preview-img-${i}" src="${b.image || ''}" alt="Preview" style="width:100%; height:100%; object-fit:cover; display:${b.image ? 'block' : 'none'};" onerror="this.style.display='none'; const p=document.getElementById('banner-preview-placeholder-${i}'); if(p) p.style.display='flex';" onload="this.style.display='block'; const p=document.getElementById('banner-preview-placeholder-${i}'); if(p) p.style.display='none';" />
+                    <div id="banner-preview-placeholder-${i}" style="position:absolute; display:${b.image ? 'none' : 'flex'}; flex-direction:column; align-items:center; justify-content:center; color:var(--text3); font-size:12px;">
+                        <span>🖼️</span>
+                        <span>لا توجد صورة محددة</span>
+                    </div>
+                </div>
                 
-                <label style="font-size:12px; color:var(--text2);">صورة الخلفية (رابط)</label>
-                <input type="text" value="${b.image || ''}" onchange="adminBanners.update(${i}, 'image', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">صورة الخلفية (رابط أو مسار)</label>
+                    <input type="text" id="banner-img-input-${i}" value="${b.image || ''}" oninput="adminBanners.update(${i}, 'image', this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:8px;">
+                    
+                    <button type="button" class="btn" style="background:var(--bg); border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="document.getElementById('banner-file-input-${i}').click()">
+                        📷 رفع صورة جديدة من جهازك
+                    </button>
+                    <input type="file" id="banner-file-input-${i}" accept="image/*" style="display:none;" onchange="adminBanners.handleImageUpload(${i}, this)">
+                </div>
                 
-                <label style="font-size:12px; color:var(--text2);">الشارة (Tag)</label>
-                <input type="text" value="${b.tag || ''}" onchange="adminBanners.update(${i}, 'tag', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">الشارة (Tag)</label>
+                    <input type="text" value="${b.tag || ''}" oninput="adminBanners.update(${i}, 'tag', this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                </div>
                 
-                <label style="font-size:12px; color:var(--text2);">العنوان الرئيسي</label>
-                <input type="text" value="${b.title || ''}" onchange="adminBanners.update(${i}, 'title', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">العنوان الرئيسي</label>
+                    <input type="text" value="${b.title || ''}" oninput="adminBanners.update(${i}, 'title', this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                </div>
                 
-                <label style="font-size:12px; color:var(--text2);">النص الفرعي (الوصف)</label>
-                <input type="text" value="${b.desc || ''}" onchange="adminBanners.update(${i}, 'desc', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">النص الفرعي (الوصف)</label>
+                    <input type="text" value="${b.desc || ''}" oninput="adminBanners.update(${i}, 'desc', this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                </div>
                 
-                <label style="font-size:12px; color:var(--text2);">نص الزر</label>
-                <input type="text" value="${b.btn_text || ''}" onchange="adminBanners.update(${i}, 'btn_text', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">نص الزر</label>
+                        <input type="text" value="${b.btn_text || ''}" oninput="adminBanners.update(${i}, 'btn_text', this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">رابط الزر</label>
+                        <input type="text" value="${b.link || ''}" oninput="adminBanners.update(${i}, 'link', this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+                    </div>
+                </div>
                 
-                <label style="font-size:12px; color:var(--text2);">رابط الزر</label>
-                <input type="text" value="${b.link || ''}" onchange="adminBanners.update(${i}, 'link', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; margin-bottom:5px;">
-                
-                <label style="font-size:12px; color:var(--text2);">لون النص (Hex Color)</label>
-                <input type="color" value="${b.text_color || '#1f2937'}" onchange="adminBanners.update(${i}, 'text_color', this.value)" style="width:100%; height:40px; border-radius:6px; border:1px solid var(--border); background:var(--bg); cursor:pointer; margin-bottom:5px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:4px;">لون النص (Text Color)</label>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="color" value="${b.text_color || '#1f2937'}" onchange="adminBanners.update(${i}, 'text_color', this.value)" style="width:50px; height:38px; border-radius:6px; border:1px solid var(--border); background:var(--bg); cursor:pointer; padding:2px;">
+                        <span style="font-size:12px; color:var(--text2); font-family:monospace;">${b.text_color || '#1f2937'}</span>
+                    </div>
+                </div>
             </div>
         `).join('');
     },
     
     update(index, field, value) {
         this.banners[index][field] = value;
+        if (field === 'image') {
+            const img = document.getElementById(`banner-preview-img-${index}`);
+            const ph = document.getElementById(`banner-preview-placeholder-${index}`);
+            if (img) {
+                img.src = value;
+                img.style.display = value ? 'block' : 'none';
+            }
+            if (ph) {
+                ph.style.display = value ? 'none' : 'flex';
+            }
+        }
+    },
+
+    handleImageUpload(index, input) {
+        if (!input.files || !input.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const base64 = e.target.result;
+            this.banners[index].image = base64;
+            const inputEl = document.getElementById(`banner-img-input-${index}`);
+            const imgEl = document.getElementById(`banner-preview-img-${index}`);
+            const ph = document.getElementById(`banner-preview-placeholder-${index}`);
+            
+            if (inputEl) inputEl.value = base64;
+            if (imgEl) {
+                imgEl.src = base64;
+                imgEl.style.display = 'block';
+            }
+            if (ph) ph.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
     },
     
     async save() {
@@ -3324,6 +4557,88 @@ const adminBrands = {
     }
 };
 
+const adminPagesContent = {
+    data: {
+        about: {},
+        contact: {}
+    },
+
+    async load() {
+        try {
+            const res = await fetch('api/get_pages_content.php?t=' + Date.now());
+            this.data = await res.json();
+            if (!this.data) this.data = {};
+            if (!this.data.about) this.data.about = {};
+            if (!this.data.contact) this.data.contact = {};
+
+            const a = this.data.about;
+            const c = this.data.contact;
+
+            const el = id => document.getElementById(id);
+            if (el('adm-about-badge')) el('adm-about-badge').value = a.badge || '';
+            if (el('adm-about-heading')) el('adm-about-heading').value = a.main_heading || '';
+            if (el('adm-about-desc')) el('adm-about-desc').value = a.description || '';
+            if (el('adm-about-vision-title')) el('adm-about-vision-title').value = a.vision_title || '';
+            if (el('adm-about-vision-text')) el('adm-about-vision-text').value = a.vision_text || '';
+            if (el('adm-about-mission-title')) el('adm-about-mission-title').value = a.mission_title || '';
+            if (el('adm-about-mission-text')) el('adm-about-mission-text').value = a.mission_text || '';
+
+            if (el('adm-contact-phone')) el('adm-contact-phone').value = c.phone || '';
+            if (el('adm-contact-whatsapp')) el('adm-contact-whatsapp').value = c.whatsapp || '';
+            if (el('adm-contact-email')) el('adm-contact-email').value = c.email || '';
+            if (el('adm-contact-address')) el('adm-contact-address').value = c.address || '';
+            if (el('adm-contact-hours')) el('adm-contact-hours').value = c.working_hours || '';
+            if (el('adm-contact-wa-cta')) el('adm-contact-wa-cta').value = c.whatsapp_cta || '';
+            if (el('adm-contact-form-heading')) el('adm-contact-form-heading').value = c.form_heading || '';
+            if (el('adm-contact-desc')) el('adm-contact-desc').value = c.description || '';
+
+        } catch (e) {
+            console.error("Error loading pages content:", e);
+        }
+    },
+
+    async save() {
+        const el = id => document.getElementById(id);
+        
+        if (!this.data.about) this.data.about = {};
+        if (!this.data.contact) this.data.contact = {};
+
+        this.data.about.badge = el('adm-about-badge') ? el('adm-about-badge').value : '';
+        this.data.about.main_heading = el('adm-about-heading') ? el('adm-about-heading').value : '';
+        this.data.about.description = el('adm-about-desc') ? el('adm-about-desc').value : '';
+        this.data.about.vision_title = el('adm-about-vision-title') ? el('adm-about-vision-title').value : '';
+        this.data.about.vision_text = el('adm-about-vision-text') ? el('adm-about-vision-text').value : '';
+        this.data.about.mission_title = el('adm-about-mission-title') ? el('adm-about-mission-title').value : '';
+        this.data.about.mission_text = el('adm-about-mission-text') ? el('adm-about-mission-text').value : '';
+
+        this.data.contact.phone = el('adm-contact-phone') ? el('adm-contact-phone').value : '';
+        this.data.contact.whatsapp = el('adm-contact-whatsapp') ? el('adm-contact-whatsapp').value : '';
+        this.data.contact.email = el('adm-contact-email') ? el('adm-contact-email').value : '';
+        this.data.contact.address = el('adm-contact-address') ? el('adm-contact-address').value : '';
+        this.data.contact.working_hours = el('adm-contact-hours') ? el('adm-contact-hours').value : '';
+        this.data.contact.whatsapp_cta = el('adm-contact-wa-cta') ? el('adm-contact-wa-cta').value : '';
+        this.data.contact.form_heading = el('adm-contact-form-heading') ? el('adm-contact-form-heading').value : '';
+        this.data.contact.description = el('adm-contact-desc') ? el('adm-contact-desc').value : '';
+
+        try {
+            const res = await fetch('api/save_pages_content.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.data)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ تم حفظ محتوى صفحتي من نحن واتصل بنا بنجاح!');
+                this.load();
+            } else {
+                showToast('❌ فشل في حفظ البيانات: ' + data.message, 'error');
+            }
+        } catch (e) {
+            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
+        }
+    }
+};
+
 const adminPolicies = {
     async load() {
         try {
@@ -3375,6 +4690,27 @@ const adminPolicies = {
             } catch (err) {
                 console.error("Error loading ticker settings in admin:", err);
             }
+
+            // Load Import Ticker settings
+            try {
+                const importRes = await fetch('api/get_import_countries.php?t=' + Date.now());
+                const importData = await importRes.json();
+                const importEnabledEl = document.getElementById('sett-import-ticker-enabled');
+                const importMarqueeEl = document.getElementById('sett-import-ticker-marquee');
+                const importCloseEl = document.getElementById('sett-import-ticker-close');
+                const importLabelEl = document.getElementById('sett-import-ticker-label');
+                const importTextEl = document.getElementById('sett-import-ticker-text');
+                const importSpeedEl = document.getElementById('sett-import-ticker-speed');
+                
+                if (importEnabledEl) importEnabledEl.checked = importData.enabled !== false;
+                if (importMarqueeEl) importMarqueeEl.checked = importData.enable_marquee !== false;
+                if (importCloseEl) importCloseEl.checked = importData.show_close !== false;
+                if (importLabelEl) importLabelEl.value = importData.label || '🌍 نستورد من:';
+                if (importTextEl) importTextEl.value = importData.text || '';
+                if (importSpeedEl) importSpeedEl.value = importData.speed || 30;
+            } catch (err) {
+                console.error("Error loading import ticker settings in admin:", err);
+            }
         } catch(e) {
             console.error('Error loading policies:', e);
         }
@@ -3409,6 +4745,31 @@ const adminPolicies = {
             });
         } catch (err) {
             console.error("Error saving ticker settings in admin:", err);
+        }
+
+        // Save Import Ticker settings
+        const import_enabled = document.getElementById('sett-import-ticker-enabled')?.checked || false;
+        const import_marquee = document.getElementById('sett-import-ticker-marquee')?.checked || false;
+        const import_close = document.getElementById('sett-import-ticker-close')?.checked || false;
+        const import_label = document.getElementById('sett-import-ticker-label')?.value || '🌍 نستورد من:';
+        const import_text = document.getElementById('sett-import-ticker-text')?.value || '';
+        const import_speed = parseInt(document.getElementById('sett-import-ticker-speed')?.value) || 30;
+        
+        try {
+            await fetch('api/save_import_countries.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    enabled: import_enabled, 
+                    enable_marquee: import_marquee,
+                    show_close: import_close,
+                    label: import_label,
+                    text: import_text,
+                    speed: import_speed
+                })
+            });
+        } catch (err) {
+            console.error("Error saving import ticker settings in admin:", err);
         }
 
         try {
@@ -3564,6 +4925,8 @@ async function saveAllSettings() {
     const badge3_subtitle = document.getElementById('sett-badge3-subtitle')?.value || '';
 
     let success = true;
+    
+    // Save Policies
     try {
         const res = await fetch('api/save_policies.php', {
             method: 'POST',
@@ -3587,6 +4950,50 @@ async function saveAllSettings() {
         const data = await res.json();
         if (!data.success) success = false;
     } catch(e) {
+        success = false;
+    }
+
+    // Save Ticker settings
+    const ticker_enabled = document.getElementById('sett-ticker-enabled')?.checked || false;
+    const ticker_text = document.getElementById('sett-ticker-text')?.value || '';
+    try {
+        const res = await fetch('api/save_ticker.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ enabled: ticker_enabled, text: ticker_text })
+        });
+        const data = await res.json();
+        if (!data.success) success = false;
+    } catch (err) {
+        console.error("Error saving ticker settings:", err);
+        success = false;
+    }
+
+    // Save Import Ticker settings
+    const import_enabled = document.getElementById('sett-import-ticker-enabled')?.checked || false;
+    const import_marquee = document.getElementById('sett-import-ticker-marquee')?.checked || false;
+    const import_close = document.getElementById('sett-import-ticker-close')?.checked || false;
+    const import_label = document.getElementById('sett-import-ticker-label')?.value || '';
+    const import_text = document.getElementById('sett-import-ticker-text')?.value || '';
+    const import_speed = parseInt(document.getElementById('sett-import-ticker-speed')?.value) || 30;
+    
+    try {
+        const res = await fetch('api/save_import_countries.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                enabled: import_enabled, 
+                enable_marquee: import_marquee,
+                show_close: import_close,
+                label: import_label,
+                text: import_text,
+                speed: import_speed
+            })
+        });
+        const data = await res.json();
+        if (!data.success) success = false;
+    } catch (err) {
+        console.error("Error saving import ticker settings:", err);
         success = false;
     }
 
@@ -3781,7 +5188,11 @@ const adminNav = {
             if (result.success) {
                 showToast('✅ تم حفظ القائمة بنجاح! ستظهر للزوار فوراً.');
             } else {
-                showToast('❌ فشل الحفظ: ' + result.message, 'error');
+                if (result.message === 'Unauthorized') {
+                    showToast('⚠️ انتهت جلسة تسجيل الدخول. يرجى تحديث الصفحة (Refresh) وتسجيل الدخول', 'error');
+                } else {
+                    showToast('❌ فشل الحفظ: ' + result.message, 'error');
+                }
             }
         } catch(e) {
             showToast('❌ حدث خطأ أثناء الحفظ', 'error');
@@ -3791,6 +5202,11 @@ const adminNav = {
 
 window.addEventListener('DOMContentLoaded', () => {
     adminNav.load();
+    adminHomepageCategories.load();
+    adminIcons.load();
+    adminBrands.load();
+    adminFooterSettings.load();
+    adminImportCountries.load();
 });
 
 
@@ -3914,12 +5330,47 @@ const adminIcons = {
 
 const adminHomepageCategories = {
     categories: [],
+    allNavCategories: [],
     
     async load() {
         try {
             const res = await fetch('api/get_homepage_categories.php?t=' + Date.now());
             this.categories = await res.json();
             if (!Array.isArray(this.categories)) this.categories = [];
+            
+            // Load nav categories
+            const navRes = await fetch('api/get_nav.php?t=' + Date.now());
+            const navData = await navRes.json();
+            
+            this.allNavCategories = [];
+            if (Array.isArray(navData)) {
+                navData.forEach(item => {
+                    const title = item.title || '';
+                    if (title) {
+                        this.allNavCategories.push(title);
+                    }
+                    if (item.subLinks) {
+                        item.subLinks.forEach(sub => {
+                            if (sub.title) {
+                                this.allNavCategories.push(sub.title);
+                            }
+                        });
+                    } else if (item.columns) {
+                        item.columns.forEach(col => {
+                            if (col.links) {
+                                col.links.forEach(sub => {
+                                    if (sub.title) {
+                                        this.allNavCategories.push(sub.title);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            // Remove duplicates
+            this.allNavCategories = [...new Set(this.allNavCategories)].filter(s => s.trim().length > 0);
+            
             this.render();
         } catch(e) {
             console.error("Error loading homepage categories:", e);
@@ -3941,6 +5392,13 @@ const adminHomepageCategories = {
                 ? `<div style="font-size:32px; width:60px; height:60px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:8px; background:#fff;">${c.img}</div>`
                 : `<img src="${c.img || 'https://via.placeholder.com/60?text=ICON'}" id="cat-img-preview-${i}" style="width:60px; height:60px; object-fit:cover; border:1px solid var(--border); border-radius:8px; background:#fff;" />`;
             
+            // Linked Category Select Dropdown Options
+            let optionsHtml = '<option value="">-- بدون ربط تلقائي --</option>';
+            this.allNavCategories.forEach(catName => {
+                const selected = c.linkedCategory === catName ? 'selected' : '';
+                optionsHtml += `<option value="${catName}" ${selected}>${catName}</option>`;
+            });
+
             return `
                 <div style="background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:15px; display:flex; gap:12px; align-items:center; position:relative;">
                     <!-- Image/Emoji preview -->
@@ -3955,6 +5413,14 @@ const adminHomepageCategories = {
                         <div style="display:flex; flex-direction:column; gap:2px;">
                             <span style="font-size:10px; color:var(--text3); font-weight:bold;">اسم الأيقونة (بالعربية)</span>
                             <input type="text" value="${c.title}" onchange="adminHomepageCategories.updateTitle(${i}, this.value)" style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-family:inherit;">
+                        </div>
+                        
+                        <!-- Link Category Dropdown -->
+                        <div style="display:flex; flex-direction:column; gap:2px;">
+                            <span style="font-size:10px; color:var(--text3); font-weight:bold;">🔗 ربط بقسم/تصنيف تلقائي</span>
+                            <select onchange="adminHomepageCategories.updateLinkedCategory(${i}, this.value)" style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-family:inherit; cursor:pointer;">
+                                ${optionsHtml}
+                            </select>
                         </div>
                         
                         <!-- ID/Key Info -->
@@ -3972,6 +5438,10 @@ const adminHomepageCategories = {
     
     updateTitle(index, value) {
         this.categories[index].title = value.trim();
+    },
+    
+    updateLinkedCategory(index, value) {
+        this.categories[index].linkedCategory = value;
     },
     
     updateActive(index, value) {
@@ -4009,12 +5479,178 @@ const adminHomepageCategories = {
     }
 };
 
-const originalLoadIcons = adminNav.load;
-adminNav.load = async function() {
-    await originalLoadIcons.call(adminNav);
-    adminHomepageCategories.load();
-    adminIcons.load();
-    adminBrands.load();
+
+
+const adminFooterSettings = {
+    async load() {
+        try {
+            const res = await fetch('api/get_footer_settings.php?t=' + Date.now());
+            const data = await res.json();
+            if (!data) return;
+
+            if (data.social) {
+                if (document.getElementById('footer-fb-url')) document.getElementById('footer-fb-url').value = data.social.facebook || '';
+                if (document.getElementById('footer-ig-url')) document.getElementById('footer-ig-url').value = data.social.instagram || '';
+                if (document.getElementById('footer-tt-url')) document.getElementById('footer-tt-url').value = data.social.tiktok || '';
+                if (document.getElementById('footer-yt-url')) document.getElementById('footer-yt-url').value = data.social.youtube || '';
+            }
+            if (data.apps) {
+                if (document.getElementById('footer-appstore-url')) document.getElementById('footer-appstore-url').value = data.apps.app_store || '';
+                if (document.getElementById('footer-gplay-url')) document.getElementById('footer-gplay-url').value = data.apps.google_play || '';
+            }
+            if (document.getElementById('footer-about-admin')) document.getElementById('footer-about-admin').value = data.about_text || '';
+            if (document.getElementById('footer-copyright-admin')) document.getElementById('footer-copyright-admin').value = data.copyright || '';
+            // Update preview
+            if (document.getElementById('footer-preview-about')) document.getElementById('footer-preview-about').textContent = data.about_text || '';
+            if (document.getElementById('footer-preview-copyright')) document.getElementById('footer-preview-copyright').textContent = data.copyright || '';
+        } catch(e) {
+            console.error('Error loading footer settings:', e);
+        }
+    },
+    async save() {
+        const payload = {
+            about_text: document.getElementById('footer-about-admin')?.value || '',
+            copyright: document.getElementById('footer-copyright-admin')?.value || '',
+            social: {
+                facebook: document.getElementById('footer-fb-url')?.value || '',
+                instagram: document.getElementById('footer-ig-url')?.value || '',
+                tiktok: document.getElementById('footer-tt-url')?.value || '',
+                youtube: document.getElementById('footer-yt-url')?.value || ''
+            },
+            apps: {
+                app_store: document.getElementById('footer-appstore-url')?.value || '',
+                google_play: document.getElementById('footer-gplay-url')?.value || ''
+            }
+        };
+        try {
+            const res = await fetch('api/save_footer_settings.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ تم حفظ إعدادات الفوتر بنجاح!');
+                // Update preview
+                if (document.getElementById('footer-preview-about')) document.getElementById('footer-preview-about').textContent = payload.about_text;
+                if (document.getElementById('footer-preview-copyright')) document.getElementById('footer-preview-copyright').textContent = payload.copyright;
+            } else {
+                showToast('❌ فشل الحفظ: ' + (data.message || ''), 'error');
+            }
+        } catch(e) {
+            showToast('❌ خطأ في الاتصال', 'error');
+        }
+    }
+};
+
+const adminImportCountries = {
+    data: { section_title: '', section_subtitle: '', countries: [] },
+
+    async load() {
+        try {
+            const res = await fetch('api/get_import_countries.php?t=' + Date.now());
+            this.data = await res.json();
+            if (!this.data.countries) this.data.countries = [];
+            this.render();
+        } catch(e) {
+            console.error('Error loading import countries:', e);
+        }
+    },
+
+    render() {
+        // Fill section title/subtitle
+        const titleInput = document.getElementById('import-sec-title');
+        const subtitleInput = document.getElementById('import-sec-subtitle');
+        if (titleInput) titleInput.value = this.data.section_title || '';
+        if (subtitleInput) subtitleInput.value = this.data.section_subtitle || '';
+
+        const container = document.getElementById('admin-import-countries-builder');
+        if (!container) return;
+
+        if (this.data.countries.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text3);">لا يوجد دول. اضغط على "+ إضافة دولة" للبدء.</div>';
+            return;
+        }
+
+        container.innerHTML = this.data.countries.map((c, i) => `
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:14px; display:flex; gap:12px; align-items:center;">
+                <!-- Flag/Emoji -->
+                <div>
+                    <label style="font-size:10px; color:var(--text3); display:block; margin-bottom:3px;">علم/رمز</label>
+                    <input type="text" value="${c.flag || '🌐'}" onchange="adminImportCountries.update(${i}, 'flag', this.value)" style="width:50px; text-align:center; font-size:22px; padding:4px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text);">
+                </div>
+                <!-- Name -->
+                <div style="flex:1;">
+                    <label style="font-size:10px; color:var(--text3); display:block; margin-bottom:3px;">اسم الدولة</label>
+                    <input type="text" value="${c.name || ''}" onchange="adminImportCountries.update(${i}, 'name', this.value)" placeholder="الصين" style="width:100%; padding:7px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; font-weight:700;">
+                </div>
+                <!-- Categories -->
+                <div style="flex:2;">
+                    <label style="font-size:10px; color:var(--text3); display:block; margin-bottom:3px;">التصنيفات</label>
+                    <input type="text" value="${c.categories || ''}" onchange="adminImportCountries.update(${i}, 'categories', this.value)" placeholder="مماسح • جملة" style="width:100%; padding:7px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px;">
+                </div>
+                <!-- Badge -->
+                <div style="flex:1;">
+                    <label style="font-size:10px; color:var(--text3); display:block; margin-bottom:3px;">شارة التميز</label>
+                    <input type="text" value="${c.badge || ''}" onchange="adminImportCountries.update(${i}, 'badge', this.value)" placeholder="جودة عالية" style="width:100%; padding:7px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:12px;">
+                </div>
+                <!-- Active -->
+                <div style="text-align:center;">
+                    <label style="font-size:10px; color:var(--text3); display:block; margin-bottom:3px;">ظهور</label>
+                    <input type="checkbox" ${c.active !== false ? 'checked' : ''} onchange="adminImportCountries.update(${i}, 'active', this.checked)" style="width:18px; height:18px; cursor:pointer;">
+                </div>
+                <!-- Delete -->
+                <button onclick="adminImportCountries.remove(${i})" style="background:rgba(239,68,68,0.1); border:1px solid var(--red); color:var(--red); padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:16px;">×</button>
+            </div>
+        `).join('');
+    },
+
+    update(index, key, value) {
+        this.data.countries[index][key] = value;
+    },
+
+    addCountry() {
+        this.data.countries.push({
+            id: 'country_' + Date.now(),
+            flag: '🌐',
+            name: 'دولة جديدة',
+            categories: '',
+            badge: '',
+            active: true
+        });
+        this.render();
+    },
+
+    remove(index) {
+        if (confirm('هل تريد حذف هذه الدولة؟')) {
+            this.data.countries.splice(index, 1);
+            this.render();
+        }
+    },
+
+    async save() {
+        // Collect current title/subtitle from inputs
+        const titleVal = document.getElementById('import-sec-title')?.value || this.data.section_title;
+        const subtitleVal = document.getElementById('import-sec-subtitle')?.value || this.data.section_subtitle;
+        this.data.section_title = titleVal;
+        this.data.section_subtitle = subtitleVal;
+
+        try {
+            const res = await fetch('api/save_import_countries.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                showToast('✅ تم حفظ دول الاستيراد بنجاح!');
+            } else {
+                showToast('❌ فشل الحفظ', 'error');
+            }
+        } catch(e) {
+            showToast('❌ خطأ في الاتصال', 'error');
+        }
+    }
 };
 
 </script>

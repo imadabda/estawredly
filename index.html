@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
   <script src="store.js?v=1786117170000"></script>
-  <link rel="stylesheet" href="style.css?v=1785802153537"/>
+  <link rel="stylesheet" href="style.css?v=1786978000000"/>
   <link rel="stylesheet" href="enhancements.css?v=1785802153537"/>
 <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
@@ -29,9 +29,9 @@
   <div class="hdr-top">
     <div class="container hdr-top-inner">
       <nav class="hdr-links">
-        <a href="#">تتبع طلبك</a>
-        <a href="#">التواصل</a>
-        <a href="#">العروض</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">اتصل بنا</a>
+        <a href="shop.html?sale=true">العروض</a>
       </nav>
       </div>
   </div>
@@ -99,21 +99,23 @@
   </nav>
 </header>
 
-<section class="hero-slider" id="hero">
-  <div id="dynamic-hero-slides">
-    <!-- Slides injected via JS -->
+<section class="hero-import-sec" id="hero" style="padding: 14px 0 6px;">
+  <div class="container">
+    <div class="hero-import-wrapper" style="position:relative; border-radius:16px; overflow:hidden; box-shadow: 0 10px 30px rgba(15,23,42,0.08); border: 1px solid var(--gray2); background:#fff;">
+      <a href="contact.html" id="hero-banner-link" title="ابدأ طلبك الآن - إستوردلي" style="display:block; width:100%; line-height:0;">
+        <picture id="hero-banner-picture">
+          <source id="hero-banner-source-mobile" media="(max-width: 768px)" srcset="assets/hero_banner_import_mobile.png?v=1786971500000">
+          <img id="hero-banner-img-desktop" src="assets/hero_banner_import.png?v=1786971500000" alt="إستوردلي - نستورد لك ما تحتاجه من المصدر" style="width:100%; height:auto; display:block; object-fit:cover;" />
+        </picture>
+      </a>
+    </div>
   </div>
-  
-  <!-- Slider Controls -->
-
-  <div class="slider-dots" id="slider-dots"></div>
 </section>
 
 <section class="taobao-cats-sec" style="margin-top: 15px; margin-bottom: 15px;">
   <div class="container">
     <div class="taobao-cats" id="homepage-categories-list">
       <!-- Dynamic Categories -->
-    </div>
     </div>
   </div>
 </section>
@@ -123,59 +125,37 @@
     <h2 class="sec-title text-center">أبرز الماركات</h2>
     <div class="brands-track">
       <div class="brands-inner">
-        <div class="brand-item">NIKE</div>
-        <div class="brand-item">SAMSUNG</div>
-        <div class="brand-item">APPLE</div>
-        <div class="brand-item">ZARA</div>
-        <div class="brand-item">ADIDAS</div>
-        <div class="brand-item">H&M</div>
-        <div class="brand-item">SONY</div>
-        <div class="brand-item">LG</div>
-        <div class="brand-item">IKEA</div>
-        <div class="brand-item">GUCCI</div>
-        <!-- Duplicate for infinite scroll -->
-        <div class="brand-item">NIKE</div>
-        <div class="brand-item">SAMSUNG</div>
-        <div class="brand-item">APPLE</div>
-        <div class="brand-item">ZARA</div>
-        <div class="brand-item">ADIDAS</div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=KLEANER'">
+          <div class="brand-logo-circle" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,0.08);box-sizing:border-box;"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDSMNz2USXoES7Mhk1i4Zc6GIHtcJ4Qzb1cthdcHC-zCP9kdKbUVl0DX8&s=10" alt="KLEANER" style="width:100%;height:100%;max-width:80px;max-height:80px;object-fit:cover;border-radius:50%;padding:0;display:block;box-sizing:border-box;" /></div>
+          <span class="brand-card-name">KLEANER</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=SAMSONG'">
+          <div class="brand-logo-circle" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,0.08);box-sizing:border-box;"><img src="https://images.samsung.com/is/image/samsung/assets/levant_ar/about-us/brand/logo/mo/256_144_4.png?$512_N_PNG$" alt="SAMSONG" style="width:100%;height:100%;max-width:80px;max-height:80px;object-fit:cover;border-radius:50%;padding:0;display:block;box-sizing:border-box;" /></div>
+          <span class="brand-card-name">SAMSONG</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=SEMO'">
+          <div class="brand-logo-circle brand-logo-initials" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background: var(--p-light); color: var(--p);border:2px solid #e5e7eb;box-sizing:border-box;">SE</div>
+          <span class="brand-card-name">SEMO</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=CLEAN'">
+          <div class="brand-logo-circle brand-logo-initials" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background: #ecfdf5; color: #059669;border:2px solid #e5e7eb;box-sizing:border-box;">CL</div>
+          <span class="brand-card-name">CLEAN</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="import-ticker">
-  <div class="ticker-label">🌍 نستورد من:</div>
+<div class="import-ticker" id="import-ticker-container" style="display: none;">
+  <div class="ticker-label" id="import-ticker-label">🌍 نستورد من:</div>
   <div class="ticker-track">
-    <div class="ticker-inner">
-      <span class="tick-item">الصين</span>
-      <span class="tick-item">تركيا</span>
-      <span class="tick-item">الهند</span>
-      <span class="tick-item">ألمانيا</span>
-      <span class="tick-item">أمريكا</span>
-      <span class="tick-item">كوريا</span>
-      <span class="tick-item">اليابان</span>
-      <span class="tick-item">فرنسا</span>
-      <span class="tick-item">إيطاليا</span>
-      <span class="tick-item">بريطانيا</span>
-      <span class="tick-item">إسبانيا</span>
-      <span class="tick-item">بولندا</span>
-      <!-- duplicate -->
-      <span class="tick-item">الصين</span>
-      <span class="tick-item">تركيا</span>
-      <span class="tick-item">الهند</span>
-      <span class="tick-item">ألمانيا</span>
-      <span class="tick-item">أمريكا</span>
-      <span class="tick-item">كوريا</span>
-      <span class="tick-item">اليابان</span>
-      <span class="tick-item">فرنسا</span>
-      <span class="tick-item">إيطاليا</span>
-      <span class="tick-item">بريطانيا</span>
-      <span class="tick-item">إسبانيا</span>
-      <span class="tick-item">بولندا</span>
+    <div class="ticker-inner" id="import-ticker-inner">
+      <!-- Injected dynamically -->
     </div>
   </div>
+  <button type="button" class="ticker-close-btn" id="import-ticker-close" style="display: none;" onclick="closeImportTicker()">&times;</button>
 </div>
+
 
 <section class="flash-sale">
   <div class="container">
@@ -209,6 +189,24 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
+    // 0. Load Hero Banner dynamically
+    try {
+      const res = await fetch('api/get_hero_banner.php?t=' + Date.now());
+      const hero = await res.json();
+      if (hero) {
+        const linkEl = document.getElementById('hero-banner-link');
+        const sourceEl = document.getElementById('hero-banner-source-mobile');
+        const imgEl = document.getElementById('hero-banner-img-desktop');
+
+        if (hero.link && linkEl) linkEl.href = hero.link;
+        if (hero.mobile_image && sourceEl) sourceEl.srcset = hero.mobile_image;
+        if (hero.desktop_image && imgEl) imgEl.src = hero.desktop_image;
+        if (hero.alt_text && imgEl) imgEl.alt = hero.alt_text;
+      }
+    } catch (e) {
+      console.error('Error loading hero banner:', e);
+    }
+
     // 1. Load Banners
     try {
       const res = await fetch('api/get_banners.php?t=' + Date.now());
@@ -260,40 +258,165 @@
       const brands = await res.json();
       const container = document.querySelector('.brands-inner');
       if (container && Array.isArray(brands) && brands.length > 0) {
-        const allBrands = [...brands, ...brands];
-        container.innerHTML = allBrands.map(b => {
+        const makeBrandHtml = (b) => {
           const name = typeof b === 'string' ? b : (b.name || '');
           const logo = typeof b === 'string' ? '' : (b.logo || '');
           if (logo) {
             return `
-              <div class="brand-item logo-brand" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'" style="cursor:pointer; display:flex; align-items:center; justify-content:center; background:#fff; padding:5px 15px; border-radius:10px; border:1.5px solid var(--gray2); height:55px; min-width:110px;">
-                <img src="${logo}" alt="${name}" style="max-height:100%; max-width:100%; object-fit:contain;" />
+              <div class="brand-card" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'">
+                <div class="brand-logo-circle" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,0.08);box-sizing:border-box;">
+                  <img src="${logo}" alt="${name}" style="width:100%;height:100%;max-width:80px;max-height:80px;object-fit:cover;border-radius:50%;padding:0;display:block;box-sizing:border-box;" onerror="this.parentElement.innerHTML='<span style=\\'font-weight:800;color:var(--p);\\'>${name.slice(0,2).toUpperCase()}</span>'" />
+                </div>
+                <span class="brand-card-name">${name}</span>
               </div>
             `;
           } else {
+            const initials = name.slice(0, 2).toUpperCase();
             return `
-              <div class="brand-item text-brand" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'" style="cursor:pointer; font-weight:700; color:var(--gray7); font-size:15px; display:flex; align-items:center; justify-content:center; background:var(--gray1); padding:10px 20px; border-radius:10px; border:1.5px solid var(--gray2); height:55px; min-width:110px;">
-                ${name}
+              <div class="brand-card" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'">
+                <div class="brand-logo-circle brand-logo-initials" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background: var(--p-light); color: var(--p);border:1.5px solid #e5e7eb;box-sizing:border-box;">
+                  ${initials}
+                </div>
+                <span class="brand-card-name">${name}</span>
               </div>
             `;
           }
-        }).join('');
+        };
+
+        // Repeat brands until we have enough items for a smooth infinite loop (at least 10 items)
+        let allBrands = [...brands];
+        while (allBrands.length < 10) {
+          allBrands = [...allBrands, ...brands];
+        }
+        
+        container.innerHTML = allBrands.map(makeBrandHtml).join('');
+        container.style.animation = 'brandScroll 25s linear infinite';
+        container.style.justifyContent = 'flex-start';
+        container.style.width = 'max-content';
       }
     } catch (e) {
       console.error('Error loading brands:', e);
     }
+
+    // 4. Load Import Sections dynamically
+    try {
+      const res = await fetch('api/get_import_sections.php?t=' + Date.now());
+      const imp = await res.json();
+      if (imp) {
+        if (imp.global_network) {
+          const gn = imp.global_network;
+          if (gn.bg_image) {
+            const bg = document.getElementById('ihb-bg');
+            if (bg) bg.style.backgroundImage = `url('${gn.bg_image}')`;
+          }
+          if (gn.tag) {
+            const tag = document.getElementById('ihb-tag');
+            if (tag) tag.textContent = gn.tag;
+          }
+          if (gn.title || gn.title_highlight) {
+            const title = document.getElementById('ihb-title');
+            if (title) title.innerHTML = `${gn.title || ''}<br/><span id="ihb-title-highlight">${gn.title_highlight || ''}</span>`;
+          }
+          if (gn.desc) {
+            const desc = document.getElementById('ihb-desc');
+            if (desc) desc.textContent = gn.desc;
+          }
+          if (Array.isArray(gn.stats) && gn.stats.length > 0) {
+            const statsWrap = document.getElementById('ihb-stats');
+            if (statsWrap) {
+              statsWrap.innerHTML = gn.stats.map(s => `
+                <div class="ihb-stat">
+                  <span class="ihb-num">${s.num || ''}</span>
+                  <span class="ihb-lbl">${s.label || ''}</span>
+                </div>
+              `).join('');
+            }
+          }
+          if (Array.isArray(gn.cards) && gn.cards.length > 0) {
+            const cardsWrap = document.getElementById('ihb-cards');
+            if (cardsWrap) {
+              cardsWrap.innerHTML = gn.cards.map(c => `
+                <div class="ihb-card glass">
+                  <span class="ihb-card-icon">${c.icon || '✨'}</span>
+                  <div>
+                    <strong>${c.title || ''}</strong>
+                    <small>${c.desc || ''}</small>
+                  </div>
+                </div>
+              `).join('');
+            }
+          }
+        }
+
+        if (imp.direct_import) {
+          const di = imp.direct_import;
+          if (di.image) {
+            const img = document.getElementById('split-img');
+            if (img) img.src = di.image;
+          }
+          if (di.badge_icon) {
+            const bIcon = document.getElementById('split-badge-icon');
+            if (bIcon) bIcon.textContent = di.badge_icon;
+          }
+          if (di.badge_title) {
+            const bTitle = document.getElementById('split-badge-title');
+            if (bTitle) bTitle.textContent = di.badge_title;
+          }
+          if (di.badge_desc) {
+            const bDesc = document.getElementById('split-badge-desc');
+            if (bDesc) bDesc.textContent = di.badge_desc;
+          }
+          if (di.tag) {
+            const tag = document.getElementById('split-tag');
+            if (tag) tag.textContent = di.tag;
+          }
+          if (di.title || di.title_highlight) {
+            const title = document.getElementById('split-title');
+            if (title) title.innerHTML = `${di.title || ''}<br/><em id="split-title-highlight">${di.title_highlight || ''}</em>`;
+          }
+          if (di.desc) {
+            const desc = document.getElementById('split-desc');
+            if (desc) desc.textContent = di.desc;
+          }
+          if (Array.isArray(di.features) && di.features.length > 0) {
+            const featWrap = document.getElementById('split-features');
+            if (featWrap) {
+              const bgColors = ['#dbeafe', '#fee2e2', '#d1fae5', '#fef3c7'];
+              featWrap.innerHTML = di.features.map((f, idx) => `
+                <div class="split-feat">
+                  <div class="sf-icon" style="background:${bgColors[idx % bgColors.length]}">${f.icon || '✨'}</div>
+                  <div>
+                    <strong>${f.title || ''}</strong>
+                    <small>${f.desc || ''}</small>
+                  </div>
+                </div>
+              `).join('');
+            }
+          }
+          if (di.btn_text) {
+            const btn = document.getElementById('split-btn');
+            if (btn) {
+              btn.textContent = di.btn_text;
+              if (di.btn_link) btn.href = di.btn_link;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error loading import sections:', e);
+    }
   });
 </script>
 
-<section class="import-hero-banner">
-  <div class="ihb-bg" style="background-image:url('import_world.jpg')"></div>
+<section class="import-hero-banner" id="sec-global-network">
+  <div class="ihb-bg" id="ihb-bg" style="background-image:url('import_world.jpg')"></div>
   <div class="ihb-overlay"></div>
   <div class="container ihb-content">
     <div class="ihb-text">
-      <div class="ihb-tag">🌐 شبكة استيراد عالمية</div>
-      <h2 class="ihb-title">نجلب لك أفضل المنتجات<br/><span>من كل أنحاء العالم</span></h2>
-      <p class="ihb-desc">منتجاتنا مستوردة مباشرة من أكثر من 50 دولة، بأعلى معايير الجودة وأفضل الأسعار</p>
-      <div class="ihb-stats">
+      <div class="ihb-tag" id="ihb-tag">🌐 شبكة استيراد عالمية</div>
+      <h2 class="ihb-title" id="ihb-title">نجلب لك أفضل المنتجات<br/><span id="ihb-title-highlight">من كل أنحاء العالم</span></h2>
+      <p class="ihb-desc" id="ihb-desc">منتجاتنا مستوردة مباشرة من أكثر من 50 دولة، بأعلى معايير الجودة وأفضل الأسعار</p>
+      <div class="ihb-stats" id="ihb-stats">
         <div class="ihb-stat">
           <span class="ihb-num">50+</span>
           <span class="ihb-lbl">دولة مصدر</span>
@@ -308,7 +431,7 @@
         </div>
       </div>
     </div>
-    <div class="ihb-cards">
+    <div class="ihb-cards" id="ihb-cards">
       <div class="ihb-card glass">
         <span class="ihb-card-icon">🔍</span>
         <div>
@@ -345,11 +468,12 @@
   <div class="container">
     <div class="sec-hdr">
       <div>
-        <h2 class="sec-title">نستورد من الأفضل 🌏</h2>
-        <p class="sec-sub">شراكات مع كبرى المصانع والموردين حول العالم</p>
+        <h2 class="sec-title" id="import-section-title">نستورد من الأفضل 🌏</h2>
+        <p class="sec-sub" id="import-section-subtitle">شراكات مع كبرى المصانع والموردين حول العالم</p>
       </div>
     </div>
-    <div class="sources-grid">
+    <div class="sources-grid" id="import-countries-grid">
+      <!-- Countries loaded dynamically from api/get_import_countries.php -->
       <div class="source-card" data-country="china">
         <div class="source-flag">🇨🇳</div>
         <div class="source-name">الصين</div>
@@ -390,24 +514,24 @@
   </div>
 </section>
 
-<section class="import-split">
+<section class="import-split" id="sec-direct-import">
   <div class="split-right">
     <div class="split-img-wrap">
-      <img src="import_boxes.jpg" alt="منتجات مستوردة" class="split-img"/>
-      <div class="split-float-badge">
-        <span>✈️</span>
+      <img id="split-img" src="assets/import_direct_3d.jpg" alt="منتجات مستوردة" class="split-img"/>
+      <div class="split-float-badge" id="split-float-badge">
+        <span id="split-badge-icon">✈️</span>
         <div>
-          <strong>شحن يومي</strong>
-          <small>من جميع الدول</small>
+          <strong id="split-badge-title">شحن يومي</strong>
+          <small id="split-badge-desc">من جميع الدول</small>
         </div>
       </div>
     </div>
   </div>
   <div class="split-left">
-    <span class="ihb-tag">📦 مستورد مباشرة</span>
-    <h2 class="split-title">منتجات أصلية<br/><em>من المصنع لباب بيتك</em></h2>
-    <p class="split-desc">نتخطى كل الوسطاء ونتعامل مباشرة مع المصانع والموردين العالميين لنقدم لك أفضل سعر وأعلى جودة في السوق.</p>
-    <div class="split-features">
+    <span class="ihb-tag" id="split-tag">📦 مستورد مباشرة</span>
+    <h2 class="split-title" id="split-title">منتجات أصلية<br/><em id="split-title-highlight">من المصنع لباب بيتك</em></h2>
+    <p class="split-desc" id="split-desc">نتخطى كل الوسطاء ونتعامل مباشرة مع المصانع والموردين العالميين لنقدم لك أفضل سعر وأعلى جودة في السوق.</p>
+    <div class="split-features" id="split-features">
       <div class="split-feat">
         <div class="sf-icon" style="background:#dbeafe">🌍</div>
         <div>
@@ -430,7 +554,7 @@
         </div>
       </div>
     </div>
-    <a href="shop.html" class="btn btn-primary btn-lg">تسوق المنتجات المستوردة</a>
+    <a href="shop.html" id="split-btn" class="btn btn-primary btn-lg">تسوق المنتجات المستوردة</a>
   </div>
 </section>
 
@@ -441,16 +565,20 @@
         <h2 class="sec-title">المنتجات المميزة</h2>
         <p class="sec-sub">مختارة خصيصًا لك بأفضل الأسعار</p>
       </div>
-      <div class="sec-tabs">
-        <button class="stab active" data-tab="all">الكل</button>
-        <button class="stab" data-tab="squeegees">قشاطات</button>
-        <button class="stab" data-tab="brooms">مكانس</button>
-        <button class="stab" data-tab="sponges">ليفة جلي</button>
-        <button class="stab" data-tab="loofahs">ليف حمام</button>
-        <button class="stab" data-tab="scissors">مقصات</button>
-        <button class="stab" data-tab="personal_care">عناية شخصية</button>
-        <button class="stab" data-tab="dusters">منفضة غبار</button>
-        <button class="stab" data-tab="microfiber">مايكروفايبر</button>
+      <div class="sec-tabs" id="featured-tabs">
+        <button class="stab active" data-cat="all">الكل</button>
+        <button class="stab" data-cat="ادوات تنظيف">ادوات تنظيف</button>
+        <button class="stab" data-cat="مماسح مايكروفايبر">مماسح مايكروفايبر</button>
+        <button class="stab" data-cat="مماسح قطنية">مماسح قطنية</button>
+        <button class="stab" data-cat="قطع غيار">قطع غيار</button>
+        <button class="stab" data-cat="عروض الجملة">عروض الجملة</button>
+        <button class="stab" data-cat="منافض الغبار">منافض الغبار</button>
+        <button class="stab" data-cat="سيمو">سيمو</button>
+        <button class="stab" data-cat="فراشي تنظيف">فراشي تنظيف</button>
+        <button class="stab" data-cat="منظف نوافذ">منظف نوافذ</button>
+        <button class="stab" data-cat="مقابض">مقابض</button>
+        <button class="stab" data-cat="جاروف">جاروف</button>
+        <button class="stab" data-cat="برداي">برداي</button>
       </div>
     </div>
     <div class="products-grid" id="main-grid"></div>
@@ -560,28 +688,28 @@
           </div>
           <span class="logo-ar">إستوردلي</span>
         </a>
-        <p>متجرك المفضل لكل شيء. نقدم آلاف المنتجات بأفضل الأسعار مع توصيل سريع وخدمة عملاء استثنائية.</p>
+        <p id="footer-about-text">متجرك المفضل لكل شيء. نقدم آلاف المنتجات بأفضل الأسعار مع توصيل سريع وخدمة عملاء استثنائية.</p>
         <div class="social-row">
-          <a href="#" class="soc-btn" title="فيسبوك">
+          <a href="#" class="soc-btn" id="footer-social-facebook" title="فيسبوك" target="_blank" rel="noopener noreferrer" onclick="if(this.getAttribute('href')==='#')return false;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
-          <a href="#" class="soc-btn" title="انستقرام">
+          <a href="#" class="soc-btn" id="footer-social-instagram" title="انستقرام" target="_blank" rel="noopener noreferrer" onclick="if(this.getAttribute('href')==='#')return false;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
-          <a href="#" class="soc-btn" title="تيك توك">
+          <a href="#" class="soc-btn" id="footer-social-tiktok" title="تيك توك" target="_blank" rel="noopener noreferrer" onclick="if(this.getAttribute('href')==='#')return false;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34l-.01-8.83a8.17 8.17 0 0 0 4.78 1.52V4.56a4.85 4.85 0 0 1-1-.13z"/></svg>
           </a>
-          <a href="#" class="soc-btn" title="يوتيوب">
+          <a href="#" class="soc-btn" id="footer-social-youtube" title="يوتيوب" target="_blank" rel="noopener noreferrer" onclick="if(this.getAttribute('href')==='#')return false;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
           </a>
         </div>
         <div class="app-dl">
           <p>حمّل التطبيق:</p>
           <div class="app-btns-row">
-            <a href="#" class="app-store-btn">
+            <a href="#" class="app-store-btn" id="footer-app-store" target="_blank" rel="noopener noreferrer" onclick="if(this.getAttribute('href')==='#')return false;">
               🍎 App Store
             </a>
-            <a href="#" class="app-store-btn">
+            <a href="#" class="app-store-btn" id="footer-google-play" target="_blank" rel="noopener noreferrer" onclick="if(this.getAttribute('href')==='#')return false;">
               🤖 Google Play
             </a>
           </div>
@@ -707,7 +835,7 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script src="auth.js?v=1785802153537"></script>
-<script src="main.js?v=1786117170000"></script>
+<script src="main.js?v=1786978000000"></script>
 <script src="enhancements.js?v=1785802153537"></script>
 <script>
   if ('serviceWorker' in navigator) {
@@ -736,6 +864,180 @@
       }
     })
     .catch(err => console.error("Error loading announcement ticker:", err));
+
+  // Close Import Ticker action
+  function closeImportTicker() {
+    const container = document.getElementById('import-ticker-container');
+    if (container) {
+      container.style.display = 'none';
+      sessionStorage.setItem('import_ticker_closed', 'true');
+    }
+  }
+
+  // Load Import Countries Ticker Bar
+  if (sessionStorage.getItem('import_ticker_closed') !== 'true') {
+    fetch('api/get_import_countries.php?t=' + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.enabled) {
+          const container = document.getElementById('import-ticker-container');
+          const labelEl = document.getElementById('import-ticker-label');
+          const innerEl = document.getElementById('import-ticker-inner');
+          const closeBtn = document.getElementById('import-ticker-close');
+          
+          if (container && labelEl && innerEl) {
+            const labelText = (data.label || '').trim();
+            if (labelText) {
+              labelEl.textContent = labelText;
+              labelEl.style.display = 'flex';
+            } else {
+              labelEl.style.display = 'none';
+            }
+            
+            // Clear inner content
+            innerEl.innerHTML = '';
+            
+            // Parse items dynamically (split by '|' if present, otherwise treat as single text block)
+            const rawText = (data.text || '').trim() || '🇨🇳 الصين • 🇹🇷 تركيا • 🇮🇳 الهند • 🇩🇪 ألمانيا • 🇰🇷 كوريا الجنوبية • 🇮🇹 إيطاليا';
+            const items = rawText.includes('|')
+              ? rawText.split('|').map(s => s.trim()).filter(s => s.length > 0)
+              : [rawText.trim()].filter(s => s.length > 0);
+            
+            if (items.length > 0) {
+              const renderItems = (itemList) => {
+                itemList.forEach(item => {
+                  const span = document.createElement('span');
+                  span.className = 'tick-item';
+                  span.textContent = item;
+                  innerEl.appendChild(span);
+                });
+              };
+              
+              if (data.enable_marquee) {
+                // Repeat items to ensure a continuous loop even for short sentences
+                let displayItems = [...items];
+                while (displayItems.length < 8) {
+                  displayItems = [...displayItems, ...items];
+                }
+                renderItems(displayItems);
+                
+                const speed = data.speed || 30;
+                innerEl.style.animation = `tickerScroll ${speed}s linear infinite`;
+                innerEl.style.flexWrap = 'nowrap';
+                innerEl.style.justifyContent = 'flex-start';
+                innerEl.style.width = 'max-content';
+                innerEl.style.paddingRight = '30px';
+              } else {
+                renderItems(items);
+                innerEl.style.animation = 'none';
+                innerEl.style.flexWrap = 'wrap';
+                innerEl.style.justifyContent = 'center';
+                innerEl.style.width = 'auto';
+                innerEl.style.paddingRight = '0';
+              }
+              
+              if (data.show_close) {
+                if (closeBtn) closeBtn.style.display = 'flex';
+              } else {
+                if (closeBtn) closeBtn.style.display = 'none';
+              }
+              
+              container.style.display = 'flex';
+            }
+          }
+        }
+      })
+      .catch(err => console.error("Error loading import countries ticker:", err));
+  }
+
+  // === Load Footer Settings Dynamically ===
+  async function loadFooterSettings() {
+    try {
+      const res = await fetch('api/get_footer_settings.php?t=' + Date.now());
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data) return;
+
+      // About text
+      const aboutEl = document.getElementById('footer-about-text');
+      if (aboutEl && data.about_text) aboutEl.textContent = data.about_text;
+
+      // Helper: set link href, always update (never leave as #)
+      function setSocialLink(id, url) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (url && url.trim() !== '' && url.trim() !== '#') {
+          el.href = url.trim();
+          el.style.opacity = '1';
+          el.style.pointerEvents = 'auto';
+        } else {
+          el.href = '#';
+          el.style.opacity = '0.4';
+          el.style.pointerEvents = 'none';
+        }
+      }
+
+      // Social links
+      if (data.social) {
+        setSocialLink('footer-social-facebook', data.social.facebook);
+        setSocialLink('footer-social-instagram', data.social.instagram);
+        setSocialLink('footer-social-tiktok', data.social.tiktok);
+        setSocialLink('footer-social-youtube', data.social.youtube);
+      }
+
+      // App store buttons
+      if (data.apps) {
+        setSocialLink('footer-app-store', data.apps.app_store);
+        setSocialLink('footer-google-play', data.apps.google_play);
+      }
+
+      // Copyright
+      if (data.copyright) {
+        const cpEl = document.querySelector('.footer-bottom p');
+        if (cpEl) cpEl.textContent = data.copyright;
+      }
+    } catch (e) {
+      console.error('Error loading footer settings:', e);
+    }
+  }
+
+  // === Load Import Countries Section Dynamically ===
+  async function loadImportCountriesSection() {
+    try {
+      const res = await fetch('api/get_import_countries.php?t=' + Date.now());
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !data.countries) return;
+
+      // Update title & subtitle
+      const titleEl = document.getElementById('import-section-title');
+      if (titleEl && data.section_title) titleEl.textContent = data.section_title;
+      const subEl = document.getElementById('import-section-subtitle');
+      if (subEl && data.section_subtitle) subEl.textContent = data.section_subtitle;
+
+      // Render countries
+      const grid = document.getElementById('import-countries-grid');
+      if (!grid) return;
+      const active = data.countries.filter(c => c.active !== false);
+      if (active.length === 0) return;
+      grid.innerHTML = active.map(c => `
+        <div class="source-card" data-country="${c.id || ''}">
+          <div class="source-flag">${c.flag || '🌐'}</div>
+          <div class="source-name">${c.name || ''}</div>
+          <div class="source-cats">${c.categories || ''}</div>
+          ${c.badge ? `<div class="source-badge">${c.badge}</div>` : ''}
+        </div>
+      `).join('');
+    } catch (e) {
+      console.error('Error loading import countries section:', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadFooterSettings();
+    loadImportCountriesSection();
+  });
 </script>
+
 </body>
 </html>

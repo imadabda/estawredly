@@ -1,4 +1,4 @@
-const CACHE_NAME = 'estawredly-cache-v9';
+const CACHE_NAME = 'estawredly-cache-v20';
 const urlsToCache = [
   './',
   './index.html',
@@ -17,6 +17,7 @@ self.addEventListener('install', event => {
       .then(cache => {
         return cache.addAll(urlsToCache);
       })
+      .catch(err => console.log('SW install cache bypassed:', err))
   );
 });
 
@@ -49,7 +50,9 @@ self.addEventListener('fetch', event => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
+        return fetch(event.request).catch(err => {
+          return new Response('', { status: 408, statusText: 'Offline' });
+        });
       })
   );
 });

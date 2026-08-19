@@ -9,71 +9,43 @@
     {
         "id": "nav_flat",
         "title": "ادوات تنظيف",
-        "url": "shop.html",
+        "url": "shop.html?cat=%D8%A7%D8%AF%D9%88%D8%A7%D8%AA%20%D8%AA%D9%86%D8%B8%D9%8A%D9%81",
         "type": "dropdown",
         "subLinks": [
             {
                 "title": "ممسحة بعصارة مدمجة",
-                "url": "shop.html?cat=flat"
+                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%A8%D8%B9%D8%B5%D8%A7%D8%B1%D8%A9%20%D9%85%D8%AF%D9%85%D8%AC%D8%A9"
             },
             {
                 "title": "ممسحة رذاذ (Spray)",
-                "url": "shop.html?cat=flat"
+                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%B1%D8%B0%D8%A7%D8%B0%20(Spray)"
             },
             {
                 "title": "مماسح مسطحة عادية",
-                "url": "shop.html?cat=flat"
+                "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%B3%D8%B7%D8%AD%D8%A9%20%D8%B9%D8%A7%D8%AF%D9%8A%D8%A9"
             },
             {
-                "title": "تصنيف فرعي",
-                "url": "shop.html?cat=%D8%AA%D8%B5%D9%86%D9%8A%D9%81%20%D9%81%D8%B1%D8%B9%D9%8A"
-            },
-            {
-                "title": "تصنيف فرعي",
-                "url": "shop.html?cat=%D8%AA%D8%B5%D9%86%D9%8A%D9%81%20%D9%81%D8%B1%D8%B9%D9%8A"
-            },
-            {
-                "title": "تصنيف فرعي",
-                "url": "shop.html?cat=%D8%AA%D8%B5%D9%86%D9%8A%D9%81%20%D9%81%D8%B1%D8%B9%D9%8A"
-            },
-            {
-                "title": "تصنيف فرعي",
-                "url": "shop.html?cat=%D8%AA%D8%B5%D9%86%D9%8A%D9%81%20%D9%81%D8%B1%D8%B9%D9%8A"
-            }
-        ]
-    },
-    {
-        "id": "nav_micro",
-        "title": "مماسح مايكروفايبر",
-        "url": "shop.html",
-        "type": "dropdown",
-        "subLinks": [
-            {
-                "title": "مماسح دوارة (Spin Mops)",
-                "url": "shop.html?cat=microfiber"
-            },
-            {
-                "title": "مماسح بخيوط",
-                "url": "shop.html?cat=microfiber"
+                "title": "مماسح مايكرو فايبر",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%A7%D9%8A%D9%83%D8%B1%D9%88%20%D9%81%D8%A7%D9%8A%D8%A8%D8%B1"
             }
         ]
     },
     {
         "id": "nav_cotton",
         "title": "مماسح قطنية",
-        "url": "shop.html?cat=cotton",
+        "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%82%D8%B7%D9%86%D9%8A%D8%A9",
         "type": "link"
     },
     {
         "id": "nav_refills",
         "title": "قطع غيار",
-        "url": "shop.html?cat=refills",
+        "url": "shop.html?cat=%D9%82%D8%B7%D8%B9%20%D8%BA%D9%8A%D8%A7%D8%B1",
         "type": "link"
     },
     {
         "id": "nav_wholesale",
         "title": "عروض الجملة",
-        "url": "shop.html?cat=wholesale",
+        "url": "shop.html?cat=%D8%B9%D8%B1%D9%88%D8%B6%20%D8%A7%D9%84%D8%AC%D9%85%D9%84%D8%A9",
         "type": "link",
         "badge": "🔥",
         "cssClass": "nav-a--sale"
@@ -82,12 +54,6 @@
         "id": "nav_1785333520915",
         "title": "منافض الغبار",
         "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D9%81%D8%B6%20%D8%A7%D9%84%D8%BA%D8%A8%D8%A7%D8%B1",
-        "type": "link"
-    },
-    {
-        "id": "nav_1785842185849",
-        "title": "سيمو",
-        "url": "shop.html?cat=%D8%B3%D9%8A%D9%85%D9%88",
         "type": "link"
     },
     {
@@ -109,7 +75,7 @@
     {
         "id": "nav_1786221860835",
         "title": "منظف نوافذ ",
-        "url": "shop.html?cat=%D9%82%D8%B3%D9%85%20%D8%AC%D8%AF%D9%8A%D8%AF",
+        "url": "shop.html?cat=%D9%85%D9%86%D8%B8%D9%81%20%D9%86%D9%88%D8%A7%D9%81%D8%B0",
         "type": "dropdown",
         "subLinks": [
             {
@@ -147,52 +113,15 @@
         ]
     },
     {
-        "id": "nav_1786377197751",
-        "title": "مكبس مرحاض ",
-        "url": "shop.html?cat=%D9%85%D9%83%D8%A8%D8%B3%20%D9%85%D8%B1%D8%AD%D8%A7%D8%B6%20",
-        "type": "link"
-    },
-    {
-        "id": "nav_1786384602555",
-        "title": "مناديل ",
-        "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D8%AF%D9%8A%D9%84%20",
-        "type": "link"
-    },
-    {
-        "id": "nav_1786385418021",
-        "title": "سفنجات جلي ",
-        "url": "shop.html?cat=%D8%B3%D9%81%D9%86%D8%AC%D8%A7%D8%AA%20%D8%AC%D9%84%D9%8A%20",
-        "type": "link"
-    },
-    {
-        "id": "nav_1786385943606",
-        "title": "قفازات ",
-        "url": "shop.html?cat=%D9%82%D9%81%D8%A7%D8%B2%D8%A7%D8%AA%20",
-        "type": "dropdown",
-        "subLinks": []
-    },
-    {
-        "id": "nav_1786483465472",
-        "title": "منشفه ",
-        "url": "shop.html?cat=%D9%85%D9%86%D8%B4%D9%81%D9%87%20",
+        "id": "nav_1786879341405",
+        "title": "برداي",
+        "url": "shop.html?cat=%D8%A8%D8%B1%D8%AF%D8%A7%D9%8A",
         "type": "dropdown",
         "subLinks": [
             {
-                "title": "منشفه من لاياف الدقيقه",
-                "url": "shop.html?cat=%D9%85%D9%86%D8%B4%D9%81%D9%87%20%D9%85%D9%86%20%D9%84%D8%A7%D9%8A%D8%A7%D9%81%20%D8%A7%D9%84%D8%AF%D9%82%D9%8A%D9%82%D9%87"
+                "title": "اهوو",
+                "url": "shop.html?cat=%D8%A7%D9%87%D9%88%D9%88"
             }
         ]
-    },
-    {
-        "id": "nav_1786483898545",
-        "title": "مكانس ",
-        "url": "shop.html?cat=%D9%85%D9%83%D8%A7%D9%86%D8%B3%20",
-        "type": "link"
-    },
-    {
-        "id": "nav_1786484518503",
-        "title": "قشاطات",
-        "url": "shop.html?cat=%D9%82%D8%B4%D8%A7%D8%B7%D8%A7%D8%AA",
-        "type": "link"
     }
 ]

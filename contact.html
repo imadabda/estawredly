@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>اتصل بنا | إستوردلي - عالم الاستيراد والتنظيف المتكامل</title>
+  <link rel="stylesheet" href="style.css?v=1786971500000"/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="announce-bar" id="announce-bar" style="display:none;">
+  <div class="ticker-text-container">
+    <div class="ticker-text-scroll" id="ticker-text-content"></div>
+  </div>
+</div>
+
+<header class="header" id="header">
+  <div class="hdr-top">
+    <div class="container hdr-top-inner">
+      <nav class="hdr-links">
+        <a href="about.html">من نحن</a>
+        <a href="contact.html" style="color:#fff;font-weight:700;">اتصل بنا</a>
+        <a href="shop.html?sale=true">العروض</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="hdr-main">
+    <div class="container hdr-main-inner">
+      <!-- Logo -->
+      <a href="index.html" class="logo">
+        <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
+          <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+        </div>
+        <div class="logo-name">
+          <span class="logo-ar">إستوردلي</span>
+          <span class="logo-en">ESTAWREDLY</span>
+        </div>
+      </a>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <input type="text" id="search-input" class="search-input" placeholder="ابحث عن أي منتج..."/>
+          <button class="search-btn" id="search-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="hdr-actions">
+        <button class="hdr-icon-btn" id="auth-btn" title="حسابي" onclick="openModal('auth')">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <button class="hdr-icon-btn" id="wishlist-btn" title="المفضلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="badge" id="wishlist-count">0</span>
+        </button>
+        <button class="hdr-icon-btn cart-trigger" id="cart-btn" title="السلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="badge cart-badge" id="cart-count">0</span>
+        </button>
+        <button class="menu-btn" id="menu-btn">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="main-nav" id="main-nav">
+    <div class="nav-close-btn" onclick="document.getElementById('main-nav').classList.remove('open')">✕ إغلاق</div>
+    <div class="container nav-inner">
+      <ul class="nav-list"></ul>
+    </div>
+  </nav>
+</header>
+
+<!-- Breadcrumb -->
+<div class="page-breadcrumb">
+  <div class="container">
+    <a href="index.html">الرئيسية</a>
+    <span>/</span>
+    <span class="current">اتصل بنا</span>
+  </div>
+</div>
+
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-badge" id="contact-badge">📞 يسعدنا دائماً تواصلكم معنا</div>
+    <h1 class="page-hero-title" id="contact-main-heading">تواصل مع فريق إستوردلي</h1>
+    <p class="page-hero-desc" id="contact-desc">
+      فريقنا المتخصص جاهز للإجابة على كافة استفساراتكم ومساعدتكم في طلبات الاستيراد والجملة والتجزئة.
+    </p>
+  </div>
+</section>
+
+<!-- Contact Main Section -->
+<section class="contact-section" style="padding: 40px 0 60px;">
+  <div class="container" style="max-width: 680px;">
+    
+    <!-- Centered Contact Info Card -->
+    <div class="contact-info-card" style="box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 36px 28px;">
+      
+      <div style="text-align: center; margin-bottom: 28px;">
+        <div style="width: 64px; height: 64px; background: rgba(37, 99, 235, 0.2); border: 1.5px solid rgba(59, 130, 246, 0.4); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 14px;">
+          📞
+        </div>
+        <h2 style="font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 8px;" id="contact-card-title">معلومات الاتصال المباشر</h2>
+        <p style="font-size: 14.5px; color: #94a3b8; max-width: 480px; margin: 0 auto; line-height: 1.6;" id="contact-card-subtitle">
+          يسعدنا تواصلكم المباشر مع فريق خدمة العملاء والمبيعات للاستفسارات وطلبات الاستيراد:
+        </p>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+        
+        <!-- Phone Item -->
+        <div class="contact-detail-item" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 16px;">
+          <div class="contact-icon-box" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">📞</div>
+          <div class="contact-detail-text">
+            <h5>الهاتف المباشر</h5>
+            <p><a href="tel:+970595996998" id="contact-phone" style="font-size: 17px; letter-spacing: 0.5px; color: #93c5fd; direction: ltr; display: inline-block;">+970 595 996 998</a></p>
+          </div>
+        </div>
+
+        <!-- WhatsApp Number Item -->
+        <div class="contact-detail-item" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 16px;">
+          <div class="contact-icon-box" style="background: rgba(37, 211, 102, 0.15); color: #4ade80;">💬</div>
+          <div class="contact-detail-text">
+            <h5>الواتساب المباشر</h5>
+            <p><a href="https://wa.me/970595996998" target="_blank" id="contact-wa-display" style="font-size: 17px; letter-spacing: 0.5px; color: #4ade80; direction: ltr; display: inline-block;">+970 595 996 998</a></p>
+          </div>
+        </div>
+
+        <!-- Email Item -->
+        <div class="contact-detail-item" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 16px;">
+          <div class="contact-icon-box" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">✉️</div>
+          <div class="contact-detail-text">
+            <h5>البريد الإلكتروني</h5>
+            <p><a href="mailto:info@estawredly.com" id="contact-email">info@estawredly.com</a></p>
+          </div>
+        </div>
+
+        <!-- Address Item -->
+        <div class="contact-detail-item" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 16px;">
+          <div class="contact-icon-box" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">📍</div>
+          <div class="contact-detail-text">
+            <h5>العنوان والمستودعات</h5>
+            <p id="contact-address" style="color:#f1f5f9;">فلسطين - الضفة الغربية / كافة المدن</p>
+          </div>
+        </div>
+
+        <!-- Working Hours Item -->
+        <div class="contact-detail-item" style="margin-bottom: 0;">
+          <div class="contact-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">⏰</div>
+          <div class="contact-detail-text">
+            <h5>ساعات العمل</h5>
+            <p id="contact-hours" style="color:#f1f5f9;">السبت - الخميس: 9:00 ص - 6:00 م (الجمعة مغلق)</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Main WhatsApp CTA Card -->
+      <a href="https://wa.me/970595996998" target="_blank" class="whatsapp-cta-card" id="contact-wa-link" style="margin-top: 0; padding: 22px 24px; border-radius: 14px;">
+        <div class="whatsapp-cta-info">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.17-.48-.29z"/></svg>
+          <div>
+            <span id="contact-wa-cta" style="font-size: 16px; font-weight: 900; display: block;">تواصل عبر واتساب مباشرة</span>
+            <small style="opacity: 0.9; font-size: 12.5px; font-weight: 500;">رد سريع وفوري على مدار اليوم</small>
+          </div>
+        </div>
+        <span style="font-size: 20px; font-weight: bold;">←</span>
+      </a>
+
+      <!-- Quick Call Button -->
+      <div style="margin-top: 14px; text-align: center;">
+        <a href="tel:+970595996998" class="btn btn-lg" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); font-weight: 700; border-radius: 14px; padding: 14px;">
+          <span>📞 الاتصال المباشر هاتفياً</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <a href="index.html" class="logo">
+          <div class="logo-mark" style="width:36px;height:36px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:10px;">
+            <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
+          </div>
+          <div class="logo-name">
+            <span class="logo-ar">إستوردلي</span>
+            <span class="logo-en">ESTAWREDLY</span>
+          </div>
+        </a>
+        <p class="footer-desc">بوابتك الأولى لاستيراد أفضل المنتجات ومستلزمات التنظيف والأدوات مباشرة من المصدر بأعلى جودة وأفضل الأسعار.</p>
+      </div>
+      <div>
+        <h4 class="footer-col-title">روابط سريعة</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="shop.html">المتجر</a></li>
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">خدمة العملاء</h4>
+        <ul class="footer-links">
+          <li><a href="contact.html">الدعم الفني</a></li>
+          <li><a href="contact.html">الاستيراد الخاص</a></li>
+          <li><a href="shop.html?sale=true">العروض الخاصة</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom text-center">
+      <p>© 2026 إستوردلي. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Modals -->
+<div class="modal-overlay" id="auth-modal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>تسجيل الدخول</h3>
+      <button class="modal-close" onclick="closeModal('auth')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">دخول</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">حساب جديد</button>
+      </div>
+      <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="login-email" required placeholder="name@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="login-pwd" required placeholder="••••••••"/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="products_db.js?v=1785802153537"></script>
+<script src="store.js?v=1786117170000"></script>
+<script src="auth.js?v=1785802153537"></script>
+<script src="main.js?v=1786971500000"></script>
+
+<script>
+  let currentWhatsApp = '970590000000';
+
+  async function loadContactContent() {
+    try {
+      const res = await fetch('api/get_pages_content.php?t=' + Date.now());
+      const data = await res.json();
+      if (data && data.contact) {
+        const c = data.contact;
+        if (c.title) document.title = c.title;
+        if (c.badge) document.getElementById('contact-badge').textContent = c.badge;
+        if (c.main_heading) document.getElementById('contact-main-heading').textContent = c.main_heading;
+        if (c.description) document.getElementById('contact-desc').textContent = c.description;
+        if (c.phone) {
+          const ph = document.getElementById('contact-phone');
+          ph.textContent = c.phone;
+          ph.href = 'tel:' + c.phone.replace(/[^0-9+]/g, '');
+        }
+        if (c.email) {
+          const em = document.getElementById('contact-email');
+          em.textContent = c.email;
+          em.href = 'mailto:' + c.email;
+        }
+        if (c.address) document.getElementById('contact-address').textContent = c.address;
+        if (c.working_hours) document.getElementById('contact-hours').textContent = c.working_hours;
+        if (c.form_heading) document.getElementById('contact-form-heading').textContent = c.form_heading;
+        if (c.whatsapp_cta) document.getElementById('contact-wa-cta').textContent = c.whatsapp_cta;
+        if (c.whatsapp) {
+          currentWhatsApp = c.whatsapp.replace(/[^0-9]/g, '');
+          document.getElementById('contact-wa-link').href = 'https://wa.me/' + currentWhatsApp;
+          const waDisp = document.getElementById('contact-wa-display');
+          if (waDisp) {
+            waDisp.textContent = c.whatsapp.startsWith('+') ? c.whatsapp : ('+' + c.whatsapp);
+            waDisp.href = 'https://wa.me/' + currentWhatsApp;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error loading contact content:", e);
+    }
+  }
+
+  // Load Announcement Ticker Bar
+  fetch('api/get_ticker.php?t=' + Date.now())
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.enabled) {
+        const bar = document.getElementById('announce-bar');
+        const content = document.getElementById('ticker-text-content');
+        if (bar && content) {
+          content.textContent = data.text;
+          bar.style.display = 'flex';
+        }
+      }
+    })
+    .catch(err => console.error("Error loading ticker:", err));
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadContactContent();
+  });
+</script>
+</body>
+</html>

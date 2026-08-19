@@ -434,16 +434,20 @@
         <h2 class="sec-title">المنتجات المميزة</h2>
         <p class="sec-sub">مختارة خصيصًا لك بأفضل الأسعار</p>
       </div>
-      <div class="sec-tabs">
-        <button class="stab active" data-tab="all">الكل</button>
-        <button class="stab" data-tab="squeegees">قشاطات</button>
-        <button class="stab" data-tab="brooms">مكانس</button>
-        <button class="stab" data-tab="sponges">ليفة جلي</button>
-        <button class="stab" data-tab="loofahs">ليف حمام</button>
-        <button class="stab" data-tab="scissors">مقصات</button>
-        <button class="stab" data-tab="personal_care">عناية شخصية</button>
-        <button class="stab" data-tab="dusters">منفضة غبار</button>
-        <button class="stab" data-tab="microfiber">مايكروفايبر</button>
+      <div class="sec-tabs" id="featured-tabs">
+        <button class="stab active" data-cat="all">الكل</button>
+        <button class="stab" data-cat="ادوات تنظيف">ادوات تنظيف</button>
+        <button class="stab" data-cat="مماسح مايكروفايبر">مماسح مايكروفايبر</button>
+        <button class="stab" data-cat="مماسح قطنية">مماسح قطنية</button>
+        <button class="stab" data-cat="قطع غيار">قطع غيار</button>
+        <button class="stab" data-cat="عروض الجملة">عروض الجملة</button>
+        <button class="stab" data-cat="منافض الغبار">منافض الغبار</button>
+        <button class="stab" data-cat="سيمو">سيمو</button>
+        <button class="stab" data-cat="فراشي تنظيف">فراشي تنظيف</button>
+        <button class="stab" data-cat="منظف نوافذ">منظف نوافذ</button>
+        <button class="stab" data-cat="مقابض">مقابض</button>
+        <button class="stab" data-cat="جاروف">جاروف</button>
+        <button class="stab" data-cat="برداي">برداي</button>
       </div>
     </div>
     <div class="products-grid" id="main-grid"></div>
@@ -487,22 +491,30 @@
     <h2 class="sec-title text-center">أبرز الماركات</h2>
     <div class="brands-track">
       <div class="brands-inner">
-        <div class="brand-item">NIKE</div>
-        <div class="brand-item">SAMSUNG</div>
-        <div class="brand-item">APPLE</div>
-        <div class="brand-item">ZARA</div>
-        <div class="brand-item">ADIDAS</div>
-        <div class="brand-item">H&M</div>
-        <div class="brand-item">SONY</div>
-        <div class="brand-item">LG</div>
-        <div class="brand-item">IKEA</div>
-        <div class="brand-item">GUCCI</div>
-        <!-- Duplicate for infinite scroll -->
-        <div class="brand-item">NIKE</div>
-        <div class="brand-item">SAMSUNG</div>
-        <div class="brand-item">APPLE</div>
-        <div class="brand-item">ZARA</div>
-        <div class="brand-item">ADIDAS</div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=KLEANER'">
+          <div class="brand-logo-circle"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDSMNz2USXoES7Mhk1i4Zc6GIHtcJ4Qzb1cthdcHC-zCP9kdKbUVl0DX8&s=10" alt="KLEANER" /></div>
+          <span class="brand-card-name">KLEANER</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=SAMSONG'">
+          <div class="brand-logo-circle"><img src="https://images.samsung.com/is/image/samsung/assets/levant_ar/about-us/brand/logo/mo/256_144_4.png?$512_N_PNG$" alt="SAMSONG" /></div>
+          <span class="brand-card-name">SAMSONG</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=SEMO'">
+          <div class="brand-logo-circle brand-logo-initials" style="background: var(--p-light); color: var(--p);">SE</div>
+          <span class="brand-card-name">SEMO</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=CLEAN'">
+          <div class="brand-logo-circle brand-logo-initials" style="background: #ecfdf5; color: #059669;">CL</div>
+          <span class="brand-card-name">CLEAN</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=KLEANER'">
+          <div class="brand-logo-circle"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDSMNz2USXoES7Mhk1i4Zc6GIHtcJ4Qzb1cthdcHC-zCP9kdKbUVl0DX8&s=10" alt="KLEANER" /></div>
+          <span class="brand-card-name">KLEANER</span>
+        </div>
+        <div class="brand-card" onclick="window.location.href='shop.html?brand=SAMSONG'">
+          <div class="brand-logo-circle"><img src="https://images.samsung.com/is/image/samsung/assets/levant_ar/about-us/brand/logo/mo/256_144_4.png?$512_N_PNG$" alt="SAMSONG" /></div>
+          <span class="brand-card-name">SAMSONG</span>
+        </div>
       </div>
     </div>
   </div>

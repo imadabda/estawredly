@@ -9,10 +9,69 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=1785802153537" />
+  <link rel="stylesheet" href="style.css?v=1786971500000" />
   <link rel="stylesheet" href="enhancements.css?v=1785802153537" />
   <style>
     /* Shop-specific styles */
+    /* Brand Chips at the top of category pages */
+    .cat-brand-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1.5px solid var(--gray3);
+      border-radius: 50px;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .cat-brand-chip:hover {
+      border-color: var(--accent);
+      background: var(--p-light);
+      transform: translateY(-2px);
+    }
+    .cat-brand-chip.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .cat-brand-chip.active span {
+      color: #fff !important;
+    }
+    .cat-brand-chip img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #fff;
+    }
+
+    /* Subcategory Chips */
+    .subcat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border: 1.5px solid var(--gray3, #e2e8f0);
+      border-radius: 50px;
+      background: #f8fafc;
+      color: var(--text, #1e293b);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .subcat-chip:hover {
+      border-color: var(--p, #2563eb);
+      background: var(--p-light, #eff6ff);
+      color: var(--p, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(37,99,235,0.12);
+    }
+
     .shop-hero {
       background: linear-gradient(135deg, var(--p2) 0%, var(--p) 100%);
       padding: 50px 0;
@@ -175,9 +234,81 @@
       color: var(--gray9);
     }
 
+    .subcat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 50px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      color: var(--gray8, #1e293b);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .subcat-chip:hover {
+      border-color: var(--p, #2563eb);
+      background: #eff6ff;
+      color: var(--p, #2563eb);
+      transform: translateY(-1px);
+    }
+    .cat-brand-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .cat-brand-chip.active {
+      border-color: var(--p, #2563eb) !important;
+      background: var(--p, #2563eb) !important;
+      color: #fff !important;
+    }
+
     @media (max-width: 900px) {
-      .shop-layout { grid-template-columns: 1fr; }
-      .filter-sidebar { position: static; }
+      .shop-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px 0 60px;
+      }
+      .shop-main {
+        order: 1;
+        width: 100%;
+      }
+      .filter-sidebar {
+        order: 2;
+        position: static;
+        width: 100%;
+      }
+      .category-brands, .category-subcats {
+        padding: 12px 14px !important;
+        margin-bottom: 14px !important;
+        border-radius: 14px !important;
+      }
+      .category-brands-list, .category-subcats-list {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        gap: 8px !important;
+        scrollbar-width: thin;
+      }
+      .cat-brand-chip, .subcat-chip {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+      }
     }
   </style>
 <link rel="manifest" href="manifest.json" />
@@ -196,9 +327,9 @@
   <div class="hdr-top">
     <div class="container hdr-top-inner">
       <nav class="hdr-links">
-        <a href="#">تتبع طلبك</a>
-        <a href="#">التواصل</a>
-        <a href="#">العروض</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">اتصل بنا</a>
+        <a href="shop.html?sale=true">العروض</a>
       </nav>
       </div>
   </div>
@@ -289,31 +420,8 @@
             التصفية حسب الفئة
             <span class="toggle">▾</span>
           </div>
-          <div class="filter-options">
-            <label class="filter-option">
-              <input type="checkbox" value="squeegees" /> قشاطات <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="brooms" /> مكانس <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="sponges" /> ليفة جلي <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="loofahs" /> ليف حمام <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="scissors" /> مقصات <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="personal_care" /> عناية شخصية <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="dusters" /> منفضة غبار <span class="filter-count"></span>
-            </label>
-            <label class="filter-option">
-              <input type="checkbox" value="microfiber" /> مايكروفايبر <span class="filter-count"></span>
-            </label>
+          <div class="filter-options" id="sidebar-cat-filters">
+            <!-- يتم تحميل التصنيفات تلقائياً من المنتجات -->
           </div>
         </div>
 
@@ -353,17 +461,21 @@
 
       <!-- Products Area -->
       <div class="shop-main">
-        <!-- Category Chips -->
-        <div class="cat-chips">
-          <span class="cat-chip active" onclick="window.location='shop.html'">الكل</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=squeegees'">🧹 قشاطات</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=brooms'">🧹 مكانس</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=sponges'">🧽 ليفة جلي</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=loofahs'">🛁 ليف حمام</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=scissors'">✂️ مقصات</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=personal_care'">🧴 عناية شخصية</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=dusters'">🪶 منفضة غبار</span>
-          <span class="cat-chip" onclick="window.location='shop.html?cat=microfiber'">✨ مايكروفايبر</span>
+
+        <!-- Category Brands Filter -->
+        <div class="category-brands" id="category-brands-container" style="display:none; margin-bottom: 16px; padding: 15px; background: var(--white); border-radius: var(--r); border: 1px solid var(--gray2); box-shadow: var(--sh);">
+          <div style="font-size: 13.5px; font-weight: 700; color: var(--gray8); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span>🏷️ أبرز الماركات في هذا القسم:</span>
+          </div>
+          <div class="category-brands-list" id="category-brands-list" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;"></div>
+        </div>
+
+        <!-- Sub-Categories Quick Navigation (Shown only for Parent Categories) -->
+        <div class="category-subcats" id="category-subcats-container" style="display:none; margin-bottom: 24px; padding: 15px; background: var(--white); border-radius: var(--r); border: 1px solid var(--gray2); box-shadow: var(--sh);">
+          <div style="font-size: 13.5px; font-weight: 700; color: var(--gray8); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span>📂 الأقسام الفرعية التابعة لهذا القسم:</span>
+          </div>
+          <div class="category-subcats-list" id="category-subcats-list" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;"></div>
         </div>
 
         <!-- Toolbar -->
@@ -479,15 +591,9 @@
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
   <script src="store.js?v=1786117170000"></script>
   <script src="auth.js?v=1785802153537"></script>
-<script src="main.js?v=1786117170000"></script>
+<script src="main.js?v=1786971500000"></script>
   <script>
     // Shop-specific script
-    document.querySelectorAll('.cat-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-      });
-    });
 
     document.querySelectorAll('.page-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -497,7 +603,9 @@
     });
 
     // Load products from Store and handle URL params
-    window.addEventListener('authLoaded', async () => {
+    let activeCategoryBrand = '';
+
+    async function loadShopData() {
       const params = new URLSearchParams(location.search);
       const q   = params.get('q')   || '';
       const cat = params.get('cat') || '';
@@ -511,6 +619,27 @@
       }
 
       let filtered = products;
+      let parentSubLinks = [];
+
+      // === Populate dynamic category filters from real products ===
+      const uniqueCats = [...new Set(products.map(p => p.cat).filter(c => c && c.trim().length > 0))];
+      uniqueCats.sort();
+
+      // Fill sidebar category checkboxes
+      const sidebarCatContainer = document.getElementById('sidebar-cat-filters');
+      if (sidebarCatContainer && uniqueCats.length > 0) {
+          const catCounts = {};
+          uniqueCats.forEach(c => {
+              catCounts[c] = products.filter(p => p.cat === c).length;
+          });
+          sidebarCatContainer.innerHTML = uniqueCats.map(c => `
+              <label class="filter-option">
+                  <input type="checkbox" value="${c}" ${cat && decodeURIComponent(cat) === c ? 'checked' : ''} onchange="window.location='shop.html?cat=${encodeURIComponent(c)}'" /> ${c} <span class="filter-count">(${catCounts[c]})</span>
+              </label>
+          `).join('');
+      }
+
+      // === Filter by search query ===
       if (q) {
         const ql = q.toLowerCase();
         filtered = products.filter(p =>
@@ -521,46 +650,273 @@
       }
       
       if (cat) {
-        try {
-            const res = await fetch('api/get_icons.php?t=' + Date.now());
-            const iconMapping = await res.json();
-            
-            // If admin explicitly mapped products to this icon, show ONLY those products!
-            if (iconMapping[cat] && iconMapping[cat].length > 0) {
-                filtered = products.filter(p => iconMapping[cat].includes(String(p.id)));
-            } else {
-                // Fallback to text matching if no mapping exists, OR if the category is from Navbar (where cat is arabic text)
-                const catMap = {
-                  flat: ['مسطحة', 'flat'],
-                  microfiber: ['مايكرو', 'microfiber', 'مايكروفايبر'],
-                  cotton: ['قطن', 'cotton'],
-                  refills: ['غيار', 'refill', 'قطع غيار'],
-                  squeegees: ['قشاطات'],
-                  brooms: ['مكانس'],
-                  sponges: ['ليفة جلي', 'ليفة'],
-                  loofahs: ['ليف حمام'],
-                  scissors: ['مقصات'],
-                  personal_care: ['عناية شخصية'],
-                  dusters: ['منفضة غبار'],
-                  cosmetics: ['كورمتكس', 'مستحضرات تجميل'],
-                  scales: ['موازين'],
-                  party: ['حفلات', 'أعياد ميلاد'],
-                  foil: ['قصدير'],
-                  plastic: ['بلاستيك'],
-                  nylon_bags: ['أكياس نايلون'],
-                  batteries: ['بطاريات'],
-                  wholesale: ['عروض الجملة']
-                };
-                const terms = catMap[cat] || [cat];
-                filtered = products.filter(p => terms.some(t =>
-                  (p.cat || '').toLowerCase().includes(t.toLowerCase()) ||
-                  (p.name || '').toLowerCase().includes(t.toLowerCase())
-                ));
-            }
-        } catch (e) {
-            console.error("Error loading icon mappings:", e);
-            filtered = products.filter(p => (p.cat || '').toLowerCase().includes(cat.toLowerCase()));
+        let decodedCat = decodeURIComponent(cat).trim();
+
+        // Alias map for legacy English slugs
+        const categoryAliases = {
+          'cotton': 'مماسح قطنية',
+          'refills': 'قطع غيار',
+          'wholesale': 'عروض الجملة',
+          'flat': 'ادوات تنظيف',
+          'dusters': 'منافض الغبار',
+          'windows': 'منظف نوافذ',
+          'brooms': 'فراشي تنظيف',
+          'handles': 'مقابض',
+          'dustpan': 'جاروف'
+        };
+
+        if (categoryAliases[decodedCat.toLowerCase()]) {
+          decodedCat = categoryAliases[decodedCat.toLowerCase()];
         }
+
+        // Helper: normalize Arabic text for flexible comparison
+        function normAr(str) {
+          if (!str) return '';
+          return str
+            .trim()
+            .replace(/[\u064B-\u065F\u0670]/g, '')
+            .replace(/[\u0622\u0623\u0625]/g, '\u0627')
+            .replace(/\u0629/g, '\u0647')
+            .replace(/\u0649/g, '\u064A')
+            .replace(/\s+/g, ' ')
+            .toLowerCase();
+        }
+
+        const normDecoded = normAr(decodedCat);
+
+        // Update header & breadcrumb for category
+        const breadcrumbText = document.getElementById('shop-breadcrumb-text');
+        const titleText = document.getElementById('shop-title-text');
+        const descText = document.getElementById('shop-desc-text');
+        if (breadcrumbText) breadcrumbText.textContent = `القسم: ${decodedCat}`;
+        if (titleText) titleText.textContent = `🛒 قسم ${decodedCat}`;
+        if (descText) descText.textContent = `تصفح جميع المنتجات المتوفرة في قسم ${decodedCat}`;
+
+        parentSubLinks = [];
+
+        // 1. Check if cat matches a parent category in nav.json
+        try {
+          const navRes = await fetch('api/get_nav.php?t=' + Date.now());
+          const navData = await navRes.json();
+          const matchedParentNav = Array.isArray(navData) ? navData.find(item => 
+            normAr(item.title) === normDecoded || 
+            item.id === cat || 
+            (item.url && normAr(decodeURIComponent(item.url)).includes(normDecoded))
+          ) : null;
+
+          if (matchedParentNav && (matchedParentNav.subLinks || matchedParentNav.columns)) {
+            const subCategoryNames = [];
+            if (matchedParentNav.subLinks) {
+              matchedParentNav.subLinks.forEach(sl => {
+                if (sl.title) {
+                  subCategoryNames.push(normAr(sl.title));
+                  parentSubLinks.push({
+                    title: sl.title,
+                    url: `shop.html?cat=${encodeURIComponent(sl.title)}`
+                  });
+                }
+                if (sl.url && sl.url.includes('cat=')) {
+                  try {
+                    const u = new URL(sl.url, window.location.origin);
+                    const c = u.searchParams.get('cat');
+                    if (c) subCategoryNames.push(normAr(decodeURIComponent(c)));
+                  } catch (e) {}
+                }
+              });
+            }
+            if (matchedParentNav.columns) {
+              matchedParentNav.columns.forEach(col => {
+                if (col.links) {
+                  col.links.forEach(sl => {
+                    if (sl.title) {
+                      subCategoryNames.push(normAr(sl.title));
+                      parentSubLinks.push({
+                        title: sl.title,
+                        url: `shop.html?cat=${encodeURIComponent(sl.title)}`
+                      });
+                    }
+                    if (sl.url && sl.url.includes('cat=')) {
+                      try {
+                        const u = new URL(sl.url, window.location.origin);
+                        const c = u.searchParams.get('cat');
+                        if (c) subCategoryNames.push(normAr(decodeURIComponent(c)));
+                      } catch (e) {}
+                    }
+                  });
+                }
+              });
+            }
+
+            if (subCategoryNames.length > 0) {
+              let parentFiltered = products.filter(p => {
+                const npCat = normAr(p.cat);
+                return subCategoryNames.some(sub => npCat.includes(sub) || sub.includes(npCat)) ||
+                       npCat.includes(normDecoded) ||
+                       normDecoded.includes(npCat);
+              });
+              if (parentFiltered.length > 0) {
+                filtered = parentFiltered;
+              }
+            }
+          }
+        } catch (navErr) {
+          console.warn("Could not check nav hierarchy:", navErr);
+        }
+
+        // If not matched as parent category, proceed with category matching
+        if (filtered === products || filtered.length === 0) {
+          // 2. Direct normalized match with p.cat
+          let catFiltered = products.filter(p => normAr(p.cat) === normDecoded);
+          
+          if (catFiltered.length > 0) {
+            filtered = catFiltered;
+          } else {
+            // 3. Substring normalized match
+            catFiltered = products.filter(p =>
+              normAr(p.cat).includes(normDecoded) ||
+              normDecoded.includes(normAr(p.cat))
+            );
+
+            if (catFiltered.length > 0) {
+              filtered = catFiltered;
+            } else {
+              // 4. Icon ID from homepage — check linkedCategory in admin panel
+              try {
+                const homeCatsRes = await fetch('api/get_homepage_categories.php?t=' + Date.now());
+                const homeCats = await homeCatsRes.json();
+                const matchedIcon = Array.isArray(homeCats)
+                  ? homeCats.find(c => c.id === cat || normAr(c.title) === normDecoded)
+                  : null;
+
+                if (matchedIcon && matchedIcon.linkedCategory) {
+                  const normLinked = normAr(matchedIcon.linkedCategory);
+                  catFiltered = products.filter(p =>
+                    normAr(p.cat).includes(normLinked) ||
+                    normLinked.includes(normAr(p.cat)) ||
+                    normAr(p.name).includes(normLinked)
+                  );
+                  if (catFiltered.length > 0) filtered = catFiltered;
+                }
+
+                // 5. Icon mapping (manually pinned products per icon)
+                if ((filtered === products || filtered.length === 0)) {
+                  const iconKey = matchedIcon ? matchedIcon.id : cat;
+                  const iconRes = await fetch('api/get_icons.php?t=' + Date.now());
+                  const iconMapping = await iconRes.json();
+                  if (iconMapping[iconKey] && iconMapping[iconKey].length > 0) {
+                    const mappedFiltered = products.filter(p => iconMapping[iconKey].includes(String(p.id)));
+                    if (mappedFiltered.length > 0) filtered = mappedFiltered;
+                  }
+                }
+
+                // 6. Final broad text search
+                if (filtered === products || filtered.length === 0) {
+                  filtered = products.filter(p =>
+                    normAr(p.cat).includes(normDecoded) ||
+                    normAr(p.name).includes(normDecoded) ||
+                    normDecoded.includes(normAr(p.cat))
+                  );
+                }
+              } catch (e) {
+                console.error("Error loading icon mappings:", e);
+                filtered = products.filter(p =>
+                  normAr(p.cat).includes(normDecoded) ||
+                  normAr(p.name).includes(normDecoded)
+                );
+              }
+            }
+          }
+        }
+      }
+      
+      // Render Category / Shop Brands Filter
+      const brandsContainer = document.getElementById('category-brands-container');
+      const brandsList = document.getElementById('category-brands-list');
+      
+      if (filtered.length > 0 && brandsContainer && brandsList) {
+          try {
+              const brandsRes = await fetch('api/get_brands.php?t=' + Date.now());
+              const allBrands = await brandsRes.json();
+              const registeredBrandNames = Array.isArray(allBrands) ? allBrands.map(b => (typeof b === 'string' ? b : (b.name || '')).trim()).filter(Boolean) : [];
+              const normalizedBrands = Array.isArray(allBrands) ? allBrands.map(b => {
+                  if (typeof b === 'string') return { name: b, logo: '' };
+                  return { name: b.name || '', logo: b.logo || '' };
+              }) : [];
+              
+              // Normalize brand names from products
+              let uniqueBrandNames = [...new Set(filtered.map(p => {
+                  let b = (p.brand || '').trim();
+                  if (b.toUpperCase() === 'CLEANER') b = 'KLEANER';
+                  return b;
+              }).filter(b => b && b.length > 0))];
+              
+              // Only show brands that are registered in admin brands
+              if (registeredBrandNames.length > 0) {
+                  uniqueBrandNames = uniqueBrandNames.filter(bName => 
+                      registeredBrandNames.some(rb => rb.toLowerCase() === bName.toLowerCase())
+                  );
+              }
+
+              if (uniqueBrandNames.length > 0) {
+                  // Update title in brands box
+                  const brandsTitle = brandsContainer.querySelector('span');
+                  if (brandsTitle) {
+                      brandsTitle.textContent = cat ? '🏷️ أبرز الماركات في هذا القسم:' : '🏷️ تصفح حسب الماركة:';
+                  }
+
+                  // Render brand chips
+                  brandsList.innerHTML = uniqueBrandNames.map(bName => {
+                      const brandObj = normalizedBrands.find(b => b.name.toLowerCase() === bName.toLowerCase());
+                      const logoUrl = (brandObj && brandObj.logo) ? brandObj.logo : '';
+                      const isActive = activeCategoryBrand.toLowerCase() === bName.toLowerCase();
+                      const imgHtml = logoUrl 
+                          ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #e2e8f0;display:inline-block;" />`
+                          : `<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--p-light,#eef2ff);color:var(--p,#3b82f6);font-size:11px;font-weight:bold;">${bName.slice(0,2).toUpperCase()}</span>`;
+                      
+                      return `
+                          <div class="cat-brand-chip ${isActive ? 'active' : ''}" onclick="toggleCategoryBrand('${bName}')" style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:50px;border:1.5px solid ${isActive ? 'var(--p,#2563eb)' : '#e2e8f0'};background:${isActive ? 'var(--p,#2563eb)' : '#fff'};color:${isActive ? '#fff' : 'inherit'};cursor:pointer;transition:all 0.2s ease;">
+                              ${imgHtml}
+                              <span style="font-weight:600;font-size:13px;color:${isActive ? '#fff' : 'inherit'};">${bName}</span>
+                          </div>
+                      `;
+                  }).join('');
+                  brandsContainer.style.display = 'block';
+              } else {
+                  brandsContainer.style.display = 'none';
+              }
+          } catch (err) {
+              console.error("Error loading category brands:", err);
+              brandsContainer.style.display = 'none';
+          }
+      } else {
+          if (brandsContainer) brandsContainer.style.display = 'none';
+      }
+
+      // Render Category Subcategories Filter (Only for Parent Categories)
+      const subcatsContainer = document.getElementById('category-subcats-container');
+      const subcatsList = document.getElementById('category-subcats-list');
+
+      if (subcatsContainer && subcatsList) {
+          if (parentSubLinks && parentSubLinks.length > 0) {
+              subcatsList.innerHTML = parentSubLinks.map(link => `
+                  <a href="${link.url}" class="subcat-chip">
+                      <span style="font-size: 14px;">📁</span>
+                      <span>${link.title}</span>
+                  </a>
+              `).join('');
+              subcatsContainer.style.display = 'block';
+          } else {
+              subcatsContainer.style.display = 'none';
+          }
+      }
+
+      // Filter by active category brand if selected
+      if (activeCategoryBrand) {
+          filtered = filtered.filter(p => {
+              let pb = (p.brand || '').trim();
+              if (pb.toUpperCase() === 'CLEANER') pb = 'KLEANER';
+              return pb.toLowerCase() === activeCategoryBrand.toLowerCase();
+          });
       }
       
       if (brand) {
@@ -594,7 +950,18 @@
       // Update results count
       const countEl = document.querySelector('.results-count');
       if (countEl) countEl.innerHTML = `عرض <strong>${filtered.length}</strong> من <strong>${products.length}</strong> منتج`;
-    });
+    }
+
+    window.toggleCategoryBrand = (brandName) => {
+        if (activeCategoryBrand.toLowerCase() === brandName.toLowerCase()) {
+            activeCategoryBrand = '';
+        } else {
+            activeCategoryBrand = brandName;
+        }
+        loadShopData();
+    };
+
+    window.addEventListener('authLoaded', loadShopData);
   </script>
 <script src="enhancements.js?v=1785802153537"></script>
 <script>

@@ -435,17 +435,125 @@ function initSearch() {
   inp.addEventListener('keypress', e=>{if(e.key==='Enter')doSearch();});
 }
 
-// PRODUCT TABS
-function initProductTabs() {
-  const tabs = document.querySelectorAll('.stab');
-  if(!tabs.length) return;
-  tabs.forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      tabs.forEach(t=>t.classList.remove('active'));
+// PRODUCT TABS (MAIN TOP-LEVEL CATEGORIES ONLY)
+async function initProductTabs() {
+  const container = document.querySelector('.sec-tabs') || document.getElementById('featured-tabs');
+  if (!container) return;
+
+  let navItems = [];
+  try {
+    const res = await fetch('api/get_nav.php?t=' + Date.now());
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      navItems = data;
+    }
+  } catch (e) {
+    console.error('Error fetching nav for product tabs:', e);
+  }
+
+  // Filter out 'الرئيسية' or 'home' to keep only main categories
+  const mainCategories = navItems.filter(item => {
+    if (!item || !item.title) return false;
+    const t = item.title.trim();
+    return t !== 'الرئيسية' && item.id !== 'nav_home' && !item.url?.endsWith('index.html');
+  });
+
+  if (mainCategories.length > 0) {
+    container.innerHTML = `
+      <button class="stab active" data-cat="all">الكل</button>
+      ${mainCategories.map(c => `
+        <button class="stab" data-cat="${c.title}" data-id="${c.id}">${c.title}</button>
+      `).join('')}
+    `;
+  }
+
+  const tabs = container.querySelectorAll('.stab');
+  if (!tabs.length) return;
+
+  // Category matching helper
+  function matchProductToCategory(p, catTitle, navItem) {
+    if (!p) return false;
+    const catLow = (catTitle || '').toLowerCase().trim();
+    const pCat = (p.cat || '').toLowerCase().trim();
+    const pName = (p.name || '').toLowerCase().trim();
+    const pDesc = (p.desc || '').toLowerCase().trim();
+
+    // 1. Direct match on p.cat
+    if (pCat === catLow || pCat.includes(catLow) || catLow.includes(pCat)) return true;
+
+    // 2. Match with navItem subLinks (if any)
+    if (navItem && Array.isArray(navItem.subLinks)) {
+      for (const sub of navItem.subLinks) {
+        if (!sub || !sub.title) continue;
+        const sTitle = sub.title.toLowerCase().trim();
+        if (pCat === sTitle || pCat.includes(sTitle) || sTitle.includes(pCat)) return true;
+        if (pName.includes(sTitle)) return true;
+
+        if (sub.url && sub.url.includes('cat=')) {
+          try {
+            const urlCat = decodeURIComponent(sub.url.split('cat=')[1].split('&')[0]).toLowerCase().trim();
+            if (pCat === urlCat || pCat.includes(urlCat) || urlCat.includes(pCat)) return true;
+          } catch(e){}
+        }
+      }
+    }
+
+    // 3. Keyword / Synonym mapping for known categories
+    const synMap = {
+      'ادوات تنظيف': ['مسطحة', 'flat', 'ممسحة', 'مماسح', 'تنظيف', 'سلة', 'حمام', 'جلي', 'قشاط'],
+      'مماسح مايكروفايبر': ['مايكروفايبر', 'مايكرو', 'microfiber', 'دوارة', 'خيوط', 'spin', 'ممسحة'],
+      'مماسح قطنية': ['قطنية', 'قطن', 'cotton', 'خيوط قطن'],
+      'قطع غيار': ['قطع غيار', 'غيار', 'refill', 'refills', 'بديل', 'رأس ممسحة'],
+      'عروض الجملة': ['جملة', 'عرض', 'كرتونة', 'عروض', 'wholesale'],
+      'منافض الغبار': ['منفضة', 'منفضة غبار', 'غبار', 'duster', 'منافض'],
+      'سيمو': ['سيمو', 'semo', 'simo'],
+      'فراشي تنظيف': ['فرشاة', 'فراشي', 'مرحاض', 'فرشا'],
+      'منظف نوافذ': ['نافذة', 'نوافذ', 'زجاج', 'قشاطة زجاج', 'منظف نوافذ'],
+      'مقابض': ['مقبض', 'مقابض', 'عصا', 'يد'],
+      'جاروف': ['جاروف', 'مكنسة', 'مجرفة'],
+      'برداي': ['برداي', 'ستارة', 'ستائر']
+    };
+
+    if (synMap[catTitle]) {
+      for (const syn of synMap[catTitle]) {
+        if (pCat.includes(syn) || pName.includes(syn) || pDesc.includes(syn)) return true;
+      }
+    }
+
+    // 4. Check name or desc
+    if (pName.includes(catLow) || pDesc.includes(catLow)) return true;
+
+    return false;
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      const t = tab.dataset.tab;
-      const filtered = t==='all' ? PRODUCTS_LIVE : PRODUCTS_LIVE.filter(p=>p.tab===t);
-      renderGrid('main-grid', filtered.length ? filtered : PRODUCTS_LIVE);
+
+      const selectedCat = tab.dataset.cat;
+      if (selectedCat === 'all') {
+        renderGrid('main-grid', PRODUCTS_LIVE.slice(0, 24));
+        return;
+      }
+
+      const matchedNav = mainCategories.find(c => c.title === selectedCat);
+      const filtered = PRODUCTS_LIVE.filter(p => matchProductToCategory(p, selectedCat, matchedNav));
+
+      if (filtered.length > 0) {
+        renderGrid('main-grid', filtered);
+      } else {
+        const grid = document.getElementById('main-grid');
+        if (grid) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align:center; padding: 60px 20px; color: var(--text3);">
+              <div style="font-size: 40px; margin-bottom: 12px;">🔍</div>
+              <p style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color:var(--text);">لا توجد منتجات متوفرة حالياً في قسم "${selectedCat}"</p>
+              <p style="font-size: 13px; color: var(--text3);">سيتم إضافة منتجات جديدة لهذا القسم قريباً</p>
+            </div>
+          `;
+        }
+      }
     });
   });
 }
@@ -567,11 +675,28 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// INIT
-window.addEventListener('authLoaded', ()=>{
-  // Load products from Store
+window.addEventListener('authLoaded', async ()=>{
+  // Load products from Store after currency settings are ready
   if (typeof Store !== 'undefined') {
+    await Store.ensureReady();
     PRODUCTS_LIVE = Store.getProducts();
+
+    // Sync cart prices with dynamic exchange-rate adjusted prices
+    if (state.cart && state.cart.length > 0) {
+      let cartUpdated = false;
+      state.cart = state.cart.map(item => {
+        const lp = PRODUCTS_LIVE.find(p => String(p.id) === String(item.id));
+        if (lp && lp.price !== item.price) {
+          item.price = lp.price;
+          cartUpdated = true;
+        }
+        return item;
+      });
+      if (cartUpdated) {
+        state.saveCart();
+        updateCartUI();
+      }
+    }
   }
   const flashProds = PRODUCTS_LIVE.filter(p => p.badge === 'sale' || p.badge === 'hot').slice(0, 16);
   const newProds   = PRODUCTS_LIVE.filter(p => p.badge === 'new').slice(0, 16);
@@ -693,3 +818,109 @@ async function loadNavigation() {
 }
 
 document.addEventListener('DOMContentLoaded', loadNavigation);
+
+/* ══════════════════════════════════════════════
+   POPUP NOTICE / BANNER MODAL INITIALIZATION
+══════════════════════════════════════════════ */
+async function initPopupBanner() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTest = urlParams.get('test_popup') === '1';
+        
+        const res = await fetch('api/get_popup_banner.php?t=' + Date.now());
+        if (!res.ok) return;
+        const config = await res.json();
+        
+        if (!config || config.enabled === false) return;
+        if (!config.title && !config.message) return;
+        
+        // Check session dismissal if show_once is active
+        if (config.show_once && !isTest) {
+            if (sessionStorage.getItem('estawredly_pb_dismissed') === '1') {
+                return;
+            }
+        }
+        
+        // Build Modal Element
+        const modal = document.createElement('div');
+        modal.id = 'popup-banner-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        
+        let tagHtml = config.tag ? `<div class="pb-tag-badge">${escapeHtml(config.tag)}</div>` : '';
+        let imgHtml = config.image ? `<div class="pb-img-wrapper"><img src="${escapeHtml(config.image)}" alt="${escapeHtml(config.title || 'Popup')}"></div>` : '';
+        let titleHtml = config.title ? `<h3 class="pb-title">${escapeHtml(config.title)}</h3>` : '';
+        let msgHtml = config.message ? `<div class="pb-body-text">${escapeHtml(config.message).replace(/\n/g, '<br>')}</div>` : '';
+        
+        let ctaHtml = '';
+        if (config.btn_text) {
+            ctaHtml = `<a href="${escapeHtml(config.btn_link || 'shop.html')}" class="pb-btn-cta">${escapeHtml(config.btn_text)}</a>`;
+        }
+        
+        modal.innerHTML = `
+            <div class="pb-backdrop" id="pb-backdrop-el"></div>
+            <div class="pb-dialog">
+                <button class="pb-close-btn" id="pb-close-btn-el" aria-label="إغلاق">✕</button>
+                ${tagHtml}
+                ${imgHtml}
+                ${titleHtml}
+                ${msgHtml}
+                <div class="pb-actions">
+                    ${ctaHtml}
+                    <button type="button" class="pb-btn-dismiss" id="pb-dismiss-link-el">إغلاق الملاحظة</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Dismiss function
+        function dismissPopup() {
+            modal.classList.remove('active');
+            if (config.show_once) {
+                sessionStorage.setItem('estawredly_pb_dismissed', '1');
+            }
+            setTimeout(() => {
+                if (modal.parentNode) modal.parentNode.removeChild(modal);
+            }, 400);
+        }
+        
+        // Attach click listeners to dismiss elements
+        const closeBtn = document.getElementById('pb-close-btn-el');
+        if (closeBtn) closeBtn.addEventListener('click', dismissPopup);
+        
+        const backdrop = document.getElementById('pb-backdrop-el');
+        if (backdrop) backdrop.addEventListener('click', dismissPopup);
+        
+        const dismissLink = document.getElementById('pb-dismiss-link-el');
+        if (dismissLink) dismissLink.addEventListener('click', dismissPopup);
+        
+        // Dismiss on ESC key
+        document.addEventListener('keydown', function escHandler(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                dismissPopup();
+                document.removeEventListener('keydown', escHandler);
+            }
+        });
+        
+        // Show with subtle delay
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 350);
+        
+    } catch (err) {
+        console.error("Popup banner init error:", err);
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+document.addEventListener('DOMContentLoaded', initPopupBanner);

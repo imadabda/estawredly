@@ -181,7 +181,14 @@ const Store = (() => {
   }
 
   function getOrderById(orderId) {
-    return getOrders().find(o => o.id === orderId) || null;
+    return getOrders().find(o => String(o.id) === String(orderId)) || null;
+  }
+
+  function deleteOrder(orderId) {
+    let orders = getOrders();
+    orders = orders.filter(o => String(o.id) !== String(orderId));
+    saveOrders(orders);
+    return true;
   }
 
   function getDeliveryZones() {
@@ -363,7 +370,7 @@ const Store = (() => {
     addProduct, updateProduct, deleteProduct,
     searchProducts, getCategories,
     // Orders
-    getOrders, addOrder, updateOrderStatus, getOrderById,
+    getOrders, addOrder, updateOrderStatus, getOrderById, deleteOrder,
     // Delivery
     getDeliveryZones, saveDeliveryZones,
     // Users / Auth
