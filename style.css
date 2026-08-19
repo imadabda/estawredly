@@ -501,9 +501,10 @@ input,select,textarea{font-family:inherit}
   gap: 8px;
   cursor: pointer;
   scroll-snap-align: start;
-  transition: transform 0.2s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
 }
-.tc-item:hover { transform: scale(1.05); }
+.tc-item:hover { transform: translateY(-4px); }
 .tc-icon {
   width: 100%;
   aspect-ratio: 1;
