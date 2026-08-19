@@ -834,9 +834,12 @@ async function initPopupBanner() {
         if (!config || config.enabled === false) return;
         if (!config.title && !config.message) return;
         
-        // Check permanent dismissal via localStorage so it never shows again after being closed
+        // Clean any old obsolete storage locks
+        localStorage.removeItem('estawredly_pb_dismissed_v1');
+        
+        const bannerKey = 'estawredly_pb_' + encodeURIComponent((config.title || '') + '_' + (config.tag || '')).slice(0, 30);
         if (config.show_once && !isTest) {
-            if (localStorage.getItem('estawredly_pb_dismissed_v1') === '1') {
+            if (sessionStorage.getItem(bannerKey) === '1') {
                 return;
             }
         }
@@ -1019,11 +1022,11 @@ async function initPopupBanner() {
         
         document.body.appendChild(modal);
         
-        // Dismiss function - stores in localStorage so popup never reappears across sessions
+        // Dismiss function - stores in sessionStorage so popup never reappears during current session
         function dismissPopup() {
             modal.classList.remove('active');
             if (config.show_once) {
-                localStorage.setItem('estawredly_pb_dismissed_v1', '1');
+                sessionStorage.setItem(bannerKey, '1');
             }
             setTimeout(() => {
                 if (modal.parentNode) modal.parentNode.removeChild(modal);

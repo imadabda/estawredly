@@ -230,9 +230,9 @@
         const sourceEl = document.getElementById('hero-banner-source-mobile');
         const imgEl = document.getElementById('hero-banner-img-desktop');
 
-        if (hero.link && linkEl) linkEl.href = hero.link;
-        if (hero.mobile_image && sourceEl) sourceEl.srcset = hero.mobile_image;
-        if (hero.desktop_image && imgEl) imgEl.src = hero.desktop_image;
+        if (hero.link && linkEl && linkEl.href !== hero.link) linkEl.href = hero.link;
+        if (hero.mobile_image && sourceEl && sourceEl.getAttribute('srcset') !== hero.mobile_image) sourceEl.srcset = hero.mobile_image;
+        if (hero.desktop_image && imgEl && imgEl.getAttribute('src') !== hero.desktop_image) imgEl.src = hero.desktop_image;
         if (hero.alt_text && imgEl) imgEl.alt = hero.alt_text;
       }
     } catch (e) {
