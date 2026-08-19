@@ -296,8 +296,8 @@
           if (logo) {
             return `
               <div class="brand-card" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'">
-                <div class="brand-logo-circle" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,0.08);box-sizing:border-box;">
-                  <img src="${logo}" alt="${name}" style="width:100%;height:100%;max-width:80px;max-height:80px;object-fit:cover;border-radius:50%;padding:0;display:block;box-sizing:border-box;" onerror="this.parentElement.innerHTML='<span style=\\'font-weight:800;color:var(--p);\\'>${name.slice(0,2).toUpperCase()}</span>'" />
+                <div class="brand-logo-circle">
+                  <img src="${logo}" alt="${name}" onerror="this.parentElement.innerHTML='<span class=\\'brand-logo-initials\\'>${name.slice(0,2).toUpperCase()}</span>'" />
                 </div>
                 <span class="brand-card-name">${name}</span>
               </div>
@@ -306,7 +306,7 @@
             const initials = name.slice(0, 2).toUpperCase();
             return `
               <div class="brand-card" onclick="window.location.href='shop.html?brand=${encodeURIComponent(name)}'">
-                <div class="brand-logo-circle brand-logo-initials" style="width:80px;height:80px;min-width:80px;max-width:80px;min-height:80px;max-height:80px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background: var(--p-light); color: var(--p);border:1.5px solid #e5e7eb;box-sizing:border-box;">
+                <div class="brand-logo-circle brand-logo-initials">
                   ${initials}
                 </div>
                 <span class="brand-card-name">${name}</span>

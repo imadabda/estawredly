@@ -827,6 +827,13 @@ async function initPopupBanner() {
         const urlParams = new URLSearchParams(window.location.search);
         const isTest = urlParams.get('test_popup') === '1';
         
+        // Show ONLY on home page (index.html or root /) unless testing
+        const path = window.location.pathname;
+        const isHome = path.endsWith('index.html') || path.endsWith('/') || path === '' || !path.includes('.html');
+        if (!isHome && !isTest) {
+            return;
+        }
+        
         const res = await fetch('api/get_popup_banner.php?t=' + Date.now());
         if (!res.ok) return;
         const config = await res.json();
@@ -838,10 +845,8 @@ async function initPopupBanner() {
         localStorage.removeItem('estawredly_pb_dismissed_v1');
         
         const bannerKey = 'estawredly_pb_' + encodeURIComponent((config.title || '') + '_' + (config.tag || '')).slice(0, 30);
-        if (config.show_once && !isTest) {
-            if (sessionStorage.getItem(bannerKey) === '1') {
-                return;
-            }
+        if (!isTest && sessionStorage.getItem(bannerKey) === '1') {
+            return;
         }
         
         // Inject foolproof popup modal styles directly if not already present
@@ -1051,9 +1056,10 @@ async function initPopupBanner() {
             }
         });
         
-        // Show with subtle delay
+        // Show with subtle delay and mark as shown for session
         setTimeout(() => {
             modal.classList.add('active');
+            sessionStorage.setItem(bannerKey, '1');
         }, 350);
         
     } catch (err) {

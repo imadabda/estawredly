@@ -752,61 +752,71 @@ input,select,textarea{font-family:inherit}
   gap: 10px;
   cursor: pointer;
   flex-shrink: 0;
-  transition: transform var(--t) ease;
+  padding: 6px 10px;
+  border-radius: 18px;
+  transition: transform 0.25s ease;
 }
 .brand-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 .brand-logo-circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: #ffffff;
   border-radius: 50%;
-  border: 2px solid var(--gray2);
-  height: 80px;
-  width: 80px;
-  min-width: 80px;
-  max-width: 80px;
-  min-height: 80px;
-  max-height: 80px;
+  border: 2.5px solid #e2e8f0;
+  height: 84px;
+  width: 84px;
+  min-width: 84px;
+  max-width: 84px;
+  min-height: 84px;
+  max-height: 84px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  transition: all 0.25s ease;
   box-sizing: border-box;
+  padding: 8px;
 }
 .brand-card:hover .brand-logo-circle {
   border-color: var(--p);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
   transform: scale(1.05);
 }
 .brand-logo-circle img {
-  height: 100%;
   width: 100%;
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
   border-radius: 50%;
-  padding: 0;
   display: block;
-  box-sizing: border-box;
 }
 .brand-logo-initials {
-  font-weight: 800;
-  font-size: 20px;
+  font-weight: 900;
+  font-size: 24px;
   font-family: 'Tajawal', sans-serif;
   letter-spacing: 0.5px;
+  background: var(--p-light);
+  color: var(--p);
 }
 .brand-card-name {
   font-size: 13px;
-  font-weight: 700;
-  color: var(--gray7);
+  font-weight: 800;
+  color: #1e293b;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 4px 14px;
+  border-radius: 99px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
   text-align: center;
-  transition: color var(--t);
+  transition: all 0.25s ease;
   white-space: nowrap;
+  letter-spacing: 0.3px;
 }
 .brand-card:hover .brand-card-name {
-  color: var(--p);
+  color: #ffffff;
+  background: var(--p);
+  border-color: var(--p);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
 }
 
 
