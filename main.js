@@ -991,33 +991,34 @@ async function initPopupBanner() {
             document.head.appendChild(styleTag);
         }
         
-        // Build Modal Element
+        // Build Modal Element with indestructible inline styling
         const modal = document.createElement('div');
         modal.id = 'popup-banner-modal';
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
+        modal.style.cssText = 'position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:100vw !important;height:100vh !important;z-index:99999999 !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:16px !important;box-sizing:border-box !important;opacity:1 !important;visibility:visible !important;pointer-events:auto !important;';
         
-        let tagHtml = config.tag ? `<div class="pb-tag-badge">${escapeHtml(config.tag)}</div>` : '';
-        let imgHtml = config.image ? `<div class="pb-img-wrapper"><img src="${escapeHtml(config.image)}" alt="${escapeHtml(config.title || 'Popup')}"></div>` : '';
-        let titleHtml = config.title ? `<h3 class="pb-title">${escapeHtml(config.title)}</h3>` : '';
-        let msgHtml = config.message ? `<div class="pb-body-text">${escapeHtml(config.message).replace(/\n/g, '<br>')}</div>` : '';
+        let tagHtml = config.tag ? `<div class="pb-tag-badge" style="display:inline-block !important;padding:4px 14px !important;border-radius:99px !important;background:rgba(59,130,246,0.15) !important;border:1px solid rgba(59,130,246,0.35) !important;color:#60a5fa !important;font-size:12px !important;font-weight:800 !important;margin-bottom:14px !important;letter-spacing:0.2px !important;">${escapeHtml(config.tag)}</div>` : '';
+        let imgHtml = config.image ? `<div class="pb-img-wrapper" style="width:100% !important;max-height:220px !important;border-radius:14px !important;overflow:hidden !important;margin-bottom:16px !important;background:rgba(0,0,0,0.2) !important;"><img src="${escapeHtml(config.image)}" alt="${escapeHtml(config.title || 'Popup')}" style="width:100% !important;height:100% !important;object-fit:cover !important;display:block !important;"></div>` : '';
+        let titleHtml = config.title ? `<h3 class="pb-title" style="margin:0 0 10px !important;font-size:20px !important;font-weight:800 !important;color:#ffffff !important;line-height:1.4 !important;">${escapeHtml(config.title)}</h3>` : '';
+        let msgHtml = config.message ? `<div class="pb-body-text" style="font-size:14px !important;line-height:1.7 !important;color:#cbd5e1 !important;margin-bottom:20px !important;">${escapeHtml(config.message).replace(/\n/g, '<br>')}</div>` : '';
         
         let ctaHtml = '';
         if (config.btn_text) {
-            ctaHtml = `<a href="${escapeHtml(config.btn_link || 'shop.html')}" class="pb-btn-cta">${escapeHtml(config.btn_text)}</a>`;
+            ctaHtml = `<a href="${escapeHtml(config.btn_link || 'shop.html')}" class="pb-btn-cta" style="display:flex !important;align-items:center !important;justify-content:center !important;width:100% !important;padding:13px 20px !important;border-radius:12px !important;background:linear-gradient(135deg,#3b82f6,#1d4ed8) !important;color:#ffffff !important;font-size:14px !important;font-weight:800 !important;text-decoration:none !important;box-sizing:border-box !important;box-shadow:0 4px 14px rgba(37,99,235,0.4) !important;">${escapeHtml(config.btn_text)}</a>`;
         }
         
         modal.innerHTML = `
-            <div class="pb-backdrop" id="pb-backdrop-el"></div>
-            <div class="pb-dialog">
-                <button class="pb-close-btn" id="pb-close-btn-el" aria-label="إغلاق">✕</button>
+            <div class="pb-backdrop" id="pb-backdrop-el" style="position:absolute !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:100% !important;height:100% !important;background:rgba(3,7,18,0.75) !important;backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important;cursor:pointer !important;"></div>
+            <div class="pb-dialog" style="position:relative !important;width:100% !important;max-width:480px !important;background:rgba(15,23,42,0.96) !important;border:1px solid rgba(59,130,246,0.4) !important;border-radius:22px !important;padding:28px 24px 22px !important;box-shadow:0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(59,130,246,0.2) !important;text-align:center !important;z-index:10 !important;box-sizing:border-box !important;color:#fff !important;font-family:'Tajawal',sans-serif !important;display:flex !important;flex-direction:column !important;align-items:center !important;">
+                <button class="pb-close-btn" id="pb-close-btn-el" aria-label="إغلاق" type="button" style="position:absolute !important;top:14px !important;left:14px !important;width:34px !important;height:34px !important;border-radius:50% !important;background:rgba(255,255,255,0.1) !important;border:1px solid rgba(255,255,255,0.15) !important;color:#94a3b8 !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:16px !important;cursor:pointer !important;z-index:20 !important;outline:none !important;">✕</button>
                 ${tagHtml}
                 ${imgHtml}
                 ${titleHtml}
                 ${msgHtml}
-                <div class="pb-actions">
+                <div class="pb-actions" style="display:flex !important;flex-direction:column !important;gap:10px !important;width:100% !important;align-items:center !important;">
                     ${ctaHtml}
-                    <button type="button" class="pb-btn-dismiss" id="pb-dismiss-link-el">إغلاق الملاحظة</button>
+                    <button type="button" class="pb-btn-dismiss" id="pb-dismiss-link-el" style="background:transparent !important;border:none !important;color:#94a3b8 !important;font-size:12.5px !important;cursor:pointer !important;padding:6px !important;font-family:inherit !important;">إغلاق الملاحظة</button>
                 </div>
             </div>
         `;
