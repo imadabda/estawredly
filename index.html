@@ -272,8 +272,9 @@
           const imgHtml = isEmoji 
               ? `<span style="font-size:28px;">${c.img}</span>`
               : `<img src="${c.img}" alt="${c.title}">`;
+          const targetCat = (c.linkedCategory && c.linkedCategory.trim()) ? c.linkedCategory.trim() : (c.title || c.id);
           return `
-            <div class="tc-item" onclick="window.location='shop.html?v=1785802153537&cat=${c.id}'">
+            <div class="tc-item" onclick="window.location='shop.html?cat=${encodeURIComponent(targetCat)}'">
               <div class="tc-icon">${imgHtml}</div>
               <div class="tc-name">${c.title}</div>
             </div>
