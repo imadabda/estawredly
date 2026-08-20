@@ -1,0 +1,46 @@
+[
+    {
+        "id": "banner-1",
+        "tag": "نظافة مثالية",
+        "title": "مماسح مسطحة",
+        "desc": "مماسح عصرية لجميع أنواع الأرضيات",
+        "btn_text": "تسوق الآن",
+        "link": "shop.html?cat=flat",
+        "image": "cat_flat.jpg",
+        "text_color": "#1a6ce0",
+        "is_big": true
+    },
+    {
+        "id": "banner-2",
+        "tag": "أحدث التقنيات",
+        "title": "مماسح مايكروفايبر",
+        "desc": "",
+        "btn_text": "اكتشف",
+        "link": "shop.html?cat=microfiber",
+        "image": "cat_micro.jpg",
+        "text_color": "#1f2937",
+        "is_big": false
+    },
+    {
+        "id": "banner-3",
+        "tag": "للاستخدام الشاق",
+        "title": "مماسح قطنية",
+        "desc": "",
+        "btn_text": "استكشف",
+        "link": "shop.html?cat=cotton",
+        "image": "cat_cotton.jpg",
+        "text_color": "#1f2937",
+        "is_big": false
+    },
+    {
+        "id": "banner-4",
+        "tag": "عمر أطول",
+        "title": "قطع غيار",
+        "desc": "",
+        "btn_text": "تسوق",
+        "link": "shop.html?cat=refills",
+        "image": "cat_refill.jpg",
+        "text_color": "#1f2937",
+        "is_big": false
+    }
+]
