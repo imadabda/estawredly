@@ -757,7 +757,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Mobile Menu Toggle Fix
   document.getElementById('menu-btn')?.addEventListener('click', (e) => {
     e.preventDefault();
-    document.getElementById('main-nav')?.classList.toggle('open');
+    const nav = document.getElementById('main-nav');
+    const hdr = document.getElementById('header');
+    if (nav) nav.classList.toggle('open');
+    if (hdr) hdr.classList.toggle('menu-open');
+  });
+
+  document.querySelector('.nav-close-btn')?.addEventListener('click', () => {
+    document.getElementById('main-nav')?.classList.remove('open');
+    document.getElementById('header')?.classList.remove('menu-open');
   });
 
   });
