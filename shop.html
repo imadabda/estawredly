@@ -975,14 +975,22 @@
       }
       
       if (brand) {
-          filtered = filtered.filter(p => (p.brand || '').toLowerCase() === brand.toLowerCase());
+          const decodedBrand = decodeURIComponent(brand).trim().toLowerCase();
+          filtered = filtered.filter(p => {
+              let pb = (p.brand || '').trim().toLowerCase();
+              if (pb === 'cleaner') pb = 'kleaner';
+              let pn = (p.name || '').trim().toLowerCase();
+              let pd = (p.desc || '').trim().toLowerCase();
+              return pb === decodedBrand || pb.includes(decodedBrand) || decodedBrand.includes(pb) || pn.includes(decodedBrand) || pd.includes(decodedBrand);
+          });
           
+          const cleanBrandTitle = decodeURIComponent(brand).trim();
           const breadcrumbText = document.getElementById('shop-breadcrumb-text');
           const titleText = document.getElementById('shop-title-text');
           const descText = document.getElementById('shop-desc-text');
-          if (breadcrumbText) breadcrumbText.textContent = `الماركة: ${brand}`;
-          if (titleText) titleText.textContent = `🏷️ ماركة ${brand}`;
-          if (descText) descText.textContent = `تصفح جميع المنتجات التابعة لماركة ${brand}`;
+          if (breadcrumbText) breadcrumbText.textContent = `الماركة: ${cleanBrandTitle}`;
+          if (titleText) titleText.textContent = `🏷️ ماركة ${cleanBrandTitle}`;
+          if (descText) descText.textContent = `تصفح جميع المنتجات التابعة لماركة ${cleanBrandTitle}`;
       }
 
       // Render the products
@@ -995,7 +1003,8 @@
         }
       } else {
           const grid = document.getElementById('products-grid');
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5)">🔍 لم يتم العثور على نتائج</div>';
+          const emptyMsg = brand ? `🔍 لا توجد منتجات مسجلة لماركة "${decodeURIComponent(brand).trim()}" حالياً` : '🔍 لم يتم العثور على نتائج';
+          grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5);font-size:16px;font-weight:600;">${emptyMsg}</div>`;
       }
 
       // Update search input if query present
