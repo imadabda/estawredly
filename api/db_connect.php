@@ -17,6 +17,45 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
+
+    // التأكد من وجود الجداول وتحديث نوع عمود status لـ VARCHAR(50) لمنع مشاكل الـ ENUM
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `users` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `name` VARCHAR(100) NOT NULL,
+            `email` VARCHAR(100) NOT NULL,
+            `password` VARCHAR(255) DEFAULT NULL,
+            `phone` VARCHAR(20) DEFAULT NULL,
+            `role` VARCHAR(20) DEFAULT 'customer',
+            `status` VARCHAR(20) DEFAULT 'pending',
+            `google_id` VARCHAR(100) DEFAULT NULL,
+            `reset_token` VARCHAR(100) DEFAULT NULL,
+            `reset_expires` DATETIME DEFAULT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `email` (`email`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `orders` (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `customer_name` VARCHAR(100) NOT NULL,
+            `customer_phone` VARCHAR(20) NOT NULL,
+            `customer_address` TEXT NOT NULL,
+            `shipping_zone` VARCHAR(50) NOT NULL,
+            `items_json` JSON NOT NULL,
+            `subtotal` DECIMAL(10,2) NOT NULL,
+            `shipping_cost` DECIMAL(10,2) NOT NULL,
+            `total_price` DECIMAL(10,2) NOT NULL,
+            `status` VARCHAR(50) DEFAULT 'pending',
+            `notes` TEXT DEFAULT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // تعديل عمود status فوراً إن كان قديماً كـ ENUM
+        $pdo->exec("ALTER TABLE `orders` MODIFY COLUMN `status` VARCHAR(50) DEFAULT 'pending'");
+    } catch (Exception $migErr) {}
+
 } catch (PDOException $e) {
     // عند عدم توفر خادم MySQL، التبديل تلقائياً لقاعدة بيانات SQLite محلية للتطوير
     try {

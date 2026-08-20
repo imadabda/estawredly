@@ -17,21 +17,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$id = intval($_POST['order_id'] ?? 0);
-$status = trim($_POST['status'] ?? '');
+$rawInput = json_decode(file_get_contents('php://input'), true);
 
-$validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+$id = intval($_POST['order_id'] ?? $rawInput['order_id'] ?? 0);
+$status = trim($_POST['status'] ?? $rawInput['status'] ?? '');
+
+$validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'completed'];
 
 if ($id <= 0 || !in_array($status, $validStatuses)) {
-    echo json_encode(['success' => false, 'message' => 'بيانات غير صالحة.']);
+    echo json_encode(['success' => false, 'message' => 'بيانات غير صالحة. رقم الطلبية: ' . $id . ' والحالة: ' . $status]);
     exit;
 }
 
 try {
+    // التأكد من تعديل نوع العمود إن كان MySQL مقيداً بـ ENUM
+    try {
+        $pdo->exec("ALTER TABLE `orders` MODIFY COLUMN `status` VARCHAR(50) DEFAULT 'pending'");
+    } catch (Exception $altE) {}
+
     $stmt = $pdo->prepare("UPDATE `orders` SET `status` = ? WHERE `id` = ?");
     $stmt->execute([$status, $id]);
 
-    echo json_encode(['success' => true, 'message' => 'تم تحديث حالة الطلب.']);
+    echo json_encode(['success' => true, 'message' => 'تم تحديث حالة الطلب إلى: ' . $status]);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => 'خطأ في التحديث: ' . $e->getMessage()]);
 }

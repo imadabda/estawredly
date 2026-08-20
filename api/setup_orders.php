@@ -12,7 +12,7 @@ try {
       `subtotal` DECIMAL(10,2) NOT NULL,
       `shipping_cost` DECIMAL(10,2) NOT NULL,
       `total_price` DECIMAL(10,2) NOT NULL,
-      `status` ENUM('pending', 'processing', 'completed', 'cancelled') DEFAULT 'pending',
+      `status` VARCHAR(50) DEFAULT 'pending',
       `notes` TEXT DEFAULT NULL,
       `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (`id`)
