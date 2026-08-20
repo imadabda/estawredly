@@ -1283,8 +1283,8 @@ tr:last-child td{border-bottom:none}
           <button class="btn-outline">📥 تصدير الطلبيات</button>
         </div>
         <div class="toolbar">
-          <input type="text" class="search-field" placeholder="🔍 بحث برقم الطلبية أو اسم العميل..."/>
-          <select class="select-field" id="order-status-filter" onchange="filterOrders(this.value)">
+          <input type="text" id="order-search-input" class="search-field" placeholder="🔍 بحث برقم الطلبية أو اسم العميل..." oninput="filterOrders()"/>
+          <select class="select-field" id="order-status-filter" onchange="filterOrders()">
             <option value="">كل الحالات</option>
             <option value="pending">قيد الانتظار</option>
             <option value="shipped">تم الشحن</option>
@@ -1314,8 +1314,9 @@ tr:last-child td{border-bottom:none}
           </div>
         </div>
         
-        <div class="tabs-admin" style="display:flex; gap:12px; margin-bottom:20px;">
-            <button class="btn-add" id="tab-requests" onclick="switchCustomerTab('requests')" style="background:var(--p); border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:#fff;">طلبات العضوية (قيد الانتظار)</button>
+        <div class="tabs-admin" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+            <button class="btn-add" id="tab-requests" onclick="switchCustomerTab('requests')" style="background:var(--p); border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:#fff;">طلبات العضوية (0)</button>
+            <button class="btn-add" id="tab-registered" onclick="switchCustomerTab('registered')" style="background:transparent; border:1px solid var(--border); padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">المستخدمين المسجلين (الحسابات المفعلة)</button>
             <button class="btn-add" id="tab-active" onclick="switchCustomerTab('active')" style="background:transparent; border:1px solid var(--border); padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">العملاء (المشترين)</button>
         </div>
 
@@ -1324,6 +1325,18 @@ tr:last-child td{border-bottom:none}
             <table>
               <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
               <tbody id="customers-requests-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="table-card" id="view-registered" style="display:none;">
+          <div class="toolbar" style="margin-bottom:15px;">
+            <input type="text" id="registered-users-search" class="search-field" placeholder="🔍 بحث بالاسم أو البريد أو الهاتف..." oninput="renderRegisteredUsers()"/>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>تاريخ الانضمام</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+              <tbody id="customers-registered-body"></tbody>
             </table>
           </div>
         </div>
@@ -2709,9 +2722,24 @@ function renderOrders(list) {
   }).join('');
 }
 
-function filterOrders(status) {
-  const orders = getAdminOrders();
-  renderOrders(status ? orders.filter(o=>o.status===status) : orders);
+function filterOrders() {
+  const q = (document.getElementById('order-search-input')?.value || '').trim().toLowerCase();
+  const status = document.getElementById('order-status-filter')?.value || '';
+  let orders = getAdminOrders();
+  if (status) {
+    orders = orders.filter(o => o.status === status);
+  }
+  if (q) {
+    orders = orders.filter(o => {
+      const id = String(o.id || '').toLowerCase();
+      const name = String(o.userName || o.customer || '').toLowerCase();
+      const phone = String(o.phone || '').toLowerCase();
+      const address = String(o.address || '').toLowerCase();
+      const zone = String(o.zone || '').toLowerCase();
+      return id.includes(q) || name.includes(q) || phone.includes(q) || address.includes(q) || zone.includes(q);
+    });
+  }
+  renderOrders(orders);
 }
 
 async function changeOrderStatus(id, newStatus) {
@@ -2760,14 +2788,19 @@ async function deleteOrder(id) {
 let allRegisteredUsers = [];
 
 function switchCustomerTab(tab) {
-    document.getElementById('tab-requests').style.background = tab === 'requests' ? 'var(--p)' : 'transparent';
-    document.getElementById('tab-requests').style.border = tab === 'requests' ? 'none' : '1px solid var(--border)';
-    
-    document.getElementById('tab-active').style.background = tab === 'active' ? 'var(--p)' : 'transparent';
-    document.getElementById('tab-active').style.border = tab === 'active' ? 'none' : '1px solid var(--border)';
-    
-    document.getElementById('view-requests').style.display = tab === 'requests' ? 'block' : 'none';
-    document.getElementById('view-active').style.display = tab === 'active' ? 'block' : 'none';
+    const tabs = ['requests', 'registered', 'active'];
+    tabs.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        const view = document.getElementById('view-' + t);
+        if (btn) {
+            btn.style.background = t === tab ? 'var(--p)' : 'transparent';
+            btn.style.border = t === tab ? 'none' : '1px solid var(--border)';
+            btn.style.color = t === tab ? '#fff' : 'var(--text)';
+        }
+        if (view) {
+            view.style.display = t === tab ? 'block' : 'none';
+        }
+    });
 }
 
 async function fetchMembershipRequests() {
@@ -2775,8 +2808,9 @@ async function fetchMembershipRequests() {
         const res = await fetch('api/get_users.php');
         const data = await res.json();
         if(data.success) {
-            allRegisteredUsers = data.users;
+            allRegisteredUsers = data.users || [];
             renderMembershipRequests();
+            renderRegisteredUsers();
         }
     } catch(err) {
         console.error('Error fetching users', err);
@@ -2788,7 +2822,8 @@ function renderMembershipRequests() {
     if (!body) return;
     
     const pendingUsers = allRegisteredUsers.filter(u => u.status === 'pending' && u.role === 'customer');
-    document.getElementById('tab-requests').textContent = `طلبات العضوية (${pendingUsers.length})`;
+    const tabReq = document.getElementById('tab-requests');
+    if (tabReq) tabReq.textContent = `طلبات العضوية (${pendingUsers.length})`;
     
     const badge = document.getElementById('pending-users-badge');
     if (badge) {
@@ -2809,9 +2844,9 @@ function renderMembershipRequests() {
     <tr>
       <td>
         <div class="order-customer">
-            <div class="oc-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">${u.name[0]||'?'}</div>
+            <div class="oc-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">${(u.name && u.name[0])||'?'}</div>
             <div>
-                <div style="font-weight:700">${u.name}</div>
+                <div style="font-weight:700">${u.name || '-'}</div>
             </div>
         </div>
       </td>
@@ -2825,6 +2860,70 @@ function renderMembershipRequests() {
     `).join('');
 }
 
+function renderRegisteredUsers() {
+    const body = document.getElementById('customers-registered-body');
+    if (!body) return;
+    
+    const q = (document.getElementById('registered-users-search')?.value || '').trim().toLowerCase();
+    let activeUsers = allRegisteredUsers.filter(u => u.status === 'active' && u.role === 'customer');
+    
+    const tabReg = document.getElementById('tab-registered');
+    if (tabReg) tabReg.textContent = `المستخدمين المسجلين (${activeUsers.length})`;
+    
+    if (q) {
+        activeUsers = activeUsers.filter(u => 
+            (u.name && u.name.toLowerCase().includes(q)) ||
+            (u.email && u.email.toLowerCase().includes(q)) ||
+            (u.phone && u.phone.toLowerCase().includes(q))
+        );
+    }
+    
+    if (!activeUsers.length) {
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:40px">لا يوجد مستخدمين مسجلين ${q ? 'مطابقين للبحث' : ''}</td></tr>`;
+        return;
+    }
+    
+    body.innerHTML = activeUsers.map(u => `
+    <tr>
+      <td>
+        <div class="order-customer">
+            <div class="oc-av" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">${(u.name && u.name[0])||'?'}</div>
+            <div>
+                <div style="font-weight:700">${u.name || '-'}</div>
+            </div>
+        </div>
+      </td>
+      <td style="color:var(--text3)">${u.email}</td>
+      <td style="color:var(--text3)">${u.phone || '-'}</td>
+      <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('ar-SA')}</td>
+      <td><span class="status-badge status-delivered">مفعل ✅</span></td>
+      <td>
+        <button class="del-btn" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;transition:all 0.2s;" onclick="deactivateUser(${u.id})" title="تجميد الحساب">⛔ تجميد</button>
+      </td>
+    </tr>
+    `).join('');
+}
+
+async function deactivateUser(id) {
+    if(!confirm('هل أنت متأكد من تجميد هذا الحساب؟ لن يتمكن من تسجيل الدخول حتى تعيد تفعيله.')) return;
+    try {
+        const res = await fetch('api/approve_user.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({user_id: id, status: 'suspended'})
+        });
+        const data = await res.json();
+        if(data.success) {
+            showToast('✅ تم تجميد الحساب بنجاح', 'success');
+            fetchMembershipRequests();
+        } else {
+            showToast(data.message, 'error');
+        }
+    } catch(err) {
+        showToast('حدث خطأ', 'error');
+    }
+}
+
 async function approveUser(id) {
     if(!confirm('هل أنت متأكد من تفعيل هذا الحساب؟ سيتمكن من رؤية الأسعار والشراء.')) return;
     try {
@@ -2835,7 +2934,7 @@ async function approveUser(id) {
         });
         const data = await res.json();
         if(data.success) {
-            showToast('تم تفعيل الحساب بنجاح', 'success');
+            showToast('✅ تم تفعيل الحساب بنجاح', 'success');
             fetchMembershipRequests();
         } else {
             showToast(data.message, 'error');
