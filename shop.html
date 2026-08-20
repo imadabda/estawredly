@@ -456,6 +456,41 @@
       <p id="shop-desc-text">آلاف المنتجات المستوردة من أفضل الموردين حول العالم</p>
     </div>
   </div>
+  <script>
+    // Immediate pre-render to prevent title flicker
+    (function preRenderShopHeader() {
+      try {
+        const p = new URLSearchParams(window.location.search);
+        const cat = p.get('cat');
+        const brand = p.get('brand');
+        const q = p.get('q');
+        const sale = p.get('sale');
+        const titleEl = document.getElementById('shop-title-text');
+        const breadEl = document.getElementById('shop-breadcrumb-text');
+        const descEl = document.getElementById('shop-desc-text');
+        if (cat) {
+          const c = decodeURIComponent(cat).trim();
+          if (titleEl) titleEl.textContent = c;
+          if (breadEl) breadEl.textContent = c;
+          if (descEl) descEl.textContent = `تصفح منتجات قسم ${c}`;
+        } else if (brand) {
+          const b = decodeURIComponent(brand).trim();
+          if (titleEl) titleEl.textContent = `🏷️ ماركة ${b}`;
+          if (breadEl) breadEl.textContent = `الماركة: ${b}`;
+          if (descEl) descEl.textContent = `تصفح جميع المنتجات التابعة لماركة ${b}`;
+        } else if (q) {
+          const query = decodeURIComponent(q).trim();
+          if (titleEl) titleEl.textContent = `🔍 نتائج البحث: "${query}"`;
+          if (breadEl) breadEl.textContent = query;
+          if (descEl) descEl.textContent = `تصفح المنتجات المطابقة للبحث`;
+        } else if (sale) {
+          if (titleEl) titleEl.textContent = `🔥 عروض وتخفيضات`;
+          if (breadEl) breadEl.textContent = `العروض`;
+          if (descEl) descEl.textContent = `تصفح أقوى العروض والخصومات الحصرية`;
+        }
+      } catch(e){}
+    })();
+  </script>
 
   <!-- Shop Body -->
   <div class="container">
@@ -527,7 +562,7 @@
 
         <!-- Toolbar -->
         <div class="shop-toolbar">
-          <div class="results-count">عرض <strong>1-16</strong> من <strong>2,847</strong> منتج</div>
+          <div class="results-count" id="shop-results-count">جاري تحميل المنتجات...</div>
           <div class="toolbar-right">
             <select class="sort-select" id="sort-select">
               <option>الأكثر طلبًا</option>
@@ -544,18 +579,12 @@
         </div>
 
         <!-- Products Grid -->
-        <div class="products-grid" id="products-grid"></div>
+        <div class="products-grid" id="products-grid">
+          <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray5);font-size:15px;">⏳ جاري تجهيز المنتجات...</div>
+        </div>
 
         <!-- Pagination -->
-        <div class="pagination">
-          <button class="page-btn">‹</button>
-          <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn">4</button>
-          <button class="page-btn">5</button>
-          <button class="page-btn">›</button>
-        </div>
+        <div class="pagination" id="shop-pagination" style="display:none;"></div>
       </div>
     </div>
   </div>
