@@ -827,13 +827,22 @@ async function initPopupBanner() {
         const urlParams = new URLSearchParams(window.location.search);
         const isTest = urlParams.get('test_popup') === '1';
         
-        // Clean any old obsolete storage locks
-        try {
-            localStorage.removeItem('estawredly_pb_dismissed_v1');
-        } catch(e){}
+        // 🔒 STRICT RULE: The Popup Banner MUST ONLY EVER DISPLAY ON THE HOMEPAGE
+        const pathname = window.location.pathname.toLowerCase();
+        const isHomePage = 
+            pathname === '/' || 
+            pathname === '' || 
+            pathname.endsWith('/index.html') || 
+            pathname.endsWith('/index.php') || 
+            pathname.endsWith('/') ||
+            (!pathname.includes('.html') && !pathname.includes('.php'));
+            
+        if (!isHomePage && !isTest) {
+            return; // NEVER show on shop.html, product.html, checkout.html, etc.
+        }
         
-        // If user already explicitly closed the banner in this tab session, don't reopen
-        if (!isTest && sessionStorage.getItem('pb_dismissed_now') === '1') {
+        // If user already explicitly closed the banner in this session, don't reopen
+        if (!isTest && (sessionStorage.getItem('pb_dismissed_now') === '1' || localStorage.getItem('pb_dismissed_stamp'))) {
             return;
         }
         
