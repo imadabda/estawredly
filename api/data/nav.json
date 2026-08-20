@@ -123,5 +123,11 @@
                 "url": "shop.html?cat=%D8%A7%D9%87%D9%88%D9%88"
             }
         ]
+    },
+    {
+        "id": "nav_1787217073468",
+        "title": "عماد",
+        "url": "shop.html?cat=%D8%B9%D9%85%D8%A7%D8%AF",
+        "type": "link"
     }
 ]

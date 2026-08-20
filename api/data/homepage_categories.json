@@ -10,7 +10,8 @@
         "id": "brooms",
         "title": "برداي",
         "img": "assets\/categories\/icon_broom.jpg",
-        "active": true
+        "active": true,
+        "linkedCategory": "عماد"
     },
     {
         "id": "sponges",
