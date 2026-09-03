@@ -330,7 +330,11 @@ img{max-width:100%;display:block}
   border:1px solid var(--border);
   border-radius:var(--r3);padding:20px;
   transition:var(--t);position:relative;overflow:hidden;
-  cursor:default;
+  cursor:pointer;
+  user-select:none;
+}
+.stat-card:active{
+  transform:scale(0.98);
 }
 .stat-card::after{
   content:'';position:absolute;
@@ -926,8 +930,8 @@ tr:last-child td{border-bottom:none}
             <input type="number" id="f-price" placeholder="0.00" min="0" step="0.01" style="font-weight:bold; color:var(--p);" required/>
           </div>
           <div class="field">
-            <label>السعر القديم (₪) <span style="color:var(--red)">*</span> <span style="color:var(--text3);font-size:10px">يظهر مشطوباً</span></label>
-            <input type="number" id="f-old-price" placeholder="0.00" min="0" step="0.01" required/>
+            <label>السعر القديم (₪) <span style="color:var(--text3);font-size:10px">يظهر مشطوباً (اختياري)</span></label>
+            <input type="number" id="f-old-price" placeholder="0.00" min="0" step="0.01"/>
           </div>
           <div class="field">
             <label>التكلفة / الجملة (₪) <span style="color:var(--text3);font-size:10px">لحساب الأرباح</span></label>
@@ -1134,35 +1138,35 @@ tr:last-child td{border-bottom:none}
 
         <!-- Stats -->
         <div class="stats-grid">
-          <div class="stat-card blue">
+          <div class="stat-card blue" onclick="showPage('analytics',null)" title="انقر لعرض التحليلات والمبيعات">
             <div class="stat-icon">💰</div>
             <div class="stat-val" id="stat-revenue">₪0</div>
             <div class="stat-label">إجمالي الإيرادات</div>
-            <div class="stat-change up">من الطلبات غير الملغية</div>
+            <div class="stat-change up">من الطلبات غير الملغية ↗</div>
           </div>
-          <div class="stat-card green" style="border-top:3px solid var(--green)">
+          <div class="stat-card green" onclick="showPage('analytics',null)" style="border-top:3px solid var(--green)" title="انقر لعرض تفاصيل الأرباح">
             <div class="stat-icon" style="background:rgba(16,185,129,.15)">📈</div>
             <div class="stat-val" id="stat-profit">₪0</div>
             <div class="stat-label">إجمالي الأرباح</div>
-            <div class="stat-change up">صافي الربح بعد التكلفة</div>
+            <div class="stat-change up">صافي الربح بعد التكلفة ↗</div>
           </div>
-          <div class="stat-card green">
+          <div class="stat-card green" onclick="showPage('orders',null)" title="انقر لعرض وإدارة جميع الطلبيات">
             <div class="stat-icon">🛒</div>
             <div class="stat-val" id="stat-orders">0</div>
             <div class="stat-label">الطلبيات هذا الشهر</div>
-            <div class="stat-change up">↑ 24 طلبية هذا الأسبوع</div>
+            <div class="stat-change up">عرض وإدارة الطلبيات ↗</div>
           </div>
-          <div class="stat-card yellow">
+          <div class="stat-card yellow" onclick="showPage('products',null)" title="انقر لعرض وإدارة جميع المنتجات">
             <div class="stat-icon">📦</div>
             <div class="stat-val" id="stat-products">0</div>
             <div class="stat-label">إجمالي المنتجات</div>
-            <div class="stat-change up">↑ أُضيف 8 منتجات اليوم</div>
+            <div class="stat-change up">عرض وإدارة المنتجات ↗</div>
           </div>
-          <div class="stat-card red">
+          <div class="stat-card red" onclick="showPage('customers',null)" title="انقر لعرض وإدارة العملاء">
             <div class="stat-icon">👥</div>
             <div class="stat-val" id="stat-users">1,247</div>
             <div class="stat-label">العملاء المسجلين</div>
-            <div class="stat-change up">↑ 43 عميل جديد اليوم</div>
+            <div class="stat-change up">عرض وإدارة العملاء ↗</div>
           </div>
         </div>
 
@@ -3271,7 +3275,7 @@ async function saveProduct() {
   const rawCostPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
   const costPrice = parseFloat((rawCostPrice / multiplier).toFixed(4));
   const rawOldPrice = parseFloat(document.getElementById('f-old-price').value);
-  const oldPrice = isNaN(rawOldPrice) ? NaN : parseFloat((rawOldPrice / multiplier).toFixed(4));
+  const oldPrice = isNaN(rawOldPrice) || rawOldPrice <= 0 ? null : parseFloat((rawOldPrice / multiplier).toFixed(4));
 
   const stockStr = document.getElementById('f-stock').value;
   const stock = stockStr === '' ? null : parseInt(stockStr);
@@ -3300,11 +3304,6 @@ async function saveProduct() {
   if (isNaN(price) || price <= 0) { 
     showToast('⚠️ يرجى إدخال السعر الحالي للمنتج!','warn'); 
     document.getElementById('f-price').focus(); 
-    return; 
-  }
-  if (isNaN(oldPrice) || oldPrice <= 0) { 
-    showToast('⚠️ يرجى إدخال السعر القديم (المشطوب - إجباري)!','warn'); 
-    document.getElementById('f-old-price').focus(); 
     return; 
   }
   if (pieces_per_carton < 1) { 
