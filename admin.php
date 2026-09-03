@@ -18,7 +18,7 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
 <script src="products_db.js?v=1785803845471<?= time() ?>">
 </script>
-<script src="store.js?v=20260820_v3">
+<script src="store.js?v=1786117170000">
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -886,14 +886,14 @@ tr:last-child td{border-bottom:none}
             <input type="text" id="f-name" placeholder="مثال: سماعات Sony WH-1000XM5"/>
           </div>
           <div class="field">
-            <label>التصنيف</label>
-            <input type="text" id="f-cat" list="cats-list" placeholder="اكتب أو اختر..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1);">
+            <label>التصنيف <span style="color:var(--red)">*</span></label>
+            <input type="text" id="f-cat" list="cats-list" placeholder="اكتب أو اختر التصنيف..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1);" required>
             <datalist id="cats-list"></datalist>
           </div>
           <div class="field">
-            <label>الماركة التجارية</label>
-            <select id="f-brand">
-              <option value="">بدون ماركة</option>
+            <label>الماركة التجارية <span style="color:var(--red)">*</span></label>
+            <select id="f-brand" required>
+              <option value="">-- اختر الماركة التجارية --</option>
             </select>
           </div>
           <div class="field full" style="margin-top:12px">
@@ -923,11 +923,11 @@ tr:last-child td{border-bottom:none}
         <div class="form-grid">
           <div class="field">
             <label>السعر الحالي (₪) <span style="color:var(--red)">*</span></label>
-            <input type="number" id="f-price" placeholder="0.00" min="0" step="0.01" style="font-weight:bold; color:var(--p);"/>
+            <input type="number" id="f-price" placeholder="0.00" min="0" step="0.01" style="font-weight:bold; color:var(--p);" required/>
           </div>
           <div class="field">
-            <label>السعر القديم (₪) <span style="color:var(--text3);font-size:10px">يظهر مشطوباً</span></label>
-            <input type="number" id="f-old-price" placeholder="0.00" min="0" step="0.01"/>
+            <label>السعر القديم (₪) <span style="color:var(--red)">*</span> <span style="color:var(--text3);font-size:10px">يظهر مشطوباً</span></label>
+            <input type="number" id="f-old-price" placeholder="0.00" min="0" step="0.01" required/>
           </div>
           <div class="field">
             <label>التكلفة / الجملة (₪) <span style="color:var(--text3);font-size:10px">لحساب الأرباح</span></label>
@@ -938,16 +938,16 @@ tr:last-child td{border-bottom:none}
             <input type="number" id="f-stock" placeholder="غير محدود" min="0"/>
           </div>
           <div class="field">
-            <label>عدد القطع في الكرتونة (للجملة)</label>
-            <input type="number" id="f-pieces-per-carton" placeholder="1 أو فارغ للبيع بالقطعة" min="1" step="1"/>
+            <label>عدد القطع في الكرتونة (للجملة) <span style="color:var(--red)">*</span></label>
+            <input type="number" id="f-pieces-per-carton" placeholder="1 فأكثر (إجباري)" min="1" step="1" required/>
           </div>
           <div class="field">
-            <label>كود المنتج (SKU)</label>
-            <input type="text" id="f-product-code" placeholder="كود المنتج الفريد"/>
+            <label>كود المنتج (SKU) <span style="color:var(--red)">*</span></label>
+            <input type="text" id="f-product-code" placeholder="كود المنتج الفريد" required/>
           </div>
           <div class="field">
-            <label>كود المصنع</label>
-            <input type="text" id="f-factory-code" placeholder="كود المصنع"/>
+            <label>كود المصنع <span style="color:var(--red)">*</span></label>
+            <input type="text" id="f-factory-code" placeholder="كود المصنع" required/>
           </div>
         </div>
       </div>
@@ -1283,8 +1283,8 @@ tr:last-child td{border-bottom:none}
           <button class="btn-outline">📥 تصدير الطلبيات</button>
         </div>
         <div class="toolbar">
-          <input type="text" id="order-search-input" class="search-field" placeholder="🔍 بحث برقم الطلبية أو اسم العميل..." oninput="filterOrders()"/>
-          <select class="select-field" id="order-status-filter" onchange="filterOrders()">
+          <input type="text" class="search-field" placeholder="🔍 بحث برقم الطلبية أو اسم العميل..."/>
+          <select class="select-field" id="order-status-filter" onchange="filterOrders(this.value)">
             <option value="">كل الحالات</option>
             <option value="pending">قيد الانتظار</option>
             <option value="shipped">تم الشحن</option>
@@ -1314,9 +1314,8 @@ tr:last-child td{border-bottom:none}
           </div>
         </div>
         
-        <div class="tabs-admin" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-            <button class="btn-add" id="tab-requests" onclick="switchCustomerTab('requests')" style="background:var(--p); border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:#fff;">طلبات العضوية (0)</button>
-            <button class="btn-add" id="tab-registered" onclick="switchCustomerTab('registered')" style="background:transparent; border:1px solid var(--border); padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">المستخدمين المسجلين (الحسابات المفعلة)</button>
+        <div class="tabs-admin" style="display:flex; gap:12px; margin-bottom:20px;">
+            <button class="btn-add" id="tab-requests" onclick="switchCustomerTab('requests')" style="background:var(--p); border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:#fff;">طلبات العضوية (قيد الانتظار)</button>
             <button class="btn-add" id="tab-active" onclick="switchCustomerTab('active')" style="background:transparent; border:1px solid var(--border); padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">العملاء (المشترين)</button>
         </div>
 
@@ -1325,18 +1324,6 @@ tr:last-child td{border-bottom:none}
             <table>
               <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
               <tbody id="customers-requests-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="table-card" id="view-registered" style="display:none;">
-          <div class="toolbar" style="margin-bottom:15px;">
-            <input type="text" id="registered-users-search" class="search-field" placeholder="🔍 بحث بالاسم أو البريد أو الهاتف..." oninput="renderRegisteredUsers()"/>
-          </div>
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>تاريخ الانضمام</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-              <tbody id="customers-registered-body"></tbody>
             </table>
           </div>
         </div>
@@ -2448,13 +2435,29 @@ const CAT_DATA = [
 
 let editingId = null;
 
+async function syncLiveProducts() {
+  try {
+      const res = await fetch('api/get_products.php?_t=' + Date.now());
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+          adminProducts = data.products;
+          if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = data.products;
+          if (typeof Store !== 'undefined') Store.saveProducts(data.products);
+          renderProducts();
+          updateStats();
+      }
+  } catch(e) {
+      console.warn("Could not sync live products:", e);
+  }
+}
+
 async function saveAdminProducts() {
   if (typeof Store !== 'undefined') Store.saveProducts(adminProducts);
   try {
       const res = await fetch('api/save_products.php?_t=' + Date.now(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(adminProducts)
+          body: JSON.stringify({ action: 'batch', products: adminProducts })
       });
       const data = await res.json();
       if (!data.success) {
@@ -2462,10 +2465,15 @@ async function saveAdminProducts() {
           alert("خطأ في الحفظ على السيرفر: " + data.message);
       } else {
           console.log("Saved to server successfully.");
+          if (data.products) {
+              adminProducts = data.products;
+              if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = data.products;
+              if (typeof Store !== 'undefined') Store.saveProducts(data.products);
+          }
       }
   } catch (err) {
       console.error("API Error saving products:", err);
-      alert("لم يتم الحفظ! يرجى التأكد من رفع ملف sw.js الجديد أو تحديث الصفحة الإجباري. التفاصيل: " + err);
+      alert("لم يتم الحفظ! التفاصيل: " + err);
   }
 }
 
@@ -2481,7 +2489,7 @@ function showPage(id, el) {
     });
   }
   // Lazy render
-  if (id === 'products') renderProducts();
+  if (id === 'products') { syncLiveProducts(); renderProducts(); }
   if (id === 'inventory') renderInventory();
   if (id === 'orders')   renderOrders(getAdminOrders());
   if (id === 'customers') renderCustomers();
@@ -2722,24 +2730,9 @@ function renderOrders(list) {
   }).join('');
 }
 
-function filterOrders() {
-  const q = (document.getElementById('order-search-input')?.value || '').trim().toLowerCase();
-  const status = document.getElementById('order-status-filter')?.value || '';
-  let orders = getAdminOrders();
-  if (status) {
-    orders = orders.filter(o => o.status === status);
-  }
-  if (q) {
-    orders = orders.filter(o => {
-      const id = String(o.id || '').toLowerCase();
-      const name = String(o.userName || o.customer || '').toLowerCase();
-      const phone = String(o.phone || '').toLowerCase();
-      const address = String(o.address || '').toLowerCase();
-      const zone = String(o.zone || '').toLowerCase();
-      return id.includes(q) || name.includes(q) || phone.includes(q) || address.includes(q) || zone.includes(q);
-    });
-  }
-  renderOrders(orders);
+function filterOrders(status) {
+  const orders = getAdminOrders();
+  renderOrders(status ? orders.filter(o=>o.status===status) : orders);
 }
 
 async function changeOrderStatus(id, newStatus) {
@@ -2788,19 +2781,14 @@ async function deleteOrder(id) {
 let allRegisteredUsers = [];
 
 function switchCustomerTab(tab) {
-    const tabs = ['requests', 'registered', 'active'];
-    tabs.forEach(t => {
-        const btn = document.getElementById('tab-' + t);
-        const view = document.getElementById('view-' + t);
-        if (btn) {
-            btn.style.background = t === tab ? 'var(--p)' : 'transparent';
-            btn.style.border = t === tab ? 'none' : '1px solid var(--border)';
-            btn.style.color = t === tab ? '#fff' : 'var(--text)';
-        }
-        if (view) {
-            view.style.display = t === tab ? 'block' : 'none';
-        }
-    });
+    document.getElementById('tab-requests').style.background = tab === 'requests' ? 'var(--p)' : 'transparent';
+    document.getElementById('tab-requests').style.border = tab === 'requests' ? 'none' : '1px solid var(--border)';
+    
+    document.getElementById('tab-active').style.background = tab === 'active' ? 'var(--p)' : 'transparent';
+    document.getElementById('tab-active').style.border = tab === 'active' ? 'none' : '1px solid var(--border)';
+    
+    document.getElementById('view-requests').style.display = tab === 'requests' ? 'block' : 'none';
+    document.getElementById('view-active').style.display = tab === 'active' ? 'block' : 'none';
 }
 
 async function fetchMembershipRequests() {
@@ -2808,9 +2796,8 @@ async function fetchMembershipRequests() {
         const res = await fetch('api/get_users.php');
         const data = await res.json();
         if(data.success) {
-            allRegisteredUsers = data.users || [];
+            allRegisteredUsers = data.users;
             renderMembershipRequests();
-            renderRegisteredUsers();
         }
     } catch(err) {
         console.error('Error fetching users', err);
@@ -2822,8 +2809,7 @@ function renderMembershipRequests() {
     if (!body) return;
     
     const pendingUsers = allRegisteredUsers.filter(u => u.status === 'pending' && u.role === 'customer');
-    const tabReq = document.getElementById('tab-requests');
-    if (tabReq) tabReq.textContent = `طلبات العضوية (${pendingUsers.length})`;
+    document.getElementById('tab-requests').textContent = `طلبات العضوية (${pendingUsers.length})`;
     
     const badge = document.getElementById('pending-users-badge');
     if (badge) {
@@ -2844,9 +2830,9 @@ function renderMembershipRequests() {
     <tr>
       <td>
         <div class="order-customer">
-            <div class="oc-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">${(u.name && u.name[0])||'?'}</div>
+            <div class="oc-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">${u.name[0]||'?'}</div>
             <div>
-                <div style="font-weight:700">${u.name || '-'}</div>
+                <div style="font-weight:700">${u.name}</div>
             </div>
         </div>
       </td>
@@ -2860,70 +2846,6 @@ function renderMembershipRequests() {
     `).join('');
 }
 
-function renderRegisteredUsers() {
-    const body = document.getElementById('customers-registered-body');
-    if (!body) return;
-    
-    const q = (document.getElementById('registered-users-search')?.value || '').trim().toLowerCase();
-    let activeUsers = allRegisteredUsers.filter(u => u.status === 'active' && u.role === 'customer');
-    
-    const tabReg = document.getElementById('tab-registered');
-    if (tabReg) tabReg.textContent = `المستخدمين المسجلين (${activeUsers.length})`;
-    
-    if (q) {
-        activeUsers = activeUsers.filter(u => 
-            (u.name && u.name.toLowerCase().includes(q)) ||
-            (u.email && u.email.toLowerCase().includes(q)) ||
-            (u.phone && u.phone.toLowerCase().includes(q))
-        );
-    }
-    
-    if (!activeUsers.length) {
-        body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:40px">لا يوجد مستخدمين مسجلين ${q ? 'مطابقين للبحث' : ''}</td></tr>`;
-        return;
-    }
-    
-    body.innerHTML = activeUsers.map(u => `
-    <tr>
-      <td>
-        <div class="order-customer">
-            <div class="oc-av" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">${(u.name && u.name[0])||'?'}</div>
-            <div>
-                <div style="font-weight:700">${u.name || '-'}</div>
-            </div>
-        </div>
-      </td>
-      <td style="color:var(--text3)">${u.email}</td>
-      <td style="color:var(--text3)">${u.phone || '-'}</td>
-      <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('ar-SA')}</td>
-      <td><span class="status-badge status-delivered">مفعل ✅</span></td>
-      <td>
-        <button class="del-btn" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;transition:all 0.2s;" onclick="deactivateUser(${u.id})" title="تجميد الحساب">⛔ تجميد</button>
-      </td>
-    </tr>
-    `).join('');
-}
-
-async function deactivateUser(id) {
-    if(!confirm('هل أنت متأكد من تجميد هذا الحساب؟ لن يتمكن من تسجيل الدخول حتى تعيد تفعيله.')) return;
-    try {
-        const res = await fetch('api/approve_user.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({user_id: id, status: 'suspended'})
-        });
-        const data = await res.json();
-        if(data.success) {
-            showToast('✅ تم تجميد الحساب بنجاح', 'success');
-            fetchMembershipRequests();
-        } else {
-            showToast(data.message, 'error');
-        }
-    } catch(err) {
-        showToast('حدث خطأ', 'error');
-    }
-}
-
 async function approveUser(id) {
     if(!confirm('هل أنت متأكد من تفعيل هذا الحساب؟ سيتمكن من رؤية الأسعار والشراء.')) return;
     try {
@@ -2934,7 +2856,7 @@ async function approveUser(id) {
         });
         const data = await res.json();
         if(data.success) {
-            showToast('✅ تم تفعيل الحساب بنجاح', 'success');
+            showToast('تم تفعيل الحساب بنجاح', 'success');
             fetchMembershipRequests();
         } else {
             showToast(data.message, 'error');
@@ -3280,7 +3202,7 @@ function openModal(p) {
   // Populate Brand Select Options
   const brandSelect = document.getElementById('f-brand');
   if (brandSelect) {
-      brandSelect.innerHTML = '<option value="">بدون ماركة</option>' +
+      brandSelect.innerHTML = '<option value="">-- اختر الماركة التجارية --</option>' +
           (adminBrands.brands || []).map(b => {
               const name = typeof b === 'string' ? b : (b.name || '');
               return `<option value="${name}">${name}</option>`;
@@ -3288,7 +3210,7 @@ function openModal(p) {
   }
   document.getElementById('f-brand').value = p?.brand || '';
 
-  document.getElementById('f-pieces-per-carton').value = p?.pieces_per_carton || '';
+  document.getElementById('f-pieces-per-carton').value = (p && p.pieces_per_carton) ? p.pieces_per_carton : '';
   document.getElementById('f-product-code').value = p?.product_code || '';
   document.getElementById('f-factory-code').value = p?.factory_code || '';
   document.getElementById('f-ref-note').value = p?.ref_note || '';
@@ -3333,9 +3255,11 @@ function editProduct(id) {
   if (p) { showPage('products',null); openModal(p); }
 }
 
-function saveProduct() {
-  if(typeof syncVariantsFromDOM === "function") syncVariantsFromDOM();
+async function saveProduct() {
+  if (typeof syncVariantsFromDOM === "function") syncVariantsFromDOM();
   const name = document.getElementById('f-name').value.trim();
+  const cat = document.getElementById('f-cat').value.trim();
+  const brand = document.getElementById('f-brand').value.trim();
   
   let multiplier = 1;
   if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
@@ -3346,26 +3270,65 @@ function saveProduct() {
   const price = isNaN(rawPrice) ? NaN : parseFloat((rawPrice / multiplier).toFixed(4));
   const rawCostPrice = parseFloat(document.getElementById('f-cost-price').value) || 0;
   const costPrice = parseFloat((rawCostPrice / multiplier).toFixed(4));
-  const rawOldPrice = parseFloat(document.getElementById('f-old-price').value) || null;
-  const oldPrice = rawOldPrice ? parseFloat((rawOldPrice / multiplier).toFixed(4)) : null;
+  const rawOldPrice = parseFloat(document.getElementById('f-old-price').value);
+  const oldPrice = isNaN(rawOldPrice) ? NaN : parseFloat((rawOldPrice / multiplier).toFixed(4));
 
   const stockStr = document.getElementById('f-stock').value;
   const stock = stockStr === '' ? null : parseInt(stockStr);
   const cartonPiecesStr = document.getElementById('f-pieces-per-carton').value;
   const piecesVal = parseInt(cartonPiecesStr);
-  const pieces_per_carton = isNaN(piecesVal) || piecesVal <= 1 ? 1 : piecesVal;
+  const pieces_per_carton = isNaN(piecesVal) || piecesVal < 1 ? 0 : piecesVal;
   const product_code = document.getElementById('f-product-code').value.trim();
   const factory_code = document.getElementById('f-factory-code').value.trim();
-  const brand = document.getElementById('f-brand').value;
   
-  if (!name || isNaN(price)) { showToast('⚠️ الاسم والسعر مطلوبان!','warn'); return; }
+  // 🔒 التحقق الصارم من الحقول الإجبارية
+  if (!name) { 
+    showToast('⚠️ يرجى إدخال اسم المنتج!','warn'); 
+    document.getElementById('f-name').focus(); 
+    return; 
+  }
+  if (!cat) { 
+    showToast('⚠️ يرجى اختيار أو كتابة تصنيف المنتج (إجباري)!','warn'); 
+    document.getElementById('f-cat').focus(); 
+    return; 
+  }
+  if (!brand) { 
+    showToast('⚠️ يرجى اختيار الماركة التجارية (إجباري)!','warn'); 
+    document.getElementById('f-brand').focus(); 
+    return; 
+  }
+  if (isNaN(price) || price <= 0) { 
+    showToast('⚠️ يرجى إدخال السعر الحالي للمنتج!','warn'); 
+    document.getElementById('f-price').focus(); 
+    return; 
+  }
+  if (isNaN(oldPrice) || oldPrice <= 0) { 
+    showToast('⚠️ يرجى إدخال السعر القديم (المشطوب - إجباري)!','warn'); 
+    document.getElementById('f-old-price').focus(); 
+    return; 
+  }
+  if (pieces_per_carton < 1) { 
+    showToast('⚠️ يرجى إدخال عدد القطع في الكرتونة (1 فأكثر - إجباري)!','warn'); 
+    document.getElementById('f-pieces-per-carton').focus(); 
+    return; 
+  }
+  if (!product_code) { 
+    showToast('⚠️ يرجى إدخال كود المنتج SKU (إجباري)!','warn'); 
+    document.getElementById('f-product-code').focus(); 
+    return; 
+  }
+  if (!factory_code) { 
+    showToast('⚠️ يرجى إدخال كود المصنع (إجباري)!','warn'); 
+    document.getElementById('f-factory-code').focus(); 
+    return; 
+  }
 
   const pToEdit = editingId ? adminProducts.find(x => String(x.id) === String(editingId)) : null;
   const product = {
-    id: editingId || (Date.now()),
+    id: editingId || Date.now(),
     name,
     desc: document.getElementById('f-desc').value.trim() || '',
-    cat: document.getElementById('f-cat').value.trim(),
+    cat,
     brand,
     badge: document.getElementById('f-badge').value,
     price,
@@ -3386,37 +3349,75 @@ function saveProduct() {
     variants: currentProductVariants.length > 0 ? JSON.parse(JSON.stringify(currentProductVariants)) : null,
   };
 
-  if (editingId) {
-    const idx = adminProducts.findIndex(p => String(p.id) === String(editingId));
-    if (idx !== -1) {
-      adminProducts[idx] = product;
+  const saveBtn = document.querySelector('.modal-footer .btn-save');
+  const oldText = saveBtn ? saveBtn.textContent : '';
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ جاري الحفظ والمزامنة...'; }
+
+  try {
+    const res = await fetch('api/save_products.php?_t=' + Date.now(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'upsert', product: product })
+    });
+    const data = await res.json();
+    if (data.success && data.products) {
+        adminProducts = data.products;
+        if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = data.products;
+        if (typeof Store !== 'undefined') Store.saveProducts(data.products);
+        showToast(editingId ? '✅ تم تحديث المنتج بنجاح!' : '✅ تم إضافة المنتج وحفظه بالسيرفر بنجاح!');
+        closeModal();
+        renderProducts();
+        updateStats();
     } else {
-      adminProducts.unshift(product);
+        showToast('❌ خطأ في الحفظ: ' + (data.message || 'فشل السيرفر'), 'error');
     }
-    showToast('✅ تم تحديث المنتج بنجاح!');
-  } else {
-    adminProducts.unshift(product);
-    showToast('✅ تم إضافة المنتج للمتجر!');
+  } catch (err) {
+    console.error("Save product error:", err);
+    showToast('❌ فشل الاتصال بالسيرفر أثناء الحفظ: ' + err, 'error');
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = oldText || '💾 حفظ المنتج بالنظام'; }
   }
-
-  saveAdminProducts();
-  closeModal();
-  renderProducts();
-  updateStats();
 }
 
-function deleteProduct(id) {
+async function deleteProduct(id) {
   if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
-  adminProducts = adminProducts.filter(p => String(p.id) !== String(id));
-  saveAdminProducts();
-  renderProducts();
-  updateStats();
-  showToast('🗑️ تم حذف المنتج');
+  try {
+    const res = await fetch('api/save_products.php?_t=' + Date.now(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id: id })
+    });
+    const data = await res.json();
+    if (data.success && data.products) {
+        adminProducts = data.products;
+        if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = data.products;
+        if (typeof Store !== 'undefined') Store.saveProducts(data.products);
+        renderProducts();
+        updateStats();
+        showToast('🗑️ تم حذف المنتج بنجاح');
+    } else {
+        showToast('❌ خطأ في الحذف: ' + (data.message || ''), 'error');
+    }
+  } catch (err) {
+    showToast('❌ فشل الاتصال بالسيرفر للحذف', 'error');
+  }
 }
 
-function toggleProduct(id, active) {
-  const p = adminProducts.find(x => String(x.id) === String(id));
-  if (p) { p.active=active; saveAdminProducts(); showToast(active?'✅ المنتج منشور':'⛔ المنتج مخفي'); }
+async function toggleProduct(id, active) {
+  try {
+    const res = await fetch('api/save_products.php?_t=' + Date.now(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle', id: id, active: active })
+    });
+    const data = await res.json();
+    if (data.success && data.products) {
+        adminProducts = data.products;
+        if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = data.products;
+        if (typeof Store !== 'undefined') Store.saveProducts(data.products);
+        showToast(active ? '✅ المنتج منشور' : '⛔ المنتج مخفي');
+    }
+  } catch(e) {}
 }
 
 function exportProducts() {
@@ -3682,10 +3683,17 @@ function printOrder(id) {
         itemsHtml = o.items.map(i => {
             const qty = i.quantity || i.qty || 1;
             const pcs = i.pieces_per_carton || 1;
-            const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
+            const originalProduct = (typeof adminProducts !== 'undefined' && Array.isArray(adminProducts)) 
+                ? adminProducts.find(p => 
+                    (i.id && String(p.id) === String(i.id)) || 
+                    (i.productId && String(p.id) === String(i.productId)) || 
+                    (i.product_id && String(p.id) === String(i.product_id)) || 
+                    (p.name && i.name && p.name.trim() === i.name.trim())
+                  ) 
+                : null;
             const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
             const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
-            const ref_note = originalProduct ? (originalProduct.ref_note || '') : '';
+            const ref_note = ((originalProduct && (originalProduct.ref_note || originalProduct.refNote)) || i.ref_note || i.refNote || '').toString().trim();
             const codeInfo = [
                 product_code ? `كود المنتج: ${product_code}` : '',
                 factory_code ? `كود المصنع: ${factory_code}` : '',
@@ -3694,9 +3702,10 @@ function printOrder(id) {
             return `
                 <tr>
                     <td style="padding:10px;border-bottom:1px solid #ddd;">
-                        ${i.name}
+                        <strong style="font-size:15px;">${i.name}</strong>
                         ${pcs > 1 ? `<br><small style="color:#666;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</small>` : ''}
                         ${codeInfo ? `<br><small style="color:#4361ee;font-weight:bold;">${codeInfo}</small>` : ''}
+                        ${ref_note ? `<br><span style="display:inline-block;margin-top:4px;padding:2px 8px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;color:#15803d;font-size:12px;font-weight:bold;">📋 ملاحظة المرجع: ${ref_note}</span>` : ''}
                     </td>
                     <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'}</td>
                     <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">₪${i.price}</td>
@@ -3786,10 +3795,17 @@ function viewOrder(id) {
         itemsHtml = o.items.map(i => {
             const qty = i.quantity || i.qty || 1;
             const pcs = i.pieces_per_carton || 1;
-            const originalProduct = (typeof adminProducts !== 'undefined') ? adminProducts.find(p => String(p.id) === String(i.id)) : null;
+            const originalProduct = (typeof adminProducts !== 'undefined' && Array.isArray(adminProducts)) 
+                ? adminProducts.find(p => 
+                    (i.id && String(p.id) === String(i.id)) || 
+                    (i.productId && String(p.id) === String(i.productId)) || 
+                    (i.product_id && String(p.id) === String(i.product_id)) || 
+                    (p.name && i.name && p.name.trim() === i.name.trim())
+                  ) 
+                : null;
             const product_code = i.product_code || (originalProduct ? originalProduct.product_code : '') || '';
             const factory_code = i.factory_code || (originalProduct ? originalProduct.factory_code : '') || '';
-            const ref_note = originalProduct ? (originalProduct.ref_note || '') : '';
+            const ref_note = ((originalProduct && (originalProduct.ref_note || originalProduct.refNote)) || i.ref_note || i.refNote || '').toString().trim();
             const codeInfo = [
                 product_code ? `كود المنتج: ${product_code}` : '',
                 factory_code ? `كود المصنع: ${factory_code}` : '',
@@ -3801,6 +3817,7 @@ function viewOrder(id) {
                       <strong>${i.name}</strong> <span style="color:var(--text3)">(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</span>
                       ${pcs > 1 ? `<div style="font-size:11px; color:#166534; margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
                       ${codeInfo ? `<div style="font-size:12px; color:var(--p); margin-top:2px; font-weight:bold;">${codeInfo}</div>` : ''}
+                      ${ref_note ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:4px;color:#10b981;font-size:11px;font-weight:bold;">📋 ملاحظة المرجع: ${ref_note}</div>` : ''}
                       ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0 ? `<div style="font-size:12px; color:var(--text3); margin-top:2px;">` + Object.entries(i.selectedVariants).map(([k,v]) => `${k}: ${v}`).join(' | ') + `</div>` : ''}
                     </div>
                     <div>₪${((i.price || 0) * qty * pcs).toFixed(2)}</div>

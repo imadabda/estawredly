@@ -42,7 +42,8 @@
         "id": "dusters",
         "title": "منفضة غبار",
         "img": "assets\/categories\/icon_duster.jpg",
-        "active": true
+        "active": true,
+        "linkedCategory": "منافض الغبار"
     },
     {
         "id": "cosmetics",
@@ -65,9 +66,10 @@
     },
     {
         "id": "foil",
-        "title": "قصدير",
+        "title": "ليفة جلي",
         "img": "assets\/categories\/icon_aluminum_foil.jpg",
-        "active": true
+        "active": true,
+        "linkedCategory": "اسفنجات جلي"
     },
     {
         "id": "plastic",

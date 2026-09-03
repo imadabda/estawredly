@@ -3,8 +3,9 @@
         "id": "nav_home",
         "title": "الرئيسية",
         "url": "index.html",
-        "type": "link",
-        "active": true
+        "type": "dropdown",
+        "active": true,
+        "subLinks": []
     },
     {
         "id": "nav_flat",
@@ -27,107 +28,243 @@
             {
                 "title": "مماسح مايكرو فايبر",
                 "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%A7%D9%8A%D9%83%D8%B1%D9%88%20%D9%81%D8%A7%D9%8A%D8%A8%D8%B1"
-            }
-        ]
-    },
-    {
-        "id": "nav_cotton",
-        "title": "مماسح قطنية",
-        "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%82%D8%B7%D9%86%D9%8A%D8%A9",
-        "type": "link"
-    },
-    {
-        "id": "nav_refills",
-        "title": "قطع غيار",
-        "url": "shop.html?cat=%D9%82%D8%B7%D8%B9%20%D8%BA%D9%8A%D8%A7%D8%B1",
-        "type": "link"
-    },
-    {
-        "id": "nav_wholesale",
-        "title": "عروض الجملة",
-        "url": "shop.html?cat=%D8%B9%D8%B1%D9%88%D8%B6%20%D8%A7%D9%84%D8%AC%D9%85%D9%84%D8%A9",
-        "type": "link",
-        "badge": "🔥",
-        "cssClass": "nav-a--sale"
-    },
-    {
-        "id": "nav_1785333520915",
-        "title": "منافض الغبار",
-        "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D9%81%D8%B6%20%D8%A7%D9%84%D8%BA%D8%A8%D8%A7%D8%B1",
-        "type": "link"
-    },
-    {
-        "id": "nav_1786297738906",
-        "title": "فراشي تنظيف",
-        "url": "shop.html?cat=%D9%81%D8%B1%D8%A7%D8%B4%D9%8A%20%D8%AA%D9%86%D8%B8%D9%8A%D9%81",
-        "type": "dropdown",
-        "subLinks": [
-            {
-                "title": "فرشاه متعددة لاستخدام",
-                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D9%87%20%D9%85%D8%AA%D8%B9%D8%AF%D8%AF%D8%A9%20%D9%84%D8%A7%D8%B3%D8%AA%D8%AE%D8%AF%D8%A7%D9%85"
             },
             {
-                "title": "فراشي مرحاض ",
-                "url": "shop.html?cat=%D9%81%D8%B1%D8%A7%D8%B4%D9%8A%20%D9%85%D8%B1%D8%AD%D8%A7%D8%B6%20"
-            }
-        ]
-    },
-    {
-        "id": "nav_1786221860835",
-        "title": "منظف نوافذ ",
-        "url": "shop.html?cat=%D9%85%D9%86%D8%B8%D9%81%20%D9%86%D9%88%D8%A7%D9%81%D8%B0",
-        "type": "dropdown",
-        "subLinks": [
-            {
-                "title": "تصنيف فرعي",
-                "url": "shop.html?cat=%D8%AA%D8%B5%D9%86%D9%8A%D9%81%20%D9%81%D8%B1%D8%B9%D9%8A"
-            }
-        ]
-    },
-    {
-        "id": "nav_1786374683978",
-        "title": "مقابض ",
-        "url": "shop.html?cat=%D9%85%D9%82%D8%A7%D8%A8%D8%B6%20",
-        "type": "dropdown",
-        "subLinks": [
-            {
-                "title": "مقابض معدنيه",
-                "url": "shop.html?cat=%D9%85%D9%82%D8%A7%D8%A8%D8%B6%20%D9%85%D8%B9%D8%AF%D9%86%D9%8A%D9%87"
-            }
-        ]
-    },
-    {
-        "id": "nav_1786374965257",
-        "title": "جاروف ",
-        "url": "shop.html?cat=%D8%AC%D8%A7%D8%B1%D9%88%D9%81%20",
-        "type": "dropdown",
-        "subLinks": [
-            {
-                "title": "جاروف مع فرشاي ",
-                "url": "shop.html?cat=%D8%AC%D8%A7%D8%B1%D9%88%D9%81%20%D9%85%D8%B9%20%D9%81%D8%B1%D8%B4%D8%A7%D9%8A%20"
+                "title": "اسفنجات جلي",
+                "url": "shop.html?cat=%D8%A7%D8%B3%D9%81%D9%86%D8%AC%D8%A7%D8%AA%20%D8%AC%D9%84%D9%8A"
             },
             {
-                "title": "جاروف مع مكنسه ",
-                "url": "shop.html?cat=%D8%AC%D8%A7%D8%B1%D9%88%D9%81%20%D9%85%D8%B9%20%D9%85%D9%83%D9%86%D8%B3%D9%87%20"
+                "title": "فرشاة ملابس",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D8%A9%20%D9%85%D9%84%D8%A7%D8%A8%D8%B3"
+            },
+            {
+                "title": "أكياس نفايات",
+                "url": "shop.html?cat=%D8%A3%D9%83%D9%8A%D8%A7%D8%B3%20%D9%86%D9%81%D8%A7%D9%8A%D8%A7%D8%AA"
+            },
+            {
+                "title": "فرشاة سرير",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D8%A9%20%D8%B3%D8%B1%D9%8A%D8%B1"
+            },
+            {
+                "title": "فرشاة أحذية",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D8%A9%20%D8%A3%D8%AD%D8%B0%D9%8A%D8%A9"
+            },
+            {
+                "title": "مماسح للزجاج",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%84%D9%84%D8%B2%D8%AC%D8%A7%D8%AC"
+            },
+            {
+                "title": "فرشاة إزلة غبار ",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D8%A9%20%D8%A5%D8%B2%D9%84%D8%A9%20%D8%BA%D8%A8%D8%A7%D8%B1%20"
+            },
+            {
+                "title": "فرشاة مرحاض",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D8%A9%20%D9%85%D8%B1%D8%AD%D8%A7%D8%B6"
+            },
+            {
+                "title": "مجرفة مع فرشاة",
+                "url": "shop.html?cat=%D9%85%D8%AC%D8%B1%D9%81%D8%A9%20%D9%85%D8%B9%20%D9%81%D8%B1%D8%B4%D8%A7%D8%A9"
+            },
+            {
+                "title": "مكانس",
+                "url": "shop.html?cat=%D9%85%D9%83%D8%A7%D9%86%D8%B3"
+            },
+            {
+                "title": "قشاطات",
+                "url": "shop.html?cat=%D9%82%D8%B4%D8%A7%D8%B7%D8%A7%D8%AA"
+            },
+            {
+                "title": "مناشف تنظيف ميكروفايبر",
+                "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D8%B4%D9%81%20%D8%AA%D9%86%D8%B8%D9%8A%D9%81%20%D9%85%D9%8A%D9%83%D8%B1%D9%88%D9%81%D8%A7%D9%8A%D8%A8%D8%B1"
+            },
+            {
+                "title": "منشفة أطباق",
+                "url": "shop.html?cat=%D9%85%D9%86%D8%B4%D9%81%D8%A9%20%D8%A3%D8%B7%D8%A8%D8%A7%D9%82"
+            },
+            {
+                "title": "منشفة تنظيف",
+                "url": "shop.html?cat=%D9%85%D9%86%D8%B4%D9%81%D8%A9%20%D8%AA%D9%86%D8%B8%D9%8A%D9%81"
+            },
+            {
+                "title": "قماش تنظيف",
+                "url": "shop.html?cat=%D9%82%D9%85%D8%A7%D8%B4%20%D8%AA%D9%86%D8%B8%D9%8A%D9%81"
+            },
+            {
+                "title": "رول إزالة الوبر",
+                "url": "shop.html?cat=%D8%B1%D9%88%D9%84%20%D8%A5%D8%B2%D8%A7%D9%84%D8%A9%20%D8%A7%D9%84%D9%88%D8%A8%D8%B1"
+            },
+            {
+                "title": "مكبس تسليك المرحاض",
+                "url": "shop.html?cat=%D9%85%D9%83%D8%A8%D8%B3%20%D8%AA%D8%B3%D9%84%D9%8A%D9%83%20%D8%A7%D9%84%D9%85%D8%B1%D8%AD%D8%A7%D8%B6"
+            },
+            {
+                "title": "حاملة صابون",
+                "url": "shop.html?cat=%D8%AD%D8%A7%D9%85%D9%84%D8%A9%20%D8%B5%D8%A7%D8%A8%D9%88%D9%86"
+            },
+            {
+                "title": "رف حمّام زاوية",
+                "url": "shop.html?cat=%D8%B1%D9%81%20%D8%AD%D9%85%D9%91%D8%A7%D9%85%20%D8%B2%D8%A7%D9%88%D9%8A%D8%A9"
             }
         ]
     },
     {
-        "id": "nav_1786879341405",
-        "title": "برداي",
-        "url": "shop.html?cat=%D8%A8%D8%B1%D8%AF%D8%A7%D9%8A",
+        "id": "nav_1787905567243",
+        "title": "بلاستيك و نايلون",
+        "url": "shop.html?cat=%D8%AA%D8%BA%D9%84%D9%8A%D9%81%20",
         "type": "dropdown",
         "subLinks": [
             {
-                "title": "اهوو",
-                "url": "shop.html?cat=%D8%A7%D9%87%D9%88%D9%88"
+                "title": "اكياس حفظ الطعام",
+                "url": "shop.html?cat=%D8%A7%D9%83%D9%8A%D8%A7%D8%B3%20%D8%AD%D9%81%D8%B8%20%D8%A7%D9%84%D8%B7%D8%B9%D8%A7%D9%85"
+            },
+            {
+                "title": "أكواب بلاستيك",
+                "url": "shop.html?cat=%D8%A3%D9%83%D9%88%D8%A7%D8%A8%20%D8%A8%D9%84%D8%A7%D8%B3%D8%AA%D9%8A%D9%83"
+            },
+            {
+                "title": "أدوات الطعام",
+                "url": "shop.html?cat=%D8%A3%D8%AF%D9%88%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B7%D8%B9%D8%A7%D9%85"
+            },
+            {
+                "title": "علبة تعبئة و غطي",
+                "url": "shop.html?cat=%D8%B9%D9%84%D8%A8%D8%A9%20%D8%AA%D8%B9%D8%A8%D8%A6%D8%A9%20%D9%88%20%D8%BA%D8%B7%D9%8A"
+            },
+            {
+                "title": "اكياس قمامه ",
+                "url": "shop.html?cat=%D8%A7%D9%83%D9%8A%D8%A7%D8%B3%20%D9%82%D9%85%D8%A7%D9%85%D9%87%20"
+            },
+            {
+                "title": "قفازات يد ",
+                "url": "shop.html?cat=%D9%82%D9%81%D8%A7%D8%B2%D8%A7%D8%AA%20%D9%8A%D8%AF%20"
             }
         ]
     },
     {
-        "id": "nav_1787217073468",
-        "title": "عماد",
-        "url": "shop.html?cat=%D8%B9%D9%85%D8%A7%D8%AF",
-        "type": "link"
+        "id": "nav_1788347929655",
+        "title": "كرتون",
+        "url": "shop.html?cat=%D9%83%D8%B1%D8%AA%D9%88%D9%86",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "أدوات الطعام ",
+                "url": "shop.html?cat=%D8%A3%D8%AF%D9%88%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B7%D8%B9%D8%A7%D9%85%20"
+            },
+            {
+                "title": "أكواب كرتون ",
+                "url": "shop.html?cat=%D8%A3%D9%83%D9%88%D8%A7%D8%A8%20%D9%83%D8%B1%D8%AA%D9%88%D9%86%20"
+            },
+            {
+                "title": "ورق زبده ",
+                "url": "shop.html?cat=%D9%88%D8%B1%D9%82%20%D8%B2%D8%A8%D8%AF%D9%87%20"
+            },
+            {
+                "title": "ورق خبز",
+                "url": "shop.html?cat=%D9%88%D8%B1%D9%82%20%D8%AE%D8%A8%D8%B2"
+            }
+        ]
+    },
+    {
+        "id": "nav_1788347929173",
+        "title": "ألمنيوم ",
+        "url": "shop.html?cat=%D8%A3%D9%84%D9%85%D9%86%D9%8A%D9%88%D9%85%20",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "ورق المنيوم (فويل)",
+                "url": "shop.html?cat=%D9%88%D8%B1%D9%82%20%D8%A7%D9%84%D9%85%D9%86%D9%8A%D9%88%D9%85%20(%D9%81%D9%88%D9%8A%D9%84)"
+            },
+            {
+                "title": "صواني ألمنيوم",
+                "url": "shop.html?cat=%D8%B5%D9%88%D8%A7%D9%86%D9%8A%20%D8%A3%D9%84%D9%85%D9%86%D9%8A%D9%88%D9%85"
+            },
+            {
+                "title": "صحون المنيوم",
+                "url": "shop.html?cat=%D8%B5%D8%AD%D9%88%D9%86%20%D8%A7%D9%84%D9%85%D9%86%D9%8A%D9%88%D9%85"
+            }
+        ]
+    },
+    {
+        "id": "nav_1788346681901",
+        "title": "نثريات",
+        "url": "shop.html?cat=%D9%86%D8%AB%D8%B1%D9%8A%D8%A7%D8%AA",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "كيس غسيل",
+                "url": "shop.html?cat=%D9%83%D9%8A%D8%B3%20%D8%BA%D8%B3%D9%8A%D9%84"
+            },
+            {
+                "title": "بطانية",
+                "url": "shop.html?cat=%D8%A8%D8%B7%D8%A7%D9%86%D9%8A%D8%A9"
+            },
+            {
+                "title": "مريول مطبخ",
+                "url": "shop.html?cat=%D9%85%D8%B1%D9%8A%D9%88%D9%84%20%D9%85%D8%B7%D8%A8%D8%AE"
+            },
+            {
+                "title": "قفازات فرن",
+                "url": "shop.html?cat=%D9%82%D9%81%D8%A7%D8%B2%D8%A7%D8%AA%20%D9%81%D8%B1%D9%86"
+            },
+            {
+                "title": "رول إزالة الوبر",
+                "url": "shop.html?cat=%D8%B1%D9%88%D9%84%20%D8%A5%D8%B2%D8%A7%D9%84%D8%A9%20%D8%A7%D9%84%D9%88%D8%A8%D8%B1"
+            }
+        ]
+    },
+    {
+        "id": "nav_1788347309846",
+        "title": "عنايه الشخصيه",
+        "url": "shop.html?cat=%D8%B9%D9%86%D8%A7%D9%8A%D9%87%20%D8%A7%D9%84%D8%B4%D8%AE%D8%B5%D9%8A%D9%87",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "ليفة استحمّام ",
+                "url": "shop.html?cat=%D9%84%D9%8A%D9%81%D8%A9%20%D8%A7%D8%B3%D8%AA%D8%AD%D9%85%D9%91%D8%A7%D9%85%20"
+            },
+            {
+                "title": "أعواد أسنان",
+                "url": "shop.html?cat=%D8%A3%D8%B9%D9%88%D8%A7%D8%AF%20%D8%A3%D8%B3%D9%86%D8%A7%D9%86"
+            },
+            {
+                "title": "خيط أسنان",
+                "url": "shop.html?cat=%D8%AE%D9%8A%D8%B7%20%D8%A3%D8%B3%D9%86%D8%A7%D9%86"
+            },
+            {
+                "title": "أعواد قطن",
+                "url": "shop.html?cat=%D8%A3%D8%B9%D9%88%D8%A7%D8%AF%20%D9%82%D8%B7%D9%86"
+            },
+            {
+                "title": "ربطة شعر",
+                "url": "shop.html?cat=%D8%B1%D8%A8%D8%B7%D8%A9%20%D8%B4%D8%B9%D8%B1"
+            },
+            {
+                "title": "مناشف و بشاكير",
+                "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D8%B4%D9%81%20%D9%88%20%D8%A8%D8%B4%D8%A7%D9%83%D9%8A%D8%B1"
+            }
+        ]
+    },
+    {
+        "id": "nav_1788347381519",
+        "title": "ادوات منزليه ",
+        "url": "shop.html?cat=%D8%A7%D8%AF%D9%88%D8%A7%D8%AA%20%D9%85%D9%86%D8%B2%D9%84%D9%8A%D9%87%20",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "علاقة ملابس",
+                "url": "shop.html?cat=%D8%B9%D9%84%D8%A7%D9%82%D8%A9%20%D9%85%D9%84%D8%A7%D8%A8%D8%B3"
+            }
+        ]
+    },
+    {
+        "id": "nav_1788347719321",
+        "title": "ستاندات و رفوف عرض",
+        "url": "shop.html?cat=%D8%B9%D9%84%D8%A8%20%D8%B9%D8%B1%D8%B6",
+        "type": "dropdown",
+        "subLinks": [
+            {
+                "title": "ستاندات و رفوف عرض Fannest",
+                "url": "shop.html?cat=%D8%B3%D8%AA%D8%A7%D9%86%D8%AF%D8%A7%D8%AA%20%D9%88%20%D8%B1%D9%81%D9%88%D9%81%20%D8%B9%D8%B1%D8%B6%20Fannest"
+            }
+        ]
     }
 ]

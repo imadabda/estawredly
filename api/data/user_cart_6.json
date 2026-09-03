@@ -1,0 +1,22 @@
+[
+    {
+        "id": 20,
+        "name": "رأس ممسحة قطنية بديل 60سم",
+        "price": 7.49,
+        "img": "product_images\/image86.png",
+        "qty": 1,
+        "pieces_per_carton": 48,
+        "product_code": "GSR-A011",
+        "factory_code": "E01"
+    },
+    {
+        "id": 1788059400930,
+        "name": "أكياس نفايات 10 أكياس في اللفة",
+        "price": 3.49,
+        "img": "product_images\/prod_1788059400930_0.jpg",
+        "qty": 1,
+        "pieces_per_carton": 54,
+        "product_code": "0761",
+        "factory_code": "E24"
+    }
+]
