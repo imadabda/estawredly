@@ -92,10 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = 'admin.php';
                         return;
                     }
+                    localStorage.setItem('authUser', JSON.stringify(data.user));
+                    window.authUser = data.user;
                     updateUIAfterLogin(data.user);
-                    if(window.closeModal) closeModal('auth');
-                    // Reload the page so the prices/locked products update
-                    setTimeout(() => window.location.reload(), 500);
+                    if (window.closeModal) closeModal('auth');
+                    if (typeof window.loadCartFromServer === 'function') {
+                        await window.loadCartFromServer();
+                    }
+                    setTimeout(() => window.location.reload(), 400);
                 } else {
                     showToast(data.message, 'error');
                 }
@@ -167,48 +171,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-window.authUser = null;
-
 // Check auth status on page load
 async function checkAuthStatus() {
     try {
         const res = await fetch('api/check_auth.php?t=' + Date.now());
         const data = await res.json();
-        if (data.loggedIn) {
+        if (data.loggedIn && data.user) {
             window.authUser = data.user;
+            try { localStorage.setItem('authUser', JSON.stringify(data.user)); } catch(e) {}
             updateUIAfterLogin(data.user);
         } else {
             window.authUser = null;
+            try { localStorage.removeItem('authUser'); } catch(e) {}
+            resetUIToLoggedOut();
         }
     } catch(err) {
         console.log("Not logged in");
         window.authUser = null;
+        try { localStorage.removeItem('authUser'); } catch(e) {}
+        resetUIToLoggedOut();
     }
     window.dispatchEvent(new Event('authLoaded'));
 }
 
+function resetUIToLoggedOut() {
+    const authBtn = document.getElementById('auth-btn');
+    if (authBtn) {
+        authBtn.onclick = (e) => {
+            if (e) e.preventDefault();
+            openModal('auth');
+        };
+        authBtn.title = 'تسجيل الدخول / إنشاء حساب';
+        authBtn.removeAttribute('data-logged-in');
+    }
+    const pLink = document.getElementById('hdr-profile-link');
+    if (pLink) pLink.remove();
+
+    const hdrUser = document.querySelector('.hdr-user');
+    if (hdrUser) {
+        hdrUser.innerHTML = `
+            <a href="#" onclick="openModal('auth');return false;" class="hdr-link-btn">دخول / تسجيل</a>
+        `;
+    }
+}
+
 // Update UI
 function updateUIAfterLogin(user) {
+    if (!user || !user.id) return;
     window.authUser = user;
+    try {
+        localStorage.setItem('authUser', JSON.stringify(user));
+    } catch(e) {}
     window.dispatchEvent(new Event('authLoaded'));
+
+    // 1. Hook Header User Icon Button to open profile.html
+    const authBtn = document.getElementById('auth-btn');
+    if (authBtn) {
+        authBtn.onclick = (e) => {
+            if (e) e.preventDefault();
+            window.location.href = 'profile.html';
+        };
+        authBtn.title = 'حسابي (' + (user.name ? user.name.split(' ')[0] : '') + ')';
+        authBtn.setAttribute('data-logged-in', 'true');
+    }
+
+    // 2. Add 'حسابي' link to top bar
+    const hdrLinks = document.querySelector('.hdr-links');
+    if (hdrLinks && !document.getElementById('hdr-profile-link')) {
+        const pLink = document.createElement('a');
+        pLink.id = 'hdr-profile-link';
+        pLink.href = 'profile.html';
+        pLink.style.fontWeight = 'bold';
+        pLink.style.color = '#2563eb';
+        pLink.innerHTML = `👤 حسابي (${user.name ? user.name.split(' ')[0] : ''})`;
+        hdrLinks.appendChild(pLink);
+    }
+
+    // 3. Update .hdr-user if exists
     const hdrUser = document.querySelector('.hdr-user');
     if(hdrUser) {
         hdrUser.innerHTML = `
-            <span style="font-weight:bold; color:var(--p)">👤 أهلاً ${user.name.split(' ')[0]}</span>
+            <a href="profile.html" style="font-weight:bold; color:var(--p); text-decoration:none;">👤 حسابي (${user.name.split(' ')[0]})</a>
             <span>|</span>
             ${user.role === 'admin' ? '<a href="admin.php" class="hdr-link-btn" style="color:#f59e0b;font-weight:700;">⚙️ الإدارة</a> <span>|</span>' : ''}
             <a href="#" onclick="logoutUser()" class="hdr-link-btn" style="color:#ef4444;">خروج</a>
         `;
+    }
+
+    // 4. Load cloud cart
+    if (typeof window.loadCartFromServer === 'function') {
+        window.loadCartFromServer();
     }
 }
 
 // Logout
 async function logoutUser() {
     try {
+        localStorage.removeItem('authUser');
+        localStorage.removeItem('store_cart');
         await fetch('api/logout.php');
-        window.location.reload();
+        window.location.href = 'index.html';
     } catch(err) {
-        window.location.reload();
+        window.location.href = 'index.html';
     }
 }
 

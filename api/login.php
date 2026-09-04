@@ -18,8 +18,8 @@ if (empty($email) || empty($password)) {
 }
 
 try {
-    // جلب المستخدم بناءً على البريد الإلكتروني (بما في ذلك الحالة)
-    $stmt = $pdo->prepare("SELECT id, name, email, password, role, status FROM users WHERE email = ?");
+    // جلب المستخدم بناءً على البريد الإلكتروني (بما في ذلك الحالة ورقم الهاتف)
+    $stmt = $pdo->prepare("SELECT id, name, email, password, phone, role, status FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -42,6 +42,7 @@ try {
             // بيانات صحيحة -> حفظ الجلسة
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
+            $_SESSION['user_phone'] = $user['phone'] ?? '';
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['user_status'] = $user['status'] ?? 'active';
@@ -50,8 +51,10 @@ try {
                 'success' => true,
                 'message' => 'تم تسجيل الدخول بنجاح',
                 'user' => [
+                    'id' => intval($user['id']),
                     'name' => $user['name'],
                     'email' => $user['email'],
+                    'phone' => $user['phone'] ?? '',
                     'role' => $user['role'],
                     'status' => $user['status'] ?? 'active'
                 ]

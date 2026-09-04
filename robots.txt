@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.php
+Disallow: /admin-login.php
+Disallow: /api/
+
+Sitemap: https://estawredli.com/sitemap.xml

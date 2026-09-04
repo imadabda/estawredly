@@ -34,6 +34,67 @@ try {
   console.error(e);
 }
 
+/* ══════════════════════════════════════════════
+   USER CART CLOUD SYNC (CROSS-DEVICE PERSISTENCE)
+══════════════════════════════════════════════ */
+let cartSyncTimeout = null;
+window.syncCartToServer = function() {
+  const user = window.authUser || (localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser')) : null);
+  if (!user || !user.id) return;
+  clearTimeout(cartSyncTimeout);
+  cartSyncTimeout = setTimeout(async () => {
+    try {
+      const cartData = (typeof state !== 'undefined' && state.cart) ? state.cart : JSON.parse(localStorage.getItem('store_cart') || '[]');
+      await fetch('api/save_user_cart.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          cart: cartData
+        })
+      });
+      console.log('🛒 Cart synced to cloud for user #' + user.id, cartData.length);
+    } catch (e) {
+      console.error('Failed to sync cart to server:', e);
+    }
+  }, 150);
+};
+
+window.loadCartFromServer = async function() {
+  const user = window.authUser || (localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser')) : null);
+  if (!user || !user.id) return;
+  try {
+    const res = await fetch(`api/get_user_cart.php?user_id=${user.id}&t=${Date.now()}`);
+    const data = await res.json();
+    if (data.success && Array.isArray(data.cart)) {
+      if (data.cart.length > 0) {
+        if (typeof state !== 'undefined') {
+          state.cart = data.cart;
+          localStorage.setItem('store_cart', JSON.stringify(state.cart));
+          if (typeof updateCartUI === 'function') updateCartUI();
+        } else {
+          localStorage.setItem('store_cart', JSON.stringify(data.cart));
+        }
+        window.dispatchEvent(new Event('cartUpdated'));
+        console.log('🛒 Loaded ' + data.cart.length + ' items from cloud cart');
+      } else {
+        const localCart = (typeof state !== 'undefined' && state.cart) ? state.cart : JSON.parse(localStorage.getItem('store_cart') || '[]');
+        if (localCart.length > 0) {
+          window.syncCartToServer();
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load cart from server:', e);
+  }
+};
+
+window.addEventListener('authLoaded', () => {
+  if (typeof window.loadCartFromServer === 'function') {
+    window.loadCartFromServer();
+  }
+});
+
 // STATE
 const state = {
   cart: initialCart,
@@ -41,7 +102,12 @@ const state = {
   currentTab: 'all',
   slideIndex: 0,
   slideTimer: null,
-  saveCart() { localStorage.setItem('store_cart', JSON.stringify(this.cart)); },
+  saveCart() { 
+    localStorage.setItem('store_cart', JSON.stringify(this.cart));
+    if (typeof window.syncCartToServer === 'function') {
+      window.syncCartToServer();
+    }
+  },
   saveWish() { localStorage.setItem('store_wish', JSON.stringify([...this.wishlist])); },
   cartTotal() { return this.cart.reduce((s,i)=>s+i.price*i.qty*(i.pieces_per_carton||1), 0); },
   cartCount() { return this.cart.reduce((s,i)=>s+i.qty, 0); },
@@ -305,9 +371,10 @@ function closeDrawer(name) {
   document.body.style.overflow='';
 }
 function openModal(name) {
-  document.getElementById(name+'-mask').classList.add('open');
-  const m=document.getElementById(name+'-modal')||document.getElementById(name+'-modal');
-  if(m) m.classList.add('open');
+  const mask = document.getElementById(name+'-mask');
+  if (mask) mask.classList.add('open');
+  const m = document.getElementById(name+'-modal');
+  if (m) m.classList.add('open');
   document.body.style.overflow='hidden';
 }
 function closeModal(name) {
@@ -1100,4 +1167,4 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-document.addEventListener('DOMContentLoaded', initPopupBanner);
+window.addEventListener('load', () => { setTimeout(initPopupBanner, 3500); });

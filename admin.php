@@ -1308,35 +1308,77 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
 
-      <!-- ══ CUSTOMERS ══ -->
+      <!-- ══ CUSTOMERS & MEMBERS ══ -->
       <div class="page" id="page-customers">
         <div class="page-header">
           <div>
-            <div class="breadcrumb-admin">المتجر <span>›</span> العملاء</div>
-            <h1 class="page-title">إدارة الأعضاء والعملاء</h1>
-            <p class="page-sub" id="customers-page-sub">يتم التحميل...</p>
+            <div class="breadcrumb-admin">المتجر <span>›</span> الأعضاء والعملاء</div>
+            <h1 class="page-title">👥 إدارة الأعضاء والعملاء</h1>
+            <p class="page-sub" id="customers-page-sub">إدارة كافة المشتركين والمشترين وطلبات العضوية</p>
           </div>
         </div>
         
-        <div class="tabs-admin" style="display:flex; gap:12px; margin-bottom:20px;">
-            <button class="btn-add" id="tab-requests" onclick="switchCustomerTab('requests')" style="background:var(--p); border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:#fff;">طلبات العضوية (قيد الانتظار)</button>
-            <button class="btn-add" id="tab-active" onclick="switchCustomerTab('active')" style="background:transparent; border:1px solid var(--border); padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">العملاء (المشترين)</button>
+        <div class="tabs-admin" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+            <button class="btn-add" id="tab-registered" onclick="switchCustomerTab('registered')" style="background:var(--p); border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold; color:#fff;">👥 المشتركون المسجلون (<span id="count-registered">0</span>)</button>
+            <button class="btn-add" id="tab-active" onclick="switchCustomerTab('active')" style="background:transparent; border:1px solid var(--border); padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">🛒 العملاء المشترون (<span id="count-buyers">0</span>)</button>
+            <button class="btn-add" id="tab-requests" onclick="switchCustomerTab('requests')" style="background:transparent; border:1px solid var(--border); padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold; color:var(--text);">⏳ طلبات العضوية (<span id="count-requests">0</span>)</button>
         </div>
 
-        <div class="table-card" id="view-requests">
+        <!-- 1. Registered Users Table -->
+        <div class="table-card" id="view-registered">
+          <div class="toolbar" style="margin-bottom:15px;">
+            <input type="text" id="registered-users-search" class="search-field" placeholder="🔍 بحث بالاسم أو البريد أو الهاتف..." oninput="renderRegisteredUsers()"/>
+          </div>
           <div style="overflow-x:auto">
             <table>
-              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
-              <tbody id="customers-requests-body"></tbody>
+              <thead>
+                <tr>
+                  <th>العضو</th>
+                  <th>البريد الإلكتروني</th>
+                  <th>رقم الهاتف</th>
+                  <th>تاريخ التسجيل</th>
+                  <th>الحالة</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="registered-users-body"></tbody>
             </table>
           </div>
         </div>
 
+        <!-- 2. Buyers / Customers with Orders Table -->
         <div class="table-card" id="view-active" style="display:none;">
           <div style="overflow-x:auto">
             <table>
-              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>المدينة</th><th>الطلبيات</th><th>الإنفاق الكلي</th><th>أول طلبية</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>العميل</th>
+                  <th>البريد الإلكتروني</th>
+                  <th>منطقة التوصيل</th>
+                  <th>عدد الطلبيات</th>
+                  <th>إجمالي الإنفاق</th>
+                  <th>تاريخ أول طلب</th>
+                </tr>
+              </thead>
               <tbody id="customers-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. Pending Membership Requests Table -->
+        <div class="table-card" id="view-requests" style="display:none;">
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>مقدم الطلب</th>
+                  <th>البريد الإلكتروني</th>
+                  <th>رقم الهاتف</th>
+                  <th>تاريخ الطلب</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="customers-requests-body"></tbody>
             </table>
           </div>
         </div>
@@ -2785,22 +2827,28 @@ async function deleteOrder(id) {
 let allRegisteredUsers = [];
 
 function switchCustomerTab(tab) {
-    document.getElementById('tab-requests').style.background = tab === 'requests' ? 'var(--p)' : 'transparent';
-    document.getElementById('tab-requests').style.border = tab === 'requests' ? 'none' : '1px solid var(--border)';
-    
-    document.getElementById('tab-active').style.background = tab === 'active' ? 'var(--p)' : 'transparent';
-    document.getElementById('tab-active').style.border = tab === 'active' ? 'none' : '1px solid var(--border)';
-    
-    document.getElementById('view-requests').style.display = tab === 'requests' ? 'block' : 'none';
-    document.getElementById('view-active').style.display = tab === 'active' ? 'block' : 'none';
+    const tabs = ['registered', 'active', 'requests'];
+    tabs.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        const view = document.getElementById('view-' + t);
+        if (btn) {
+            btn.style.background = t === tab ? 'var(--p)' : 'transparent';
+            btn.style.border = t === tab ? 'none' : '1px solid var(--border)';
+            btn.style.color = t === tab ? '#fff' : 'var(--text)';
+        }
+        if (view) {
+            view.style.display = t === tab ? 'block' : 'none';
+        }
+    });
 }
 
 async function fetchMembershipRequests() {
     try {
-        const res = await fetch('api/get_users.php');
+        const res = await fetch('api/get_users.php?t=' + Date.now());
         const data = await res.json();
-        if(data.success) {
+        if (data.success && Array.isArray(data.users)) {
             allRegisteredUsers = data.users;
+            renderRegisteredUsers();
             renderMembershipRequests();
         }
     } catch(err) {
@@ -2808,12 +2856,74 @@ async function fetchMembershipRequests() {
     }
 }
 
+function renderRegisteredUsers() {
+    const body = document.getElementById('registered-users-body');
+    const countEl = document.getElementById('count-registered');
+    if (!body) return;
+    
+    // All users except admin
+    let members = allRegisteredUsers.filter(u => u.role !== 'admin');
+    if (countEl) countEl.textContent = members.length;
+    
+    const q = (document.getElementById('registered-users-search')?.value || '').trim().toLowerCase();
+    if (q) {
+        members = members.filter(u => 
+            (u.name && u.name.toLowerCase().includes(q)) ||
+            (u.email && u.email.toLowerCase().includes(q)) ||
+            (u.phone && u.phone.toLowerCase().includes(q))
+        );
+    }
+    
+    if (!members.length) {
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:40px">لا يوجد مشتركون مسجلون ${q ? 'مطابقين للبحث' : ''}</td></tr>`;
+        return;
+    }
+    
+    body.innerHTML = members.map(u => {
+        const isActive = u.status === 'active';
+        const statusBadge = isActive 
+            ? `<span style="background:rgba(16,185,129,0.15);color:#10b981;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;">نشط ✅</span>`
+            : u.status === 'pending'
+            ? `<span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;">قيد الانتظار ⏳</span>`
+            : `<span style="background:rgba(239,68,68,0.15);color:#ef4444;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;">مجمد ⛔</span>`;
+            
+        const toggleBtn = isActive
+            ? `<button onclick="toggleUserStatus(${u.id}, 'suspended')" title="تجميد الحساب" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;">⏸️ تجميد</button>`
+            : `<button onclick="toggleUserStatus(${u.id}, 'active')" title="تفعيل الحساب" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.3);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;">▶️ تفعيل</button>`;
+            
+        const deleteBtn = `<button onclick="deleteUserAccount(${u.id}, '${(u.name || '').replace(/'/g, "\\'")}')" title="حذف الحساب نهائياً" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;margin-right:4px;">🗑️ حذف</button>`;
+
+        return `
+        <tr>
+          <td>
+            <div class="order-customer">
+                <div class="oc-av" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">${(u.name && u.name[0]) || '?'}</div>
+                <div>
+                    <div style="font-weight:700">${u.name || '-'}</div>
+                </div>
+            </div>
+          </td>
+          <td style="color:var(--text2)">${u.email || '-'}</td>
+          <td style="color:var(--text2)">${u.phone || '-'}</td>
+          <td style="color:var(--text3);font-size:12px;">${u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-'}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display:flex;align-items:center;">
+              ${toggleBtn}
+              ${deleteBtn}
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+}
+
 function renderMembershipRequests() {
     const body = document.getElementById('customers-requests-body');
+    const countEl = document.getElementById('count-requests');
     if (!body) return;
     
     const pendingUsers = allRegisteredUsers.filter(u => u.status === 'pending' && u.role === 'customer');
-    document.getElementById('tab-requests').textContent = `طلبات العضوية (${pendingUsers.length})`;
+    if (countEl) countEl.textContent = pendingUsers.length;
     
     const badge = document.getElementById('pending-users-badge');
     if (badge) {
@@ -2834,17 +2944,20 @@ function renderMembershipRequests() {
     <tr>
       <td>
         <div class="order-customer">
-            <div class="oc-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">${u.name[0]||'?'}</div>
+            <div class="oc-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">${(u.name && u.name[0]) || '?'}</div>
             <div>
-                <div style="font-weight:700">${u.name}</div>
+                <div style="font-weight:700">${u.name || '-'}</div>
             </div>
         </div>
       </td>
-      <td style="color:var(--text3)">${u.email}</td>
-      <td style="color:var(--text3)">${u.phone || '-'}</td>
-      <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('ar-SA')}</td>
+      <td style="color:var(--text2)">${u.email || '-'}</td>
+      <td style="color:var(--text2)">${u.phone || '-'}</td>
+      <td style="color:var(--text3)">${u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '-'}</td>
       <td>
-        <button class="print-btn" style="background:#10b981; color:#fff; border:none;" onclick="approveUser(${u.id})">✅ قبول وتفعيل</button>
+        <div style="display:flex;gap:6px;">
+          <button class="print-btn" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:6px; cursor:pointer;" onclick="approveUser(${u.id})">✅ قبول وتفعيل</button>
+          <button class="del-btn" style="background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="deleteUserAccount(${u.id}, '${(u.name || '').replace(/'/g, "\\'")}')">❌ رفض وحذف</button>
+        </div>
       </td>
     </tr>
     `).join('');
@@ -2860,13 +2973,54 @@ async function approveUser(id) {
         });
         const data = await res.json();
         if(data.success) {
-            showToast('تم تفعيل الحساب بنجاح', 'success');
+            showToast('✅ تم تفعيل الحساب بنجاح');
             fetchMembershipRequests();
         } else {
-            showToast(data.message, 'error');
+            showToast('❌ ' + data.message, 'error');
         }
     } catch(err) {
-        showToast('حدث خطأ', 'error');
+        showToast('❌ حدث خطأ في الاتصال', 'error');
+    }
+}
+
+async function toggleUserStatus(id, newStatus) {
+    const actionName = newStatus === 'active' ? 'تفعيل' : 'تجميد';
+    if (!confirm(`هل أنت متأكد من ${actionName} هذا الحساب؟`)) return;
+    try {
+        const res = await fetch('api/approve_user.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({user_id: id, status: newStatus})
+        });
+        const data = await res.json();
+        if(data.success) {
+            showToast(`✅ تم ${actionName} الحساب بنجاح`);
+            fetchMembershipRequests();
+        } else {
+            showToast('❌ ' + data.message, 'error');
+        }
+    } catch(err) {
+        showToast('❌ حدث خطأ في الاتصال', 'error');
+    }
+}
+
+async function deleteUserAccount(id, name) {
+    if (!confirm(`هل أنت متأكد من حذف حساب العضو "${name}" نهائياً من المتجر؟`)) return;
+    try {
+        const res = await fetch('api/delete_user.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({user_id: id})
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('🗑️ تم حذف الحساب نهائياً');
+            fetchMembershipRequests();
+        } else {
+            showToast('❌ ' + data.message, 'error');
+        }
+    } catch(err) {
+        showToast('❌ حدث خطأ في الاتصال', 'error');
     }
 }
 
@@ -2930,6 +3084,8 @@ function renderCustomers() {
   // Update customers count
   const el = document.querySelector('#customers-page-sub');
   if (el) el.textContent = `${users.length} عميل قاموا بالشراء`;
+  const countBuyersEl = document.getElementById('count-buyers');
+  if (countBuyersEl) countBuyersEl.textContent = users.length;
 }
 
 
@@ -3698,13 +3854,22 @@ function printOrder(id) {
                 factory_code ? `كود المصنع: ${factory_code}` : '',
                 ref_note ? `الرقم المرجعي: ${ref_note}` : ''
             ].filter(Boolean).join(' | ');
+            const pId = (originalProduct && originalProduct.id) || i.id || i.productId || i.product_id || 1;
+            const pImg = (originalProduct && originalProduct.img) || i.img || 'logo.jpg';
             return `
                 <tr>
                     <td style="padding:10px;border-bottom:1px solid #ddd;">
-                        <strong style="font-size:15px;">${i.name}</strong>
-                        ${pcs > 1 ? `<br><small style="color:#666;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</small>` : ''}
-                        ${codeInfo ? `<br><small style="color:#4361ee;font-weight:bold;">${codeInfo}</small>` : ''}
-                        ${ref_note ? `<br><span style="display:inline-block;margin-top:4px;padding:2px 8px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;color:#15803d;font-size:12px;font-weight:bold;">📋 ملاحظة المرجع: ${ref_note}</span>` : ''}
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <img src="${pImg}" style="width:42px;height:42px;object-fit:cover;border-radius:6px;border:1px solid #eee;flex-shrink:0;" />
+                            <div>
+                                <a href="product.html?id=${pId}" target="_blank" style="font-size:15px;font-weight:bold;color:#1e293b;text-decoration:none;" title="فتح صفحة المنتج">
+                                    ${i.name} <span style="font-size:11px;color:#3b82f6;">🔗</span>
+                                </a>
+                                ${pcs > 1 ? `<br><small style="color:#666;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</small>` : ''}
+                                ${codeInfo ? `<br><small style="color:#4361ee;font-weight:bold;">${codeInfo}</small>` : ''}
+                                ${ref_note ? `<br><span style="display:inline-block;margin-top:4px;padding:2px 8px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;color:#15803d;font-size:12px;font-weight:bold;">📋 ملاحظة المرجع: ${ref_note}</span>` : ''}
+                            </div>
+                        </div>
                     </td>
                     <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'}</td>
                     <td style="padding:10px;border-bottom:1px solid #ddd;text-align:center;">₪${i.price}</td>
@@ -3810,16 +3975,26 @@ function viewOrder(id) {
                 factory_code ? `كود المصنع: ${factory_code}` : '',
                 ref_note ? `الرقم المرجعي: ${ref_note}` : ''
             ].filter(Boolean).join(' | ');
+            const pId = (originalProduct && originalProduct.id) || i.id || i.productId || i.product_id || 1;
+            const pImg = (originalProduct && originalProduct.img) || i.img || 'logo.jpg';
             return `
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-                    <div>
-                      <strong>${i.name}</strong> <span style="color:var(--text3)">(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</span>
-                      ${pcs > 1 ? `<div style="font-size:11px; color:#166534; margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
-                      ${codeInfo ? `<div style="font-size:12px; color:var(--p); margin-top:2px; font-weight:bold;">${codeInfo}</div>` : ''}
-                      ${ref_note ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:4px;color:#10b981;font-size:11px;font-weight:bold;">📋 ملاحظة المرجع: ${ref_note}</div>` : ''}
-                      ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0 ? `<div style="font-size:12px; color:var(--text3); margin-top:2px;">` + Object.entries(i.selectedVariants).map(([k,v]) => `${k}: ${v}`).join(' | ') + `</div>` : ''}
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <a href="product.html?id=${pId}" target="_blank" title="عرض صفحة المنتج">
+                        <img src="${pImg}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:var(--bg2);flex-shrink:0;" />
+                      </a>
+                      <div>
+                        <a href="product.html?id=${pId}" target="_blank" style="font-weight:700;color:var(--p);text-decoration:none;display:inline-flex;align-items:center;gap:4px;" title="انقر لفتح صفحة المنتج في تبويب جديد">
+                          ${i.name} <span style="font-size:12px;color:var(--blue);">↗️</span>
+                        </a>
+                        <span style="color:var(--text3);font-size:13px;">(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</span>
+                        ${pcs > 1 ? `<div style="font-size:11px; color:#166534; margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
+                        ${codeInfo ? `<div style="font-size:12px; color:var(--p); margin-top:2px; font-weight:bold;">${codeInfo}</div>` : ''}
+                        ${ref_note ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:4px;color:#10b981;font-size:11px;font-weight:bold;">📋 ملاحظة المرجع: ${ref_note}</div>` : ''}
+                        ${i.selectedVariants && Object.keys(i.selectedVariants).length > 0 ? `<div style="font-size:12px; color:var(--text3); margin-top:2px;">` + Object.entries(i.selectedVariants).map(([k,v]) => `${k}: ${v}`).join(' | ') + `</div>` : ''}
+                      </div>
                     </div>
-                    <div>₪${((i.price || 0) * qty * pcs).toFixed(2)}</div>
+                    <div style="font-weight:800;color:#fff;font-size:15px;">₪${((i.price || 0) * qty * pcs).toFixed(2)}</div>
                 </div>
             `;
         }).join('');

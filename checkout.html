@@ -45,19 +45,7 @@
 
   <div class="container checkout-wrap">
     <form id="checkout-form">
-      <div class="checkout-card">
-        <h2 class="checkout-title">🧾 ملخص الطلب</h2>
-        <div class="checkout-items" id="co-items"></div>
-        <div class="ci-row" style="margin-top:12px">
-          <span>التوصيل:</span>
-          <span id="co-shipping">₪0</span>
-        </div>
-        <div class="ci-row" style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px; font-weight:800; color:var(--p)">
-          <span>المجموع الكلي:</span>
-          <span id="co-total">₪0</span>
-        </div>
-      </div>
-
+      <!-- 1. تفاصيل التوصيل -->
       <div class="checkout-card">
         <h2 class="checkout-title">📍 تفاصيل التوصيل</h2>
         <div class="form-group">
@@ -76,13 +64,27 @@
         </div>
         <div class="form-group">
           <label>المدينة / العنوان بالتفصيل</label>
-          <textarea id="co-address" rows="3" required></textarea>
+          <textarea id="co-address" rows="3" required placeholder="المدينة، الشارع، المعلم المميز..."></textarea>
         </div>
         <div class="form-group">
           <label>ملاحظات إضافية (اختياري)</label>
-          <textarea id="co-notes" rows="2"></textarea>
+          <textarea id="co-notes" rows="2" placeholder="أي تفاصيل خاصة بتسليم الطلب..."></textarea>
         </div>
-        <button type="submit" class="btn-submit">تأكيد الطلب 🚀</button>
+      </div>
+
+      <!-- 2. ملخص الطلب -->
+      <div class="checkout-card">
+        <h2 class="checkout-title">🧾 ملخص الطلب</h2>
+        <div class="checkout-items" id="co-items"></div>
+        <div class="ci-row" style="margin-top:14px">
+          <span>التوصيل:</span>
+          <span id="co-shipping">₪0</span>
+        </div>
+        <div class="ci-row" style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px; font-weight:800; color:var(--p); font-size:18px;">
+          <span>المجموع الكلي:</span>
+          <span id="co-total">₪0</span>
+        </div>
+        <button type="submit" class="btn-submit" style="margin-top:20px;">تأكيد الطلب 🚀</button>
       </div>
     </form>
 
@@ -127,8 +129,8 @@
 
   <div id="toast-wrap"></div>
 
-  <script src="auth.js?v=1785802153537"></script>
-<script src="main.js?v=20260820_v3"></script>
+  <script src="auth.js?v=20260904_v2"></script>
+  <script src="main.js?v=20260904_v2"></script>
   <script>
     window.addEventListener('authLoaded', async () => {
       if (typeof Store !== 'undefined') {
@@ -190,6 +192,16 @@
       };
       
       updateTotalWithShipping(); // Init
+
+      if (window.authUser) {
+        if (!document.getElementById(co-name).value && window.authUser.name) {
+          document.getElementById(co-name).value = window.authUser.name;
+        }
+        if (!document.getElementById(co-phone).value && window.authUser.phone) {
+          document.getElementById(co-phone).value = window.authUser.phone;
+        }
+      }
+
 
       // 3. (تم إزالة التحقق من تسجيل الدخول - يمكن لأي شخص الطلب)
 

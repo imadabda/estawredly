@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الملف الشخصي وحسابي | إستوردلي</title>
+  <meta name="description" content="إدارة حسابك، طلبياتك السابقة، وسلتك المحفوظة في متجر إستوردلي."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script src="products_db.js?v=1785802153537"></script>
+  <script src="store.js?v=20260820_v3"></script>
+  <link rel="stylesheet" href="style.css?v=20260820_v3"/>
+  <link rel="stylesheet" href="enhancements.css?v=1785802153537"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <style>
+    .profile-container { max-width: 1080px; margin: 40px auto 80px; padding: 0 20px; }
+    .profile-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+      border-radius: 20px; padding: 32px; color: #fff; display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px; box-shadow: 0 10px 30px rgba(15,23,42,0.15); margin-bottom: 30px;
+    }
+    .profile-user-info { display: flex; align-items: center; gap: 20px; }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #fff;
+      border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .profile-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+    .profile-meta { font-size: 14px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .profile-status-badge {
+      background: rgba(16,185,129,0.2); color: #34d399; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1px solid rgba(16,185,129,0.4);
+    }
+    .profile-logout-btn {
+      background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3);
+      padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .profile-logout-btn:hover { background: #ef4444; color: #fff; }
+    
+    .profile-nav-tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--gray2); padding-bottom: 12px; margin-bottom: 30px; overflow-x: auto; }
+    .p-tab-btn {
+      padding: 12px 22px; border-radius: 12px; border: none; background: transparent; font-family: inherit; font-size: 15px; font-weight: 700;
+      color: var(--gray6); cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 8px;
+    }
+    .p-tab-btn.active { background: var(--p); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+    
+    .profile-card { background: #fff; border-radius: 16px; border: 1px solid var(--gray2); padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
+    .profile-card-title { font-size: 18px; font-weight: 800; color: var(--gray9); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    
+    .profile-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media(max-width: 768px) { .profile-form-grid { grid-template-columns: 1fr; } }
+    .p-input-group label { display: block; font-size: 13.5px; font-weight: 700; color: var(--gray7); margin-bottom: 8px; }
+    .p-input-group input, .p-input-group textarea {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--gray3); border-radius: 10px; font-family: inherit; font-size: 14px; transition: border-color 0.2s;
+    }
+    .p-input-group input:focus, .p-input-group textarea:focus { border-color: var(--p); outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .p-btn-save { background: var(--p); color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-weight: 800; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+    .p-btn-save:hover { opacity: 0.9; }
+
+    /* Orders list */
+    .order-item-card { border: 1px solid var(--gray2); border-radius: 12px; padding: 18px; margin-bottom: 16px; transition: all 0.2s; }
+    .order-item-card:hover { border-color: var(--p); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .order-header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gray2); padding-bottom: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="hdr-main" style="box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:15px 0;">
+      <a href="index.html" class="logo" style="font-size:24px; font-weight:900; text-decoration:none; color:var(--gray9);">إستوردلي <span style="color:var(--p)">.</span></a>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <a href="shop.html" style="color:var(--gray7); text-decoration:none; font-weight:700;">المتجر</a>
+        <a href="index.html" style="color:var(--p); text-decoration:none; font-weight:700;">← الرئيسية</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="profile-container">
+
+    <!-- Login Required Prompt (Shown when not logged in) -->
+    <div id="profile-login-prompt" style="display:none; text-align:center; padding:60px 24px; background:#fff; border-radius:20px; box-shadow:0 8px 30px rgba(0,0,0,0.06); margin-top:24px; border:1px solid var(--gray2);">
+      <div style="width:72px; height:72px; background:linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:32px;">🔐</div>
+      <h2 style="font-size:22px; font-weight:800; color:var(--gray9); margin-bottom:12px;">يرجى تسجيل الدخول لعرض حسابك</h2>
+      <p style="color:var(--gray6); font-size:15px; max-width:460px; margin:0 auto 28px; line-height:1.7;">سجّل دخولك الآن لإدارة بياناتك الشخصية، متابعة حالة طلبياتك، واسترجاع سلتك المحفوظة عبر مختلف أجهزتك بكل سهولة.</p>
+      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button onclick="openModal('auth')" class="p-btn-save" style="font-size:15px; padding:12px 32px; cursor:pointer;">تسجيل الدخول / إنشاء حساب</button>
+        <a href="index.html" style="display:inline-flex; align-items:center; padding:12px 24px; border-radius:10px; border:1px solid var(--gray3); color:var(--gray7); text-decoration:none; font-weight:700; font-size:15px;">العودة للرئيسية</a>
+      </div>
+    </div>
+
+    <!-- Authenticated Content Area -->
+    <div id="profile-content" style="display:none;">
+      <!-- Hero Profile Info -->
+      <div class="profile-hero">
+      <div class="profile-user-info">
+        <div class="profile-avatar" id="p-avatar">م</div>
+        <div>
+          <div class="profile-name" id="p-name">مرحباً بك</div>
+          <div class="profile-meta">
+            <span id="p-email">user@estawredli.com</span>
+            <span>•</span>
+            <span id="p-phone">0590000000</span>
+            <span class="profile-status-badge" id="p-status">عضوية نشطة ✅</span>
+          </div>
+        </div>
+      </div>
+      <button class="profile-logout-btn" onclick="logoutUser()">تسجيل الخروج ↩</button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="profile-nav-tabs">
+      <button class="p-tab-btn active" onclick="switchProfileTab('info', this)">👤 البيانات الشخصية</button>
+      <button class="p-tab-btn" onclick="switchProfileTab('orders', this)">📦 طلبياتي السابقة (<span id="p-orders-count">0</span>)</button>
+      <button class="p-tab-btn" onclick="switchProfileTab('cart', this)">🛒 سلتي المحفوظة (<span id="p-cart-count">0</span>)</button>
+      <button class="p-tab-btn" onclick="switchProfileTab('security', this)">🔒 كلمة المرور والأمان</button>
+    </div>
+
+    <!-- TAB 1: Personal Info -->
+    <div id="ptab-info" class="profile-card">
+      <h3 class="profile-card-title">👤 تعديل البيانات الشخصية</h3>
+      <form onsubmit="saveUserProfile(event)">
+        <div class="profile-form-grid">
+          <div class="p-input-group">
+            <label>الاسم الكامل</label>
+            <input type="text" id="f-pname" required />
+          </div>
+          <div class="p-input-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="f-pphone" required />
+          </div>
+          <div class="p-input-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="f-pemail" required />
+          </div>
+        </div>
+        <div style="margin-top:24px;">
+          <button type="submit" class="p-btn-save" id="btn-save-profile">💾 حفظ التعديلات</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- TAB 2: Orders -->
+    <div id="ptab-orders" class="profile-card" style="display:none;">
+      <h3 class="profile-card-title">📦 سجل الطلبيات السابقة</h3>
+      <div id="profile-orders-list">
+        <div style="text-align:center; padding:40px; color:var(--gray5);">جاري جلب الطلبيات...</div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Saved Cart -->
+    <div id="ptab-cart" class="profile-card" style="display:none;">
+      <h3 class="profile-card-title">🛒 السلة المحفوظة في حسابك</h3>
+      <div id="profile-cart-list"></div>
+      <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--gray2); padding-top:16px;">
+        <div style="font-size:18px; font-weight:800; color:var(--gray9);">المجموع: <span id="p-cart-total" style="color:var(--p)">₪0</span></div>
+        <a href="checkout.html" class="p-btn-save" style="text-decoration:none; display:inline-block;">متابعة إتمام الشراء 🚀</a>
+      </div>
+    </div>
+
+    <!-- TAB 4: Security / Password -->
+    <div id="ptab-security" class="profile-card" style="display:none;">
+      <h3 class="profile-card-title">🔒 تغيير كلمة المرور</h3>
+      <form onsubmit="changeUserPassword(event)">
+        <div class="profile-form-grid">
+          <div class="p-input-group">
+            <label>كلمة المرور الحالية</label>
+            <input type="password" id="f-old-pass" placeholder="اتركها فارغة إذا سجلت عبر Google" />
+          </div>
+          <div class="p-input-group">
+            <label>كلمة المرور الجديدة</label>
+            <input type="password" id="f-new-pass" required minlength="6" />
+          </div>
+          <div class="p-input-group">
+            <label>تأكيد كلمة المرور الجديدة</label>
+            <input type="password" id="f-confirm-pass" required minlength="6" />
+          </div>
+        </div>
+        <div style="margin-top:24px;">
+          <button type="submit" class="p-btn-save" id="btn-save-pwd">🔄 تحديث كلمة المرور</button>
+        </div>
+      </form>
+    </div>
+
+    </div>
+    <!-- End Authenticated Content Area -->
+
+  </div>
+
+  <div id="toast-wrap"></div>
+
+  <script src="auth.js?v=20260904_v2"></script>
+  <script src="main.js?v=20260904_v2"></script>
+  <script>
+    let currentUser = null;
+
+    window.addEventListener('authLoaded', async () => {
+      const promptEl = document.getElementById('profile-login-prompt');
+      const contentEl = document.getElementById('profile-content');
+
+      if (!window.authUser) {
+        if (contentEl) contentEl.style.display = 'none';
+        if (promptEl) promptEl.style.display = 'block';
+        if (typeof openModal === 'function') {
+          openModal('auth');
+        }
+        return;
+      }
+
+      if (promptEl) promptEl.style.display = 'none';
+      if (contentEl) contentEl.style.display = 'block';
+
+      currentUser = window.authUser;
+      renderProfileHeader();
+      loadUserOrders();
+      if (typeof window.loadCartFromServer === 'function') {
+        await window.loadCartFromServer();
+      }
+      renderSavedCart();
+    });
+
+    function renderProfileHeader() {
+      if (!currentUser) return;
+      document.getElementById('p-avatar').textContent = (currentUser.name && currentUser.name[0]) || 'م';
+      document.getElementById('p-name').textContent = currentUser.name || 'عميلنا العزيز';
+      document.getElementById('p-email').textContent = currentUser.email || '-';
+      document.getElementById('p-phone').textContent = currentUser.phone || '-';
+      
+      const isActive = currentUser.status === 'active';
+      document.getElementById('p-status').textContent = isActive ? 'عضوية معتمدة نشطة ✅' : 'قيد المراجعة ⏳';
+      document.getElementById('p-status').style.color = isActive ? '#34d399' : '#fbbf24';
+
+      document.getElementById('f-pname').value = currentUser.name || '';
+      document.getElementById('f-pphone').value = currentUser.phone || '';
+      document.getElementById('f-pemail').value = currentUser.email || '';
+    }
+
+    function switchProfileTab(tab, btn) {
+      document.querySelectorAll('.p-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      ['info', 'orders', 'cart', 'security'].forEach(t => {
+        const el = document.getElementById('ptab-' + t);
+        if (el) el.style.display = t === tab ? 'block' : 'none';
+      });
+    }
+
+    async function saveUserProfile(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-profile');
+      btn.disabled = true;
+      btn.textContent = '⏳ جاري الحفظ...';
+
+      const payload = {
+        user_id: currentUser.id,
+        name: document.getElementById('f-pname').value.trim(),
+        phone: document.getElementById('f-pphone').value.trim(),
+        email: document.getElementById('f-pemail').value.trim(),
+      };
+
+      try {
+        const res = await fetch('api/update_profile.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('✅ تم حفظ وتحديث بياناتك بنجاح');
+          currentUser.name = payload.name;
+          currentUser.phone = payload.phone;
+          currentUser.email = payload.email;
+          localStorage.setItem('authUser', JSON.stringify(currentUser));
+          renderProfileHeader();
+        } else {
+          showToast('❌ ' + data.message, 'error');
+        }
+      } catch(err) {
+        showToast('❌ فشل الاتصال بالسيرفر', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '💾 حفظ التعديلات';
+    }
+
+    async function changeUserPassword(e) {
+      e.preventDefault();
+      const oldP = document.getElementById('f-old-pass').value;
+      const newP = document.getElementById('f-new-pass').value;
+      const confP = document.getElementById('f-confirm-pass').value;
+
+      if (newP !== confP) {
+        showToast('❌ كلمة المرور الجديدة وتأكيدها غير متطابقين', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-save-pwd');
+      btn.disabled = true;
+      btn.textContent = '⏳ جاري التحديث...';
+
+      try {
+        const res = await fetch('api/change_password.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            user_id: currentUser.id,
+            old_password: oldP,
+            new_password: newP
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('✅ تم تغيير كلمة المرور بنجاح');
+          document.getElementById('f-old-pass').value = '';
+          document.getElementById('f-new-pass').value = '';
+          document.getElementById('f-confirm-pass').value = '';
+        } else {
+          showToast('❌ ' + data.message, 'error');
+        }
+      } catch(err) {
+        showToast('❌ حدث خطأ في الاتصال', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '🔄 تحديث كلمة المرور';
+    }
+
+    async function loadUserOrders() {
+      const container = document.getElementById('profile-orders-list');
+      const countBadge = document.getElementById('p-orders-count');
+      try {
+        const url = `api/get_user_orders.php?user_id=${currentUser.id}&phone=${encodeURIComponent(currentUser.phone||'')}&email=${encodeURIComponent(currentUser.email||'')}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.orders)) {
+          countBadge.textContent = data.orders.length;
+          if (data.orders.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--gray5);">لا توجد طلبيات سابقة لديك حتى الآن. <br><a href="shop.html" style="color:var(--p); font-weight:700; text-decoration:none; margin-top:10px; display:inline-block;">ابدأ التسوق الآن ←</a></div>`;
+            return;
+          }
+          const statusMap = {pending:'قيد الانتظار',processing:'جاري التجهيز',shipped:'تم الشحن',delivered:'تم التسليم',cancelled:'ملغي'};
+          container.innerHTML = data.orders.map(o => {
+            const itemsList = (Array.isArray(o.items) ? o.items : []).map(i => `<span style="background:var(--gray1); padding:3px 8px; border-radius:6px; font-size:12px; margin-left:6px;">• ${i.name} (x${i.qty||i.quantity||1})</span>`).join('');
+            return `
+              <div class="order-item-card">
+                <div class="order-header-flex">
+                  <div>
+                    <strong>طلب رقم #${o.id}</strong>
+                    <span style="color:var(--gray5); font-size:13px; margin-right:10px;">${new Date(o.date).toLocaleDateString('ar-SA')}</span>
+                  </div>
+                  <div>
+                    <span class="status-badge status-${o.status}" style="font-size:12px;">${statusMap[o.status]||o.status}</span>
+                  </div>
+                </div>
+                <div style="margin:10px 0; display:flex; flex-wrap:wrap; gap:6px;">
+                  ${itemsList}
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px dashed var(--gray2); padding-top:10px;">
+                  <span style="font-size:13px; color:var(--gray6);">التوصيل: ${o.zone || 'العنوان المسجل'}</span>
+                  <strong style="font-size:16px; color:var(--p);">الإجمالي: ₪${(o.total||0).toLocaleString()}</strong>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch(e) {
+        container.innerHTML = `<div style="color:red; text-align:center; padding:20px;">تعذر تحميل الطلبيات</div>`;
+      }
+    }
+
+    function renderSavedCart() {
+      const container = document.getElementById('profile-cart-list');
+      const countBadge = document.getElementById('p-cart-count');
+      const cart = (typeof state !== 'undefined' && state && state.cart) ? state.cart : JSON.parse(localStorage.getItem('store_cart') || '[]');
+      countBadge.textContent = cart.length;
+
+      if (!cart.length) {
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--gray5);">سلتك فارغة حالياً. <a href="shop.html" style="color:var(--p); font-weight:700; text-decoration:none;">تصفح المنتجات ←</a></div>`;
+        document.getElementById('p-cart-total').textContent = '₪0';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = cart.map((item, idx) => {
+        const itemTot = (item.price || 0) * (item.qty || 1) * (item.pieces_per_carton || 1);
+        total += itemTot;
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--gray2);">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <img src="${item.img||'logo.jpg'}" style="width:48px; height:48px; border-radius:8px; object-fit:cover; border:1px solid var(--gray2);" />
+              <div>
+                <strong style="font-size:14.5px;">${item.name}</strong>
+                <div style="font-size:12px; color:var(--gray5); margin-top:2px;">الكمية: ${item.qty} ${item.pieces_per_carton > 1 ? 'كرتونة' : 'قطعة'}</div>
+              </div>
+            </div>
+            <strong style="color:var(--p)">₪${itemTot.toLocaleString()}</strong>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('p-cart-total').textContent = '₪' + total.toLocaleString();
+    }
+
+    function logoutUser() {
+      if (confirm('هل ترغب في تسجيل الخروج؟')) {
+        localStorage.removeItem('authUser');
+        fetch('api/logout.php').finally(() => {
+          window.location = 'index.html';
+        });
+      }
+    }
+  </script>
+</body>
+</html>
