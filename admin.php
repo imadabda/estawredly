@@ -20,6 +20,8 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 </script>
 <script src="store.js?v=1786117170000">
 </script>
+<script src="xlsx.full.min.js">
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -609,6 +611,73 @@ tr:last-child td{border-bottom:none}
 }
 
 /* ══════════════════════════════════
+   EXCEL IMPORT IMAGE DROPZONE STYLES
+══════════════════════════════════ */
+.row-image-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  border: 1.5px dashed rgba(255,255,255,0.2);
+  background: var(--bg3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.row-image-box:hover, .row-image-box.dragover {
+  border-color: var(--p) !important;
+  background: rgba(99, 102, 241, 0.15) !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(99,102,241,0.3);
+}
+.row-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.row-image-box .img-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+.row-image-box:hover .img-overlay {
+  opacity: 1;
+}
+.bulk-images-dropzone {
+  border: 2px dashed rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.05);
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.bulk-images-dropzone:hover, .bulk-images-dropzone.dragover {
+  border-color: var(--p);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+
+/* ══════════════════════════════════
    FORM
 ══════════════════════════════════ */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -895,9 +964,9 @@ tr:last-child td{border-bottom:none}
             <datalist id="cats-list"></datalist>
           </div>
           <div class="field">
-            <label>الماركة التجارية <span style="color:var(--red)">*</span></label>
-            <select id="f-brand" required>
-              <option value="">-- اختر الماركة التجارية --</option>
+            <label>الماركة التجارية <span style="color:var(--text3);font-size:12px;font-weight:400;">(اختياري)</span></label>
+            <select id="f-brand">
+              <option value="">بدون ماركة (اختياري)</option>
             </select>
           </div>
           <div class="field full" style="margin-top:12px">
@@ -983,6 +1052,107 @@ tr:last-child td{border-bottom:none}
     <div class="modal-footer" style="padding: 15px 20px; border-top: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
       <button class="btn-cancel" onclick="closeModal()" style="padding:10px 20px; border-radius:8px;">إلغاء</button>
       <button class="btn-save" onclick="saveProduct()" style="padding:10px 30px; border-radius:8px; font-weight:bold; font-size:16px;">💾 حفظ المنتج بالنظام</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXCEL IMPORT MODAL ══ -->
+<div class="modal-bg" id="excel-import-modal">
+  <div class="modal" style="max-width: 920px; width: 95%;">
+    <div class="modal-head">
+      <h2 class="modal-title">📊 معاينة واستيراد المنتجات من ملف Excel</h2>
+      <button class="modal-close" onclick="closeExcelModal()">✕</button>
+    </div>
+    <div class="modal-body" style="padding: 24px;">
+      
+      <!-- Stats summary card -->
+      <div style="background:var(--bg3); border:1px solid var(--border2); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+        <div>
+          <div style="font-size:13px; color:var(--text2);">📁 اسم الملف: <strong id="import-filename" style="color:var(--text);"></strong></div>
+          <div style="font-size:15px; font-weight:800; color:var(--p); margin-top:4px;">📦 إجمالي المنتجات المقروءة: <span id="import-total-count">0</span> منتج</div>
+        </div>
+        <div id="import-valid-badge" style="font-size:13px; font-weight:700; padding:6px 14px; border-radius:20px; background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3);">
+          ✓ البيانات جاهزة للاستيراد
+        </div>
+      </div>
+
+      <!-- Mode selection -->
+      <div style="margin-bottom:20px; background:var(--bg2); padding:16px; border-radius:12px; border:1px solid var(--border);">
+        <div style="font-size:14px; font-weight:700; margin-bottom:10px; color:var(--text);">⚙️ اختر طريقة الاستيراد:</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+            <input type="radio" name="import-mode" value="append" checked style="margin-top:3px;">
+            <div>
+              <strong style="color:var(--text); font-size:14px;">إضافة وتحديث المنتجات (مستحسن)</strong>
+              <div style="font-size:12.5px; color:var(--text2); margin-top:2px;">يضيف المنتجات الجديدة إلى المتجر، وإذا كان كود المنتج (SKU) موجوداً مسبقاً يتم تحديثه تلقائياً دون تكرار ودون المساس بباقي المنتجات.</div>
+            </div>
+          </label>
+          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+            <input type="radio" name="import-mode" value="replace" style="margin-top:3px;">
+            <div>
+              <strong style="color:#ef4444; font-size:14px;">استبدال كافة منتجات المتجر</strong>
+              <div style="font-size:12.5px; color:var(--text2); margin-top:2px;">تحذير: سيتم مسح المنتجات الحالية واستبدالها بالمنتجات الواردة في هذا الملف فقط.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Bulk Dropzone & Hint -->
+      <div class="bulk-images-dropzone" id="bulk-images-dropzone"
+           onclick="document.getElementById('bulk-images-input').click()"
+           ondragover="handleBulkDragOver(event)"
+           ondragleave="handleBulkDragLeave(event)"
+           ondrop="handleBulkDrop(event)">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="font-size:30px;">📸</div>
+          <div>
+            <div style="font-size:14px; font-weight:800; color:var(--text);">إضافة صور المنتجات دفعة واحدة (اختياري)</div>
+            <div style="font-size:12.5px; color:var(--text2); margin-top:2px;">
+              اسحب مجموعة صور هنا، أو اضغط لاختيارها، وسيقوم النظام بمطابقتها تلقائياً بأكواد المنتجات أو أسمائها!
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-outline" style="font-size:12px; padding:7px 16px; pointer-events:none;">📁 اختيار صور من الجهاز</button>
+        <input type="file" id="bulk-images-input" multiple accept="image/*" style="display:none;" onchange="handleBulkImagesPicked(event)">
+      </div>
+
+      <!-- Hidden single-row file input -->
+      <input type="file" id="row-single-image-input" accept="image/*" style="display:none;" onchange="handleRowImagePicked(event)">
+
+      <!-- Preview Table -->
+      <div style="margin-bottom:10px;">
+        <div style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--text); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span>👀 جدول المنتجات المستوردة:</span>
+            <span style="font-size:12px; color:var(--text2); font-weight:normal;" id="import-preview-count-label"></span>
+          </div>
+          <span style="font-size:12px; color:#a5b4fc; background:rgba(99,102,241,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(99,102,241,0.25);">
+            💡 يمكنك سحب أي صورة من مجلدك وإفلاتها مباشرة على صف المنتج، أو الضغط على مربع الصورة!
+          </span>
+        </div>
+        <div style="max-height:420px; overflow-y:auto; border:1px solid var(--border2); border-radius:10px;">
+          <table style="width:100%; border-collapse:collapse; font-size:12.5px; text-align:right;">
+            <thead>
+              <tr style="background:var(--bg3); position:sticky; top:0; z-index:2; border-bottom:1px solid var(--border2); color:var(--text2);">
+                <th style="padding:10px 12px; width:40px;">#</th>
+                <th style="padding:10px 12px; width:90px;">الصورة (سحب/رفع)</th>
+                <th style="padding:10px 12px;">اسم المنتج</th>
+                <th style="padding:10px 12px;">التصنيف</th>
+                <th style="padding:10px 12px;">الماركة</th>
+                <th style="padding:10px 12px;">السعر</th>
+                <th style="padding:10px 12px;">الكرتونة</th>
+                <th style="padding:10px 12px;">كود SKU</th>
+              </tr>
+            </thead>
+            <tbody id="import-preview-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer" style="padding: 15px 20px; border-top: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <button class="btn-cancel" onclick="closeExcelModal()" style="padding:10px 20px; border-radius:8px;">إلغاء</button>
+      <button class="btn-save" id="btn-confirm-import" onclick="confirmExcelImport()" style="padding:10px 30px; border-radius:8px; font-weight:bold; font-size:15px; background:var(--p);">🚀 تأكيد وبدء الاستيراد</button>
     </div>
   </div>
 </div>
@@ -1227,7 +1397,12 @@ tr:last-child td{border-bottom:none}
             <h1 class="page-title">إدارة المنتجات</h1>
             <p class="page-sub" id="products-subtitle">جميع منتجات المتجر</p>
           </div>
-          <button class="btn-add" onclick="openModal()">+ إضافة منتج</button>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <button class="btn-outline" onclick="downloadProductTemplate()" title="تحميل ملف إكسل فارغ مع أمثلة جاهزة لتعبئة المنتجات">📄 تحميل قالب Excel</button>
+            <button class="btn-outline" onclick="document.getElementById('excel-file-input').click()" title="رفع ملف إكسل واستيراد المنتجات">📤 رفع ملف Excel</button>
+            <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleExcelFileUpload(event)" />
+            <button class="btn-add" onclick="openModal()">+ إضافة منتج</button>
+          </div>
         </div>
         <div class="toolbar">
           <input type="text" class="search-field" placeholder="🔍 بحث بالاسم أو التصنيف..." id="prod-search" oninput="filterProducts()"/>
@@ -1242,7 +1417,7 @@ tr:last-child td{border-bottom:none}
             <option value="sale">تخفيض</option><option value="new">جديد</option>
             <option value="hot">رائج</option><option value="best">مميز</option>
           </select>
-          <button class="btn-outline" onclick="exportProducts()">📥 تصدير CSV</button>
+          <button class="btn-outline" onclick="exportProducts()">📥 تصدير Excel / CSV</button>
         </div>
         <div class="prod-admin-grid" id="products-grid"></div>
       </div>
@@ -2491,6 +2666,7 @@ async function syncLiveProducts() {
           if (typeof Store !== 'undefined') Store.saveProducts(data.products);
           renderProducts();
           updateStats();
+          if (typeof updateCatsDatalist === 'function') updateCatsDatalist();
       }
   } catch(e) {
       console.warn("Could not sync live products:", e);
@@ -3317,22 +3493,66 @@ function renderVariants() {
     `).join('');
 }
 
+function updateCatsDatalist() {
+  const datalist = document.getElementById('cats-list');
+  if (!datalist) return;
+
+  const categoriesSet = new Set();
+
+  function canonicalCategory(c) {
+    if (!c || typeof c !== 'string') return '';
+    let s = c.trim().replace(/\s+/g, ' ');
+    if (s === 'سفنجات جلي' || s === 'إسفنجات جلي') return 'اسفنجات جلي';
+    if (s === 'جاروف مع فرشاي' || s === 'جاروف وفرشاة') return 'مجرفة مع فرشاة';
+    if (s === 'جاروف ومكنسة') return 'جاروف مع مكنسه';
+    if (s === 'فراشي مرحاض') return 'فرشاة مرحاض';
+    if (s === 'مكانس' || s === 'مكنسة') return 'مكانس';
+    if (s === 'قفازات') return 'قفازات يد';
+    if (s === 'ورق المنيوم' || s === 'ورق ألمنيوم') return 'ورق المنيوم (فويل)';
+    if (s === 'خيط أسنان (مع علبة عرض)') return 'خيط أسنان';
+    if (s === 'شفاط مرحاض') return 'مكبس مرحاض';
+    return s;
+  }
+
+  // 1. From nav builder (التصنيفات والقائمة العلوية)
+  if (typeof adminNav !== 'undefined' && Array.isArray(adminNav.data)) {
+    adminNav.data.forEach(item => {
+      if (item.title && item.title !== 'الرئيسية') {
+        const c = canonicalCategory(item.title);
+        if (c) categoriesSet.add(c);
+      }
+      if (Array.isArray(item.subLinks)) {
+        item.subLinks.forEach(sub => {
+          if (sub.title) {
+            const c = canonicalCategory(sub.title);
+            if (c) categoriesSet.add(c);
+          }
+        });
+      }
+    });
+  }
+
+  // 2. From all products in adminProducts
+  if (Array.isArray(adminProducts)) {
+    adminProducts.forEach(p => {
+      const c = canonicalCategory(p.cat);
+      if (c) categoriesSet.add(c);
+    });
+  }
+
+  // Re-render datalist cleanly with sorted, unique categories
+  const sorted = [...categoriesSet].sort((a, b) => a.localeCompare('ar'));
+  datalist.innerHTML = sorted.map(c => `<option value="${c}">`).join('');
+}
+
 function openModal(p) {
   editingId = p ? p.id : null;
   document.getElementById('modal-title').textContent = p ? '✏️ تعديل المنتج' : '➕ إضافة منتج جديد';
   document.getElementById('f-name').value = p?.name || '';
   document.getElementById('f-cat').value = p?.cat || '';
   
-  // Populate Category Datalist from all products & nav
-  const datalist = document.getElementById('cats-list');
-  if (datalist && Array.isArray(adminProducts)) {
-    const existingCats = [...new Set(adminProducts.map(x => x.cat).filter(Boolean))];
-    existingCats.forEach(c => {
-      if (!datalist.querySelector(`option[value="${c}"]`)) {
-        datalist.insertAdjacentHTML('beforeend', `<option value="${c}">`);
-      }
-    });
-  }
+  // Populate Category Datalist cleanly from all products & nav
+  updateCatsDatalist();
 
   // Find if product belongs to any icon
   let mappedIcon = '';
@@ -3362,7 +3582,7 @@ function openModal(p) {
   // Populate Brand Select Options
   const brandSelect = document.getElementById('f-brand');
   if (brandSelect) {
-      brandSelect.innerHTML = '<option value="">-- اختر الماركة التجارية --</option>' +
+      brandSelect.innerHTML = '<option value="">بدون ماركة (اختياري)</option>' +
           (adminBrands.brands || []).map(b => {
               const name = typeof b === 'string' ? b : (b.name || '');
               return `<option value="${name}">${name}</option>`;
@@ -3418,7 +3638,22 @@ function editProduct(id) {
 async function saveProduct() {
   if (typeof syncVariantsFromDOM === "function") syncVariantsFromDOM();
   const name = document.getElementById('f-name').value.trim();
-  const cat = document.getElementById('f-cat').value.trim();
+  let cat = document.getElementById('f-cat').value.trim();
+  const catCanonMap = {
+    'سفنجات جلي': 'اسفنجات جلي',
+    'إسفنجات جلي': 'اسفنجات جلي',
+    'جاروف مع فرشاي': 'مجرفة مع فرشاة',
+    'جاروف وفرشاة': 'مجرفة مع فرشاة',
+    'جاروف ومكنسة': 'جاروف مع مكنسه',
+    'فراشي مرحاض': 'فرشاة مرحاض',
+    'مكنسة': 'مكانس',
+    'قفازات': 'قفازات يد',
+    'ورق المنيوم': 'ورق المنيوم (فويل)',
+    'ورق ألمنيوم': 'ورق المنيوم (فويل)',
+    'خيط أسنان (مع علبة عرض)': 'خيط أسنان',
+    'شفاط مرحاض': 'مكبس مرحاض'
+  };
+  if (catCanonMap[cat]) cat = catCanonMap[cat];
   const brand = document.getElementById('f-brand').value.trim();
   
   let multiplier = 1;
@@ -3450,11 +3685,6 @@ async function saveProduct() {
   if (!cat) { 
     showToast('⚠️ يرجى اختيار أو كتابة تصنيف المنتج (إجباري)!','warn'); 
     document.getElementById('f-cat').focus(); 
-    return; 
-  }
-  if (!brand) { 
-    showToast('⚠️ يرجى اختيار الماركة التجارية (إجباري)!','warn'); 
-    document.getElementById('f-brand').focus(); 
     return; 
   }
   if (isNaN(price) || price <= 0) { 
@@ -3523,6 +3753,7 @@ async function saveProduct() {
         closeModal();
         renderProducts();
         updateStats();
+        updateCatsDatalist();
     } else {
         showToast('❌ خطأ في الحفظ: ' + (data.message || 'فشل السيرفر'), 'error');
     }
@@ -3575,12 +3806,571 @@ async function toggleProduct(id, active) {
   } catch(e) {}
 }
 
+/* ══════════════════════════════════════════════════
+   EXCEL PRODUCT IMPORT, EXPORT & TEMPLATE SYSTEM
+══════════════════════════════════════════════════ */
+let parsedExcelProducts = [];
+
+function downloadProductTemplate() {
+  if (typeof XLSX !== 'undefined') {
+    const wb = XLSX.utils.book_new();
+
+    const headers = [
+      'اسم المنتج (إجباري)',
+      'السعر الحالي (إجباري)',
+      'السعر القديم (اختياري)',
+      'سعر التكلفة (اختياري)',
+      'التصنيف (إجباري)',
+      'الماركة (اختياري)',
+      'عدد القطع في الكرتونة (إجباري)',
+      'كود المنتج SKU (اختياري)',
+      'كود المصنع (اختياري)',
+      'ملاحظات الرقم المرجعي (اختياري)',
+      'رابط الصورة (اختياري)',
+      'وصف المنتج (اختياري)',
+      'الكمية بالمخزون (اختياري)',
+      'الشارة (sale/new/hot/best)'
+    ];
+
+    const sampleRows = [
+      [
+        'ممسحة مايكروفايبر مع مقبض تلسكوبي',
+        28.50,
+        38.00,
+        18.00,
+        'مماسح مايكروفايبر',
+        'KLEANER',
+        24,
+        'KL-MOP-101',
+        'FC-7721',
+        'الرف B-04 / كرتونة قوية',
+        'https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500&q=80',
+        'ممسحة احترافية سريعة الامتصاص لجميع أنواع الأرضيات والأسطح',
+        120,
+        'hot'
+      ],
+      [
+        'اسفنجة جلي سوبر 5 قطع',
+        6.00,
+        8.50,
+        3.50,
+        'اسفنجات جلي',
+        '',
+        48,
+        'SP-GL-202',
+        'FC-3390',
+        'الرف C-11',
+        'https://images.unsplash.com/photo-1585670149967-b4f4da88cc9f?w=500&q=80',
+        'اسفنجة تنظيف وجلي شديدة التحمل للأواني والقدور',
+        300,
+        'sale'
+      ],
+      [
+        'جاروف ومكنسة يد صغيرة متعددة الاستخدام',
+        14.00,
+        18.00,
+        8.00,
+        'جاروف مع مكنسه',
+        'KLEANER',
+        36,
+        'KL-DUST-303',
+        'FC-5512',
+        'الرف A-02',
+        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500&q=80',
+        'طقم جاروف ومكنسة خفيف وعملي لتنظيف الزوايا والأماكن الضيقة',
+        80,
+        'new'
+      ]
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...sampleRows]);
+    ws['!cols'] = [
+      { wch: 35 }, { wch: 18 }, { wch: 18 }, { wch: 18 },
+      { wch: 22 }, { wch: 18 }, { wch: 25 }, { wch: 20 },
+      { wch: 18 }, { wch: 25 }, { wch: 40 }, { wch: 45 },
+      { wch: 18 }, { wch: 20 }
+    ];
+    XLSX.utils.book_append_sheet(wb, ws, "قالب_المنتجات");
+
+    const instructions = [
+      ['إرشادات تعبئة ملف استيراد المنتجات لموقع استوردلي'],
+      [''],
+      ['الحقل', 'الحالة', 'ملاحظات وتوضيحات'],
+      ['اسم المنتج', 'إجباري', 'اسم المنتج باللغة العربية أو الإنجليزية'],
+      ['السعر الحالي', 'إجباري', 'سعر البيع الحالي للمنتج بالشيكل (أرقام فقط، مثال: 25.50)'],
+      ['السعر القديم', 'اختياري', 'السعر قبل الخصم لإظهار نسبة التوفير للمشتري'],
+      ['سعر التكلفة', 'اختياري', 'تكلفة المنتج لحساب الأرباح في النظام الداخلي'],
+      ['التصنيف', 'إجباري', 'اسم القسم أو التصنيف (مثال: اسفنجات جلي، مماسح، فراشي تنظيف)'],
+      ['الماركة', 'اختياري', 'الماركة التجارية للمنتج (مثال: KLEANER، أو اتركه فارغاً)'],
+      ['عدد القطع في الكرتونة', 'إجباري', 'عدد القطع المعبأة داخل كل كرتونة (افتراضي 1 إذا بيع بالقطعة)'],
+      ['كود المنتج SKU', 'اختياري', 'رمز التخزين أو الباركود، وإذا كان موجوداً سابقاً سيتم تحديث المنتج بدلاً من تكراره'],
+      ['كود المصنع', 'اختياري', 'رقم أو كود المنتج لدى المصنع المورد'],
+      ['ملاحظات الرقم المرجعي', 'اختياري', 'مكان التخزين أو رقم الرف في المستودع'],
+      ['رابط الصورة', 'اختياري', 'رابط مباشر لصورة المنتج على الإنترنت، أو مسار مثل product_images/item.jpg'],
+      ['وصف المنتج', 'اختياري', 'شرح تفاصيل ومميزات المنتج'],
+      ['الكمية بالمخزون', 'اختياري', 'الكمية المتوفرة بالمستودع'],
+      ['الشارة', 'اختياري', 'اكتب إحدى الكلمات التالية: sale (تخفيض)، new (جديد)، hot (رائج)، best (مميز)']
+    ];
+    const wsInstructions = XLSX.utils.aoa_to_sheet(instructions);
+    wsInstructions['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, wsInstructions, "إرشادات_وتعليمات");
+
+    XLSX.writeFile(wb, "قالب_استيراد_المنتجات_استوردلي.xlsx");
+    showToast("📄 تم تنزيل قالب Excel بنجاح");
+  } else {
+    window.location.href = "api/download_product_template.php";
+  }
+}
+
+function handleExcelFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (typeof XLSX === 'undefined') {
+    showToast("❌ مكتبة معالجة Excel غير محملة بعد، يرجى تحديث الصفحة", "error");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const rawJson = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+      if (!rawJson || rawJson.length === 0) {
+        showToast("⚠️ الملف المرفوع فارغ أو لا يحتوي على صفوف بيانات!", "warn");
+        return;
+      }
+
+      parsedExcelProducts = processImportRows(rawJson);
+      openExcelModal(file.name, parsedExcelProducts);
+    } catch (err) {
+      console.error("Error parsing excel file:", err);
+      showToast("❌ فشل قراءة ملف Excel: " + err.message, "error");
+    } finally {
+      event.target.value = '';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function processImportRows(rows) {
+  const catCanonMap = {
+    'سفنجات جلي': 'اسفنجات جلي',
+    'إسفنجات جلي': 'اسفنجات جلي',
+    'جاروف مع فرشاي': 'مجرفة مع فرشاة',
+    'جاروف وفرشاة': 'مجرفة مع فرشاة',
+    'جاروف ومكنسة': 'جاروف مع مكنسه',
+    'فراشي مرحاض': 'فرشاة مرحاض',
+    'مكنسة': 'مكانس',
+    'قفازات': 'قفازات يد',
+    'ورق المنيوم': 'ورق المنيوم (فويل)',
+    'ورق ألمنيوم': 'ورق المنيوم (فويل)',
+    'خيط أسنان (مع علبة عرض)': 'خيط أسنان',
+    'شفاط مرحاض': 'مكبس مرحاض'
+  };
+
+  return rows.map((row, index) => {
+    const getVal = (possibleKeys) => {
+      for (const k of possibleKeys) {
+        for (const rowKey in row) {
+          const cleanKey = rowKey.trim().toLowerCase().replace(/[\s_()\-]/g, '');
+          const target = k.trim().toLowerCase().replace(/[\s_()\-]/g, '');
+          if (cleanKey === target || cleanKey.includes(target) || target.includes(cleanKey)) {
+            return String(row[rowKey]).trim();
+          }
+        }
+      }
+      return '';
+    };
+
+    const name = getVal(['اسم المنتج', 'name', 'اسم_المنتج', 'المنتج', 'title']);
+    const rawPrice = parseFloat(getVal(['السعر الحالي', 'price', 'السعر', 'سعر']));
+    const rawOldPrice = parseFloat(getVal(['السعر القديم', 'oldprice', 'القديم']));
+    const rawCostPrice = parseFloat(getVal(['سعر التكلفة', 'costprice', 'التكلفة', 'cost']));
+    let cat = getVal(['التصنيف', 'cat', 'category', 'القسم', 'الفئة']);
+    if (catCanonMap[cat]) cat = catCanonMap[cat];
+    const brand = getVal(['الماركة', 'brand', 'الماركة التجارية', 'شركة']);
+    const rawCarton = parseInt(getVal(['عدد القطع في الكرتونة', 'pieces_per_carton', 'الكرتونة', 'قطع الكرتونة']));
+    const sku = getVal(['كود المنتج', 'product_code', 'sku', 'كود']);
+    const factory = getVal(['كود المصنع', 'factory_code', 'المصنع']);
+    const refNote = getVal(['ملاحظات الرقم المرجعي', 'ref_note', 'ملاحظات', 'الرف', 'المرجع']);
+    const img = getVal(['رابط الصورة', 'img', 'image', 'صورة', 'الصورة']);
+    const desc = getVal(['وصف المنتج', 'desc', 'description', 'الوصف', 'تفاصيل']);
+    const rawStock = parseInt(getVal(['الكمية بالمخزون', 'stock', 'المخزون', 'الكمية']));
+    const badge = getVal(['الشارة', 'badge', 'شارة']).toLowerCase();
+
+    return {
+      id: Date.now() + index + Math.floor(Math.random() * 1000),
+      name: name || ('منتج بدون اسم ' + (index + 1)),
+      price: !isNaN(rawPrice) && rawPrice > 0 ? rawPrice : 0,
+      oldPrice: !isNaN(rawOldPrice) && rawOldPrice > 0 ? rawOldPrice : null,
+      costPrice: !isNaN(rawCostPrice) && rawCostPrice > 0 ? rawCostPrice : 0,
+      cat: cat || 'عام',
+      brand: brand || '',
+      pieces_per_carton: !isNaN(rawCarton) && rawCarton > 0 ? rawCarton : 1,
+      product_code: sku || ('SKU-' + (Date.now() % 100000) + '-' + (index + 1)),
+      factory_code: factory || '',
+      ref_note: refNote || '',
+      img: img || '',
+      desc: desc || '',
+      stock: !isNaN(rawStock) ? rawStock : 100,
+      badge: ['sale','new','hot','best'].includes(badge) ? badge : '',
+      active: true,
+      stars: 4.5,
+      reviews: Math.floor(Math.random() * 15) + 3,
+      tab: 'all'
+    };
+  });
+}
+
+/* ── Interactive Image Upload & Dropzone Functions ── */
+let activeRowImageIndex = -1;
+
+function compressAndReadImage(file, callback) {
+  if (!file || !file.type.startsWith('image/')) {
+    showToast("⚠️ يرجى اختيار ملف صورة صالح!", "warn");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const maxDim = 900;
+      let w = img.width;
+      let h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round(h * maxDim / w);
+          w = maxDim;
+        } else {
+          w = Math.round(w * maxDim / h);
+          h = maxDim;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      callback(dataUrl);
+    };
+    img.onerror = function() {
+      callback(e.target.result);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function triggerRowImageUpload(idx) {
+  activeRowImageIndex = idx;
+  const input = document.getElementById('row-single-image-input');
+  if (input) {
+    input.value = '';
+    input.click();
+  }
+}
+
+function handleRowImagePicked(event) {
+  const file = event.target.files[0];
+  if (!file || activeRowImageIndex < 0 || activeRowImageIndex >= parsedExcelProducts.length) return;
+  const idx = activeRowImageIndex;
+  compressAndReadImage(file, function(dataUrl) {
+    parsedExcelProducts[idx].img = dataUrl;
+    updateRowImageUI(idx);
+    showToast(`✓ تم إرفاق صورة المنتج: ${parsedExcelProducts[idx].name}`);
+  });
+}
+
+function handleRowDragOver(e, idx) {
+  e.preventDefault();
+  e.stopPropagation();
+  const box = document.getElementById(`row-dropzone-${idx}`);
+  if (box) box.classList.add('dragover');
+  const tr = document.getElementById(`import-row-${idx}`);
+  if (tr) tr.style.background = 'rgba(99,102,241,0.1)';
+}
+
+function handleRowDragLeave(e, idx) {
+  e.preventDefault();
+  e.stopPropagation();
+  const box = document.getElementById(`row-dropzone-${idx}`);
+  if (box) box.classList.remove('dragover');
+  const tr = document.getElementById(`import-row-${idx}`);
+  if (tr) tr.style.background = '';
+}
+
+function handleRowDrop(e, idx) {
+  e.preventDefault();
+  e.stopPropagation();
+  handleRowDragLeave(e, idx);
+
+  const files = e.dataTransfer ? e.dataTransfer.files : null;
+  if (!files || files.length === 0) return;
+
+  compressAndReadImage(files[0], function(dataUrl) {
+    if (parsedExcelProducts[idx]) {
+      parsedExcelProducts[idx].img = dataUrl;
+      updateRowImageUI(idx);
+      showToast(`✓ تم إرفاق صورة للمنتج: ${parsedExcelProducts[idx].name}`);
+    }
+  });
+}
+
+function updateRowImageUI(idx) {
+  const box = document.getElementById(`row-dropzone-${idx}`);
+  if (!box || !parsedExcelProducts[idx]) return;
+  const p = parsedExcelProducts[idx];
+  if (p.img) {
+    box.style.border = '1.5px solid #22c55e';
+    box.innerHTML = `
+      <img src="${p.img}" alt="img" />
+      <span style="position:absolute; top:2px; right:2px; background:#22c55e; color:#fff; border-radius:50%; width:16px; height:16px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">✓</span>
+      <div class="img-overlay">تغيير 🔄</div>
+    `;
+  }
+}
+
+function handleBulkDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dz = document.getElementById('bulk-images-dropzone');
+  if (dz) dz.classList.add('dragover');
+}
+
+function handleBulkDragLeave(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dz = document.getElementById('bulk-images-dropzone');
+  if (dz) dz.classList.remove('dragover');
+}
+
+function handleBulkDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  handleBulkDragLeave(e);
+  const files = e.dataTransfer ? e.dataTransfer.files : null;
+  if (files && files.length > 0) {
+    applyBulkFiles(files);
+  }
+}
+
+function handleBulkImagesPicked(e) {
+  const files = e.target.files;
+  if (files && files.length > 0) {
+    applyBulkFiles(files);
+  }
+}
+
+function applyBulkFiles(files) {
+  let matchedCount = 0;
+  const fileArr = Array.from(files);
+
+  fileArr.forEach(file => {
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.')).trim().toLowerCase();
+    
+    // Find matching product by SKU or name
+    let foundIndex = -1;
+    for (let i = 0; i < parsedExcelProducts.length; i++) {
+      const p = parsedExcelProducts[i];
+      const pSku = (p.product_code || '').trim().toLowerCase();
+      const pName = (p.name || '').trim().toLowerCase();
+      
+      if (pSku && (baseName === pSku || baseName.includes(pSku) || pSku.includes(baseName))) {
+        foundIndex = i;
+        break;
+      }
+      if (pName && (baseName === pName || pName.includes(baseName) || baseName.includes(pName))) {
+        foundIndex = i;
+        break;
+      }
+    }
+
+    if (foundIndex !== -1) {
+      matchedCount++;
+      const targetIdx = foundIndex;
+      compressAndReadImage(file, function(dataUrl) {
+        parsedExcelProducts[targetIdx].img = dataUrl;
+        updateRowImageUI(targetIdx);
+      });
+    }
+  });
+
+  if (matchedCount > 0) {
+    showToast(`🎉 تم مطابقة وربط ${matchedCount} صورة تلقائياً مع المنتجات!`, "success");
+  } else {
+    showToast(`ℹ️ تم استلام ${fileArr.length} صور، لكن لم تتطابق أسماؤها مع كود SKU أو اسم أي منتج. يمكنك سحب كل صورة فوق سطر المنتج الخاص بها مباشرة.`, "warn");
+  }
+}
+
+function openExcelModal(filename, products) {
+  const modal = document.getElementById('excel-import-modal');
+  if (!modal) return;
+
+  document.getElementById('import-filename').textContent = filename;
+  document.getElementById('import-total-count').textContent = products.length;
+  document.getElementById('import-preview-count-label').textContent = `(إجمالي ${products.length} منتج)`;
+
+  const tbody = document.getElementById('import-preview-tbody');
+  if (tbody) {
+    tbody.innerHTML = products.map((p, idx) => `
+      <tr id="import-row-${idx}"
+          style="border-bottom: 1px solid var(--border); transition: background 0.2s;"
+          ondragover="handleRowDragOver(event, ${idx})"
+          ondragleave="handleRowDragLeave(event, ${idx})"
+          ondrop="handleRowDrop(event, ${idx})">
+        <td style="padding:8px 12px; color:var(--text2); font-weight:bold; font-size:12px;">${idx + 1}</td>
+        <td style="padding:8px 12px;">
+          <div class="row-image-box" id="row-dropzone-${idx}"
+               onclick="triggerRowImageUpload(${idx})"
+               title="اضغط لاختيار صورة، أو اسحب وأفلت الصورة هنا">
+            ${p.img ? `
+              <img src="${p.img}" alt="img" onerror="this.src='https://via.placeholder.com/50?text=?'"/>
+              <div class="img-overlay">تغيير 🔄</div>
+            ` : `
+              <span style="font-size:16px;">📷</span>
+              <span style="font-size:9.5px; font-weight:700; color:var(--p); margin-top:2px;">+ أضف</span>
+              <div class="img-overlay">إضافة ➕</div>
+            `}
+          </div>
+        </td>
+        <td style="padding:8px 12px; font-weight:700; color:var(--text); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${p.name}">
+          ${p.name}
+        </td>
+        <td style="padding:8px 12px; color:var(--text2);">${p.cat}</td>
+        <td style="padding:8px 12px; color:var(--text2);">${p.brand || '-'}</td>
+        <td style="padding:8px 12px; font-weight:bold; color:var(--p);">₪${p.price}</td>
+        <td style="padding:8px 12px; color:var(--text2);">${p.pieces_per_carton} قطع</td>
+        <td style="padding:8px 12px; font-family:monospace; font-size:11px; color:var(--text3);">${p.product_code}</td>
+      </tr>
+    `).join('');
+  }
+
+  modal.classList.add('open');
+}
+
+function closeExcelModal() {
+  const modal = document.getElementById('excel-import-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+async function confirmExcelImport() {
+  if (!parsedExcelProducts || parsedExcelProducts.length === 0) {
+    showToast("⚠️ لا توجد منتجات للاستيراد!", "warn");
+    return;
+  }
+
+  const defaultImg = 'https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500&q=80';
+  parsedExcelProducts.forEach(p => {
+    if (!p.img || p.img.trim() === '') {
+      p.img = defaultImg;
+    }
+  });
+
+  const selectedMode = document.querySelector('input[name="import-mode"]:checked')?.value || 'append';
+  const confirmBtn = document.getElementById('btn-confirm-import');
+  const oldText = confirmBtn ? confirmBtn.textContent : '';
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = '⏳ جاري الحفظ والمزامنة...';
+  }
+
+  try {
+    const res = await fetch('api/save_products.php?_t=' + Date.now(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'import',
+        mode: selectedMode,
+        products: parsedExcelProducts
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      adminProducts = data.products || [];
+      if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = adminProducts;
+      if (typeof Store !== 'undefined') Store.saveProducts(adminProducts);
+
+      closeExcelModal();
+      renderProducts();
+      filterProducts();
+      showToast('🎉 ' + data.message, 'success');
+    } else {
+      showToast('❌ ' + (data.message || 'فشل استيراد المنتجات'), 'error');
+    }
+  } catch (err) {
+    console.error("Error importing products:", err);
+    showToast('❌ خطأ أثناء الاستيراد: ' + err.message, 'error');
+  } finally {
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = oldText;
+    }
+  }
+}
+
 function exportProducts() {
-  const header = 'الاسم,التصنيف,السعر,السعر القديم,التقييم,التقييمات\n';
-  const rows = adminProducts.map(p=>`"${p.name}","${p.cat}",${p.price},${p.oldPrice||''},${p.stars},${p.reviews}`).join('\n');
-  const blob = new Blob(['\uFEFF'+header+rows], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='products.csv'; a.click();
-  showToast('📥 تم تصدير CSV');
+  if (typeof XLSX !== 'undefined') {
+    const headers = [
+      'اسم المنتج',
+      'التصنيف',
+      'الماركة',
+      'السعر الحالي',
+      'السعر القديم',
+      'سعر التكلفة',
+      'عدد القطع بالكرتونة',
+      'كود المنتج SKU',
+      'كود المصنع',
+      'ملاحظات الرقم المرجعي',
+      'رابط الصورة',
+      'المخزون',
+      'التقييم',
+      'التقييمات',
+      'الشارة'
+    ];
+
+    const rows = adminProducts.map(p => [
+      p.name || '',
+      p.cat || '',
+      p.brand || '',
+      parseFloat(p.price) || 0,
+      p.oldPrice ? parseFloat(p.oldPrice) : '',
+      p.costPrice ? parseFloat(p.costPrice) : '',
+      p.pieces_per_carton || 1,
+      p.product_code || '',
+      p.factory_code || '',
+      p.ref_note || '',
+      p.img || '',
+      p.stock || 100,
+      p.stars || 5,
+      p.reviews || 0,
+      p.badge || ''
+    ]);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    ws['!cols'] = [
+      { wch: 35 }, { wch: 22 }, { wch: 18 }, { wch: 15 },
+      { wch: 15 }, { wch: 15 }, { wch: 22 }, { wch: 20 },
+      { wch: 18 }, { wch: 25 }, { wch: 35 }, { wch: 12 },
+      { wch: 12 }, { wch: 12 }, { wch: 15 }
+    ];
+    XLSX.utils.book_append_sheet(wb, ws, "منتجات_المتجر");
+    XLSX.writeFile(wb, `منتجات_استوردلي_${new Date().toISOString().slice(0,10)}.xlsx`);
+    showToast('📥 تم تصدير ملف Excel بنجاح');
+  } else {
+    const header = 'الاسم,التصنيف,الماركة,السعر,السعر القديم,الكرتونة,كود SKU\n';
+    const rows = adminProducts.map(p=>`"${p.name}","${p.cat}","${p.brand||''}",${p.price},${p.oldPrice||''},${p.pieces_per_carton||1},"${p.product_code||''}"`).join('\n');
+    const blob = new Blob(['\uFEFF'+header+rows], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='products.csv'; a.click();
+    showToast('📥 تم تصدير CSV');
+  }
 }
 
 function renderTopProducts() {
@@ -3775,6 +4565,7 @@ window.deleteProductAdmin = function(id) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  syncLiveProducts();
   fetchLiveOrders();
   loadAdminProducts();
   if(typeof fetchMembershipRequests === "function") fetchMembershipRequests();
@@ -5321,22 +6112,8 @@ const adminNav = {
             });
             this.render();
 
-    // Add dynamic nav items to datalist
-    const datalist = document.getElementById('cats-list');
-    if (datalist && this.data) {
-        this.data.forEach(item => {
-            if (item.title && !datalist.querySelector(`option[value="${item.title}"]`)) {
-                datalist.insertAdjacentHTML('beforeend', `<option value="${item.title}">`);
-            }
-            if (item.subLinks) {
-                item.subLinks.forEach(sub => {
-                    if (sub.title && !datalist.querySelector(`option[value="${sub.title}"]`)) {
-                        datalist.insertAdjacentHTML('beforeend', `<option value="${sub.title}">`);
-                    }
-                });
-            }
-        });
-    }
+    // Update category datalist for product modal
+    updateCatsDatalist();
 
         } catch(e) {
             showToast('خطأ في تحميل القائمة', 'error');

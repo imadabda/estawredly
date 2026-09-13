@@ -269,13 +269,13 @@
           
           if (data.success) {
             state.cart = [];
-            state.saveCart();
+            state.saveCart(true);
             alert('✅ ' + data.message + ' (طلب رقم ' + data.order_id + ')');
             window.location = 'index.html';
           } else if (data.message && data.message.includes("فشل الاتصال بقاعدة البيانات")) {
             const newOrder = typeof Store !== 'undefined' ? Store.addOrder(orderData) : { id: 'محلي' };
             state.cart = [];
-            state.saveCart();
+            state.saveCart(true);
             alert('✅ تم إرسال الطلب بنجاح! (تم الحفظ محلياً)');
             window.location = 'index.html';
           } else {

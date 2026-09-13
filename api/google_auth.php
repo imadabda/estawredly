@@ -70,6 +70,7 @@ try {
             'success' => true,
             'message' => 'تم تسجيل الدخول بنجاح عبر جوجل',
             'user' => [
+                'id' => intval($user_id),
                 'name' => $name,
                 'email' => $email,
                 'role' => $user_role,

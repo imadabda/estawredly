@@ -38,11 +38,11 @@ try {
    USER CART CLOUD SYNC (CROSS-DEVICE PERSISTENCE)
 ══════════════════════════════════════════════ */
 let cartSyncTimeout = null;
-window.syncCartToServer = function() {
+window.syncCartToServer = function(immediate = false) {
   const user = window.authUser || (localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser')) : null);
   if (!user || !user.id) return;
-  clearTimeout(cartSyncTimeout);
-  cartSyncTimeout = setTimeout(async () => {
+  
+  const doSync = async () => {
     try {
       const cartData = (typeof state !== 'undefined' && state.cart) ? state.cart : JSON.parse(localStorage.getItem('store_cart') || '[]');
       await fetch('api/save_user_cart.php', {
@@ -51,13 +51,22 @@ window.syncCartToServer = function() {
         body: JSON.stringify({
           user_id: user.id,
           cart: cartData
-        })
+        }),
+        keepalive: true
       });
       console.log('🛒 Cart synced to cloud for user #' + user.id, cartData.length);
     } catch (e) {
       console.error('Failed to sync cart to server:', e);
     }
-  }, 150);
+  };
+
+  if (immediate) {
+    clearTimeout(cartSyncTimeout);
+    doSync();
+  } else {
+    clearTimeout(cartSyncTimeout);
+    cartSyncTimeout = setTimeout(doSync, 150);
+  }
 };
 
 window.loadCartFromServer = async function() {
@@ -66,21 +75,24 @@ window.loadCartFromServer = async function() {
   try {
     const res = await fetch(`api/get_user_cart.php?user_id=${user.id}&t=${Date.now()}`);
     const data = await res.json();
-    if (data.success && Array.isArray(data.cart)) {
-      if (data.cart.length > 0) {
+    if (data.success) {
+      if (data.exists) {
+        // Cloud cart is the single source of truth (even if empty [])
+        const cloudCart = Array.isArray(data.cart) ? data.cart : [];
         if (typeof state !== 'undefined') {
-          state.cart = data.cart;
+          state.cart = cloudCart;
           localStorage.setItem('store_cart', JSON.stringify(state.cart));
           if (typeof updateCartUI === 'function') updateCartUI();
         } else {
-          localStorage.setItem('store_cart', JSON.stringify(data.cart));
+          localStorage.setItem('store_cart', JSON.stringify(cloudCart));
         }
         window.dispatchEvent(new Event('cartUpdated'));
-        console.log('🛒 Loaded ' + data.cart.length + ' items from cloud cart');
+        console.log('🛒 Synced with cloud cart for user #' + user.id, cloudCart.length);
       } else {
+        // First-time cloud initialization from local cart
         const localCart = (typeof state !== 'undefined' && state.cart) ? state.cart : JSON.parse(localStorage.getItem('store_cart') || '[]');
         if (localCart.length > 0) {
-          window.syncCartToServer();
+          window.syncCartToServer(true);
         }
       }
     }
@@ -95,6 +107,32 @@ window.addEventListener('authLoaded', () => {
   }
 });
 
+window.addEventListener('pagehide', () => {
+  if (cartSyncTimeout) {
+    clearTimeout(cartSyncTimeout);
+    const user = window.authUser || (localStorage.getItem('authUser') ? JSON.parse(localStorage.getItem('authUser')) : null);
+    if (user && user.id) {
+      const cartData = (typeof state !== 'undefined' && state.cart) ? state.cart : JSON.parse(localStorage.getItem('store_cart') || '[]');
+      try {
+        navigator.sendBeacon('api/save_user_cart.php', JSON.stringify({ user_id: user.id, cart: cartData }));
+      } catch (e) {}
+    }
+  }
+});
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'store_cart') {
+    try {
+      const newCart = JSON.parse(e.newValue || '[]');
+      if (typeof state !== 'undefined') {
+        state.cart = newCart;
+        if (typeof updateCartUI === 'function') updateCartUI();
+      }
+      window.dispatchEvent(new Event('cartUpdated'));
+    } catch(err) {}
+  }
+});
+
 // STATE
 const state = {
   cart: initialCart,
@@ -102,10 +140,10 @@ const state = {
   currentTab: 'all',
   slideIndex: 0,
   slideTimer: null,
-  saveCart() { 
+  saveCart(immediate = false) { 
     localStorage.setItem('store_cart', JSON.stringify(this.cart));
     if (typeof window.syncCartToServer === 'function') {
-      window.syncCartToServer();
+      window.syncCartToServer(immediate);
     }
   },
   saveWish() { localStorage.setItem('store_wish', JSON.stringify([...this.wishlist])); },
@@ -149,16 +187,23 @@ function addToCart(product, qty=1, variants={}) {
 
 function removeFromCart(index) {
   state.cart.splice(index, 1);
-  state.saveCart();
+  state.saveCart(true);
   updateCartUI();
+  window.dispatchEvent(new Event('cartUpdated'));
 }
 
 function updateQty(index, delta) {
   const item = state.cart[index];
   if (!item) return;
-  item.qty = Math.max(1, item.qty+delta);
-  state.saveCart();
+  const newQty = item.qty + delta;
+  if (newQty <= 0) {
+    removeFromCart(index);
+    return;
+  }
+  item.qty = newQty;
+  state.saveCart(true);
   updateCartUI();
+  window.dispatchEvent(new Event('cartUpdated'));
 }
 
 function updateCartUI() {

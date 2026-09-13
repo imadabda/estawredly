@@ -169,24 +169,130 @@
       cursor: pointer;
     }
     .sort-select:focus { outline: none; border-color: var(--accent); }
-    .view-toggle { display: flex; gap: 4px; }
+    .view-toggle { display: flex; gap: 6px; }
     .view-btn {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1.5px solid var(--gray3);
-      color: var(--gray-500);
-      font-size: 14px;
+      background: #fff;
+      color: var(--gray6, #64748b);
+      font-size: 16px;
       cursor: pointer;
-      transition: var(--t);
+      transition: all 0.2s ease;
     }
-    .view-btn.active, .view-btn:hover {
-      background: var(--accent);
-      border-color: var(--accent);
+    .view-btn.active {
+      background: var(--p, #0284c7) !important;
+      border-color: var(--p, #0284c7) !important;
+      color: #fff !important;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+    }
+    .view-btn:hover:not(.active) {
+      background: var(--gray1);
+      border-color: var(--gray4);
       color: var(--gray9);
+    }
+
+    /* List View Mode for Products */
+    .products-grid.list-view {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+    .products-grid.list-view .p-card {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: stretch !important;
+      background: #fff !important;
+      border-radius: 16px !important;
+      overflow: hidden !important;
+      border: 1px solid var(--gray2) !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important;
+      min-height: 160px !important;
+      transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    }
+    .products-grid.list-view .p-card:hover {
+      transform: translateY(-3px) !important;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.07) !important;
+      border-color: rgba(2, 132, 199, 0.3) !important;
+    }
+    .products-grid.list-view .p-card-img {
+      width: 190px !important;
+      min-width: 190px !important;
+      height: auto !important;
+      aspect-ratio: auto !important;
+      position: relative !important;
+      background: #f8fafc !important;
+      flex-shrink: 0 !important;
+    }
+    .products-grid.list-view .p-card-img img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+    .products-grid.list-view .p-info {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      padding: 18px 24px !important;
+      gap: 6px !important;
+    }
+    .products-grid.list-view .p-name {
+      font-size: 16.5px !important;
+      font-weight: 700 !important;
+      color: var(--gray9) !important;
+      line-height: 1.4 !important;
+      margin: 0 !important;
+    }
+    .products-grid.list-view .p-cat {
+      font-size: 12.5px !important;
+      font-weight: 600 !important;
+      color: var(--p, #0284c7) !important;
+    }
+    .products-grid.list-view .p-price {
+      font-size: 19px !important;
+      font-weight: 800 !important;
+      color: var(--gray9) !important;
+      margin-top: 4px !important;
+    }
+    .products-grid.list-view .p-add-btn {
+      align-self: flex-start !important;
+      margin-top: 8px !important;
+      padding: 8px 24px !important;
+      border-radius: 10px !important;
+      font-size: 13.5px !important;
+    }
+    @media (max-width: 768px) {
+      .products-grid.list-view .p-card {
+        min-height: 120px !important;
+      }
+      .products-grid.list-view .p-card-img {
+        width: 115px !important;
+        min-width: 115px !important;
+      }
+      .products-grid.list-view .p-info {
+        padding: 12px 14px !important;
+        gap: 4px !important;
+      }
+      .products-grid.list-view .p-name {
+        font-size: 13.5px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+      }
+      .products-grid.list-view .p-price {
+        font-size: 15px !important;
+      }
+      .products-grid.list-view .p-add-btn {
+        padding: 6px 14px !important;
+        font-size: 12px !important;
+        margin-top: 6px !important;
+      }
     }
 
     /* Category chips */
@@ -570,16 +676,21 @@
         <div class="shop-toolbar">
           <div class="results-count" id="shop-results-count">جاري تحميل المنتجات...</div>
           <div class="toolbar-right">
-            <select class="sort-select" id="sort-select">
-              <option>الأكثر طلبًا</option>
-              <option>الأرخص أولًا</option>
-              <option>الأغلى أولًا</option>
-              <option>الأحدث</option>
-              <option>الأعلى تقييمًا</option>
+            <select class="sort-select" id="sort-select" aria-label="ترتيب المنتجات">
+              <option value="popular">الأكثر طلبًا</option>
+              <option value="price-asc">الأرخص أولًا</option>
+              <option value="price-desc">الأغلى أولًا</option>
+              <option value="newest">الأحدث</option>
+              <option value="rating">الأعلى تقييمًا</option>
+              <option value="name-asc">الاسم (أ - ي)</option>
             </select>
             <div class="view-toggle">
-              <button class="view-btn active" id="grid-view" title="شبكة">⊞</button>
-              <button class="view-btn" id="list-view" title="قائمة">☰</button>
+              <button class="view-btn active" id="grid-view" title="عرض شبكة" type="button">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+              </button>
+              <button class="view-btn" id="list-view" title="عرض قائمة" type="button">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -686,6 +797,102 @@
 
     // Load products from Store and handle URL params
     let activeCategoryBrand = '';
+    let currentShopProducts = [];
+    let totalShopProductsCount = 0;
+    let currentSortMode = 'popular';
+    let currentViewMode = localStorage.getItem('estawredli_shop_view') || 'grid';
+    let isToolbarInitialized = false;
+
+    function sortProductsList(list, sortType) {
+      const sorted = [...list];
+      switch (sortType) {
+        case 'price-asc':
+          sorted.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+          break;
+        case 'price-desc':
+          sorted.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+          break;
+        case 'newest':
+          sorted.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+          break;
+        case 'rating':
+          sorted.sort((a, b) => (parseFloat(b.stars) || 0) - (parseFloat(a.stars) || 0));
+          break;
+        case 'name-asc':
+          sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ar'));
+          break;
+        case 'popular':
+        default:
+          sorted.sort((a, b) => {
+            const scoreA = (a.badge === 'hot' ? 1000 : 0) + (a.badge === 'best' ? 500 : 0) + (Number(a.reviews) || 0);
+            const scoreB = (b.badge === 'hot' ? 1000 : 0) + (b.badge === 'best' ? 500 : 0) + (Number(b.reviews) || 0);
+            return scoreB - scoreA;
+          });
+          break;
+      }
+      return sorted;
+    }
+
+    function setShopView(view) {
+      currentViewMode = view;
+      try { localStorage.setItem('estawredli_shop_view', view); } catch (e) {}
+
+      const gridBtn = document.getElementById('grid-view');
+      const listBtn = document.getElementById('list-view');
+      const grid = document.getElementById('products-grid');
+
+      if (gridBtn) gridBtn.classList.toggle('active', view === 'grid');
+      if (listBtn) listBtn.classList.toggle('active', view === 'list');
+      if (grid) grid.classList.toggle('list-view', view === 'list');
+    }
+
+    function renderShopProducts() {
+      const grid = document.getElementById('products-grid');
+      if (!grid) return;
+
+      const sorted = sortProductsList(currentShopProducts, currentSortMode);
+
+      if (sorted.length > 0) {
+        if (typeof renderGrid === 'function') {
+          renderGrid('products-grid', sorted);
+        } else {
+          grid.innerHTML = sorted.map(p => typeof makeCard === 'function' ? makeCard(p) : '').join('');
+        }
+        grid.classList.toggle('list-view', currentViewMode === 'list');
+      } else {
+        const params = new URLSearchParams(location.search);
+        const brand = params.get('brand');
+        const emptyMsg = brand ? `🔍 لا توجد منتجات مسجلة لماركة "${decodeURIComponent(brand).trim()}" حالياً` : '🔍 لم يتم العثور على نتائج';
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5);font-size:16px;font-weight:600;">${emptyMsg}</div>`;
+      }
+
+      // Update results count
+      const countEl = document.querySelector('.results-count');
+      if (countEl) {
+        countEl.innerHTML = `عرض <strong>${sorted.length}</strong> من <strong>${totalShopProductsCount || sorted.length}</strong> منتج`;
+      }
+    }
+
+    function initToolbar() {
+      if (isToolbarInitialized) return;
+      isToolbarInitialized = true;
+
+      const sortSelect = document.getElementById('sort-select');
+      if (sortSelect) {
+        sortSelect.value = currentSortMode;
+        sortSelect.onchange = (e) => {
+          currentSortMode = e.target.value;
+          renderShopProducts();
+        };
+      }
+
+      const gridBtn = document.getElementById('grid-view');
+      const listBtn = document.getElementById('list-view');
+      if (gridBtn) gridBtn.onclick = () => setShopView('grid');
+      if (listBtn) listBtn.onclick = () => setShopView('list');
+
+      setShopView(currentViewMode);
+    }
 
     async function loadShopData() {
       const params = new URLSearchParams(location.search);
@@ -703,20 +910,38 @@
       let filtered = products;
       let parentSubLinks = [];
 
+      function canonicalCategory(c) {
+        if (!c) return '';
+        let s = c.trim().replace(/\s+/g, ' ');
+        if (s === 'سفنجات جلي' || s === 'إسفنجات جلي') return 'اسفنجات جلي';
+        if (s === 'جاروف مع فرشاي' || s === 'جاروف وفرشاة') return 'مجرفة مع فرشاة';
+        if (s === 'جاروف ومكنسة') return 'جاروف مع مكنسه';
+        if (s === 'فراشي مرحاض') return 'فرشاة مرحاض';
+        if (s === 'مكانس' || s === 'مكنسة') return 'مكانس';
+        if (s === 'قفازات') return 'قفازات يد';
+        if (s === 'ورق المنيوم' || s === 'ورق ألمنيوم') return 'ورق المنيوم (فويل)';
+        if (s === 'خيط أسنان (مع علبة عرض)') return 'خيط أسنان';
+        if (s === 'شفاط مرحاض') return 'مكبس مرحاض';
+        return s;
+      }
+
       // === Populate dynamic category filters from real products ===
-      const uniqueCats = [...new Set(products.map(p => p.cat).filter(c => c && c.trim().length > 0))];
-      uniqueCats.sort();
+      const catCounts = {};
+      products.forEach(p => {
+        const c = canonicalCategory(p.cat);
+        if (c) {
+          catCounts[c] = (catCounts[c] || 0) + 1;
+        }
+      });
+      const uniqueCats = Object.keys(catCounts).sort((a, b) => a.localeCompare('ar'));
 
       // Fill sidebar category checkboxes
       const sidebarCatContainer = document.getElementById('sidebar-cat-filters');
       if (sidebarCatContainer && uniqueCats.length > 0) {
-          const catCounts = {};
-          uniqueCats.forEach(c => {
-              catCounts[c] = products.filter(p => p.cat === c).length;
-          });
+          const currentCatCanonical = canonicalCategory(cat ? decodeURIComponent(cat) : '');
           sidebarCatContainer.innerHTML = uniqueCats.map(c => `
               <label class="filter-option">
-                  <input type="checkbox" value="${c}" ${cat && decodeURIComponent(cat) === c ? 'checked' : ''} onchange="window.location='shop.html?cat=${encodeURIComponent(c)}'" /> ${c} <span class="filter-count">(${catCounts[c]})</span>
+                  <input type="checkbox" value="${c}" ${currentCatCanonical === c ? 'checked' : ''} onchange="window.location='shop.html?cat=${encodeURIComponent(c)}'" /> ${c} <span class="filter-count">(${catCounts[c]})</span>
               </label>
           `).join('');
       }
@@ -757,6 +982,8 @@
           if (!str) return '';
           return str
             .trim()
+            .replace(/^سفنج/, 'اسفنج')
+            .replace(/\s+سفنج/g, ' اسفنج')
             .replace(/[\u064B-\u065F\u0670]/g, '')
             .replace(/[\u0622\u0623\u0625\u0671]/g, '\u0627')
             .replace(/\u0629/g, '\u0647')
@@ -879,7 +1106,11 @@
 
         // If not a parent category or no products found via subcategories, match directly
         if (catFiltered.length === 0) {
+          const canonDecoded = canonicalCategory(decodedCat);
+          const canonTarget = canonicalCategory(targetCategoryName);
           catFiltered = products.filter(p => {
+            const pCatCanon = canonicalCategory(p.cat);
+            if (pCatCanon && (pCatCanon === canonDecoded || pCatCanon === canonTarget)) return true;
             const pCatNorm = normAr(p.cat);
             return pCatNorm === normTarget || pCatNorm === normDecoded;
           });
@@ -1067,27 +1298,17 @@
           }
       }
 
-      // Render the products
-      if (filtered.length > 0) {
-        if (typeof renderGrid === 'function') {
-          renderGrid('products-grid', filtered);
-        } else {
-          const grid = document.getElementById('products-grid');
-          grid.innerHTML = filtered.map(p => typeof makeCard === 'function' ? makeCard(p) : '').join('');
-        }
-      } else {
-          const grid = document.getElementById('products-grid');
-          const emptyMsg = brand ? `🔍 لا توجد منتجات مسجلة لماركة "${decodeURIComponent(brand).trim()}" حالياً` : '🔍 لم يتم العثور على نتائج';
-          grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5);font-size:16px;font-weight:600;">${emptyMsg}</div>`;
-      }
+      // Initialize Toolbar (Sort dropdown & View buttons)
+      initToolbar();
+
+      // Render products with sorting and view mode applied
+      totalShopProductsCount = products.length;
+      currentShopProducts = filtered;
+      renderShopProducts();
 
       // Update search input if query present
       const searchInput = document.getElementById('search-input');
       if (searchInput && q) searchInput.value = q;
-
-      // Update results count
-      const countEl = document.querySelector('.results-count');
-      if (countEl) countEl.innerHTML = `عرض <strong>${filtered.length}</strong> من <strong>${products.length}</strong> منتج`;
     }
 
     window.toggleCategoryBrand = (brandName) => {
