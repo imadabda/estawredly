@@ -1214,6 +1214,9 @@ tr:last-child td{border-bottom:none}
         <button class="sb-item" onclick="showPage('popup-banner',this)">
           <span class="sb-icon">📢</span> البنر الترحيبي المنبثق
         </button>
+        <button class="sb-item" onclick="showPage('discount-box',this)">
+          <span class="sb-icon">🎁</span> بوكس الخصم (15%)
+        </button>
         <button class="sb-item" onclick="showPage('icons',this)">
           <span class="sb-icon">🖼️</span> أيقونات الرئيسية
         </button>
@@ -2158,6 +2161,99 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
 
+      <!-- ================= PAGE: DISCOUNT BOX (15%) ================= -->
+      <div class="page" id="page-discount-box">
+        <div class="page-hdr">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> بوكس الخصم (15%)</div>
+            <h1 class="page-title">إدارة بوكس الخصم والعضوية المميزة</h1>
+            <p class="page-sub">التحكم في ظهور أو إخفاء صندوق الخصم (Promo Banner) في الصفحة الرئيسية وتعديل جملة الخصم والنصوص بكل سهولة.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-add" onclick="adminDiscountBox.resetDefault()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text);">🔄 استعادة الافتراضي</button>
+            <button class="btn-add" onclick="adminDiscountBox.save()" style="background:var(--blue); font-weight:800;">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:25px; margin-top:20px;">
+          <!-- 1. Form Settings -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:18px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">⚙️ خيارات ونصوص الصندوق</h3>
+              <span style="font-size:12px; color:var(--text3);">التحكم بالعرض وجملة الخصم</span>
+            </div>
+
+            <!-- Enable / Disable Switch -->
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--bg3); border-radius:10px; border:1px solid var(--border);">
+              <div>
+                <strong style="display:block; font-size:14px; color:var(--text);">حالة بوكس الخصم</strong>
+                <small style="color:var(--text3); font-size:12px;">إظهار أو إخفاء الصندوق بالكامل من الصفحة الرئيسية</small>
+              </div>
+              <label style="position:relative; display:inline-block; width:50px; height:26px; cursor:pointer;">
+                <input type="checkbox" id="adb-enabled" onchange="adminDiscountBox.updateLivePreview()" style="opacity:0; width:0; height:0;">
+                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:var(--blue); border:1px solid var(--border2); transition:.3s; border-radius:34px;" id="adb-enabled-slider"></span>
+              </label>
+            </div>
+
+            <!-- Tag / Badge -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">الشارة العلوية (Badge / Tag)</label>
+              <input type="text" id="adb-tag" placeholder="مثال: عضوية مميزة أو عرض خاص" oninput="adminDiscountBox.updateLivePreview()" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
+            </div>
+
+            <!-- Title / Discount Phrase -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">جملة الخصم / العنوان الرئيسي <span style="color:var(--red)">*</span></label>
+              <textarea id="adb-title" rows="2" placeholder="مثال: احصل على خصم 15% على أول طلب!" oninput="adminDiscountBox.updateLivePreview()" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-weight:700; resize:vertical; font-size:14px; line-height:1.5;"></textarea>
+              <small style="color:var(--text3); font-size:11px; display:block; margin-top:4px;">يمكنك كتابة السطر الجديد بالضغط على Enter للفصل بين الجملتين مثل الصفحة الرئيسية.</small>
+            </div>
+
+            <!-- Subtitle -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">الوصف التوضيحي</label>
+              <input type="text" id="adb-subtitle" placeholder="مثال: سجّل الآن واحصل على كود خصم خاص على أول عملية شراء" oninput="adminDiscountBox.updateLivePreview()" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-size:13px;">
+            </div>
+
+            <!-- Button Text -->
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text2); display:block; margin-bottom:6px;">نص زر الإرسال</label>
+              <input type="text" id="adb-btn-text" placeholder="مثال: احصل على الكود" oninput="adminDiscountBox.updateLivePreview()" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-weight:600;">
+            </div>
+          </div>
+
+          <!-- 2. Live Preview -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:18px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">👁️ معاينة حية ومباشرة</h3>
+              <div id="adb-mock-status" style="font-size:12px;"></div>
+            </div>
+
+            <!-- Mock Preview Box Matching Site Design -->
+            <div id="adb-mock-box" style="background:linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #1e40af 100%); border-radius:16px; padding:35px 25px; text-align:center; color:#fff; transition:all 0.3s ease; box-shadow:0 10px 25px rgba(37,99,235,0.25);">
+              <span id="adb-mock-tag" style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 14px; border-radius:50px; font-size:12px; font-weight:800; margin-bottom:14px; letter-spacing:0.5px;">
+                عضوية مميزة
+              </span>
+              <h2 id="adb-mock-title" style="font-size:22px; font-weight:900; line-height:1.4; margin-bottom:12px; color:#fff;">
+                احصل على خصم 15%<br/>على أول طلب!
+              </h2>
+              <p id="adb-mock-subtitle" style="font-size:13.5px; opacity:0.9; margin-bottom:20px; line-height:1.6; max-width:380px; margin-left:auto; margin-right:auto;">
+                سجّل الآن واحصل على كود خصم خاص على أول عملية شراء
+              </p>
+              <div style="display:flex; gap:8px; max-width:340px; margin:0 auto; flex-wrap:wrap; justify-content:center;">
+                <input type="email" placeholder="بريدك الإلكتروني" disabled style="flex:1; min-width:180px; padding:10px 14px; border-radius:8px; border:none; background:#fff; color:#333; font-size:12.5px;" />
+                <button type="button" id="adb-mock-btn" disabled style="padding:10px 18px; border-radius:8px; border:none; background:#fff; color:#2563eb; font-weight:800; font-size:12.5px; cursor:default;">
+                  احصل على الكود
+                </button>
+              </div>
+            </div>
+
+            <small style="color:var(--text3); font-size:12px; line-height:1.5;">
+              💡 <strong>ملاحظة:</strong> عند إيقاف حالة الصندوق، سيختفي البوكس تماماً من الصفحة الرئيسية لجميع الزوار فوراً ولن يأخذ أي مساحة.
+            </small>
+          </div>
+        </div>
+      </div>
+
       <!-- ══ CATEGORIES ══ -->
       <div class="page" id="page-categories">
         <div class="page-header">
@@ -2332,7 +2428,7 @@ tr:last-child td{border-bottom:none}
 
             <div class="form-group" style="margin-bottom: 14px;">
               <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text2); margin-bottom:6px;">البريد الإلكتروني للتواصل</label>
-              <input type="email" id="adm-contact-email" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="info@estawredly.com" />
+              <input type="email" id="adm-contact-email" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text);" placeholder="contact@estawredli.com" />
             </div>
 
             <div class="form-group" style="margin-bottom: 14px;">
@@ -2723,6 +2819,7 @@ function showPage(id, el) {
   if (id === 'import-sections') adminImportSections.load();
   if (id === 'banners')  adminBanners.load();
   if (id === 'popup-banner') adminPopupBanner.load();
+  if (id === 'discount-box') adminDiscountBox.load();
   if (id === 'brands')  adminBrands.load();
   if (id === 'pages-content') adminPagesContent.load();
   if (id === 'settings') {
@@ -5427,7 +5524,8 @@ const adminPopupBanner = {
     collectData() {
         return {
             enabled: document.getElementById('apb-enabled') ? document.getElementById('apb-enabled').checked : true,
-            show_once: document.getElementById('apb-show-once') ? document.getElementById('apb-show-once').checked : false,
+            show_once: document.getElementById('apb-show-once') ? document.getElementById('apb-show-once').checked : true,
+            updated_at: Date.now(),
             tag: (document.getElementById('apb-tag')?.value || '').trim(),
             title: (document.getElementById('apb-title')?.value || '').trim(),
             message: (document.getElementById('apb-message')?.value || '').trim(),
@@ -5485,6 +5583,144 @@ const adminPopupBanner = {
     
     testPopup() {
         window.open('index.html?test_popup=1', '_blank');
+    }
+};
+
+const adminDiscountBox = {
+    data: null,
+    async load() {
+        try {
+            const res = await fetch('api/get_discount_box.php?t=' + Date.now());
+            this.data = await res.json();
+            if (!this.data) {
+                this.resetDefault(false);
+            } else {
+                this.populate();
+            }
+        } catch (e) {
+            console.error("Error loading discount box settings:", e);
+            this.resetDefault(false);
+        }
+    },
+    populate() {
+        if (!this.data) return;
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = (val !== undefined && val !== null) ? val : '';
+        };
+        const setChecked = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.checked = !!val;
+        };
+
+        setChecked('adb-enabled', this.data.enabled !== false);
+        setVal('adb-tag', this.data.tag || 'عضوية مميزة');
+        setVal('adb-title', this.data.title || 'احصل على خصم 15%\nعلى أول طلب!');
+        setVal('adb-subtitle', this.data.subtitle || 'سجّل الآن واحصل على كود خصم خاص على أول عملية شراء');
+        setVal('adb-btn-text', this.data.btn_text || 'احصل على الكود');
+
+        this.updateLivePreview();
+    },
+    updateLivePreview() {
+        const enabled = document.getElementById('adb-enabled') ? document.getElementById('adb-enabled').checked : true;
+        const tag = document.getElementById('adb-tag') ? document.getElementById('adb-tag').value : 'عضوية مميزة';
+        const title = document.getElementById('adb-title') ? document.getElementById('adb-title').value : 'احصل على خصم 15%\nعلى أول طلب!';
+        const subtitle = document.getElementById('adb-subtitle') ? document.getElementById('adb-subtitle').value : 'سجّل الآن واحصل على كود خصم خاص على أول عملية شراء';
+        const btnText = document.getElementById('adb-btn-text') ? document.getElementById('adb-btn-text').value : 'احصل على الكود';
+
+        const mockBox = document.getElementById('adb-mock-box');
+        const mockStatus = document.getElementById('adb-mock-status');
+        const mockTag = document.getElementById('adb-mock-tag');
+        const mockTitle = document.getElementById('adb-mock-title');
+        const mockSubtitle = document.getElementById('adb-mock-subtitle');
+        const mockBtn = document.getElementById('adb-mock-btn');
+
+        if (mockTag) {
+            mockTag.textContent = tag;
+            mockTag.style.display = tag ? 'inline-block' : 'none';
+        }
+        if (mockTitle) {
+            mockTitle.innerHTML = (title || '').replace(/\n/g, '<br/>');
+        }
+        if (mockSubtitle) {
+            mockSubtitle.textContent = subtitle;
+            mockSubtitle.style.display = subtitle ? 'block' : 'none';
+        }
+        if (mockBtn) {
+            mockBtn.textContent = btnText || 'احصل على الكود';
+        }
+
+        const enSlider = document.getElementById('adb-enabled-slider');
+        if (enSlider) {
+            enSlider.style.background = enabled ? 'var(--blue)' : 'var(--bg)';
+        }
+
+        if (mockStatus) {
+            if (enabled) {
+                mockStatus.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;color:#10b981;font-weight:700;">🟢 مفعل وظاهر في المتجر</span>';
+            } else {
+                mockStatus.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;color:#ef4444;font-weight:700;">🔴 مخفي من المتجر حالياً</span>';
+            }
+        }
+        if (mockBox) {
+            mockBox.style.opacity = enabled ? '1' : '0.45';
+            mockBox.style.filter = enabled ? 'none' : 'grayscale(0.6)';
+        }
+    },
+    resetDefault(updateUi = true) {
+        if (updateUi && !confirm('هل أنت متأكد من استعادة الإعدادات الافتراضية لصندوق الخصم؟')) return;
+        this.data = {
+            enabled: true,
+            tag: 'عضوية مميزة',
+            title: 'احصل على خصم 15%\nعلى أول طلب!',
+            subtitle: 'سجّل الآن واحصل على كود خصم خاص على أول عملية شراء',
+            btn_text: 'احصل على الكود'
+        };
+        this.populate();
+        const toast = document.getElementById('admin-toast');
+        if (toast && updateUi) {
+            toast.textContent = '🔄 تمت استعادة الإعدادات الافتراضية';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    },
+    async save() {
+        const payload = {
+            enabled: document.getElementById('adb-enabled') ? document.getElementById('adb-enabled').checked : true,
+            tag: document.getElementById('adb-tag') ? document.getElementById('adb-tag').value.trim() : '',
+            title: document.getElementById('adb-title') ? document.getElementById('adb-title').value.trim() : '',
+            subtitle: document.getElementById('adb-subtitle') ? document.getElementById('adb-subtitle').value.trim() : '',
+            btn_text: document.getElementById('adb-btn-text') ? document.getElementById('adb-btn-text').value.trim() : ''
+        };
+
+        if (!payload.title) {
+            alert('الرجاء إدخال جملة الخصم أو عنوان الصندوق');
+            return;
+        }
+
+        try {
+            const res = await fetch('api/save_discount_box.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.data = payload;
+                const toast = document.getElementById('admin-toast');
+                if (toast) {
+                    toast.textContent = '✅ ' + data.message;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                } else {
+                    alert('✅ ' + data.message);
+                }
+            } else {
+                alert('❌ ' + (data.message || 'حدث خطأ أثناء الحفظ'));
+            }
+        } catch (e) {
+            alert('❌ فشل الاتصال بالخادم لحفظ إعدادات الصندوق!');
+        }
     }
 };
 
@@ -5673,21 +5909,26 @@ const adminBrands = {
         
         // Match brand products and toggle active status
         let affected = 0;
-        if (brandName && Array.isArray(adminProducts)) {
-            const bn = brandName.toLowerCase();
-            adminProducts.forEach(p => {
-                const pb = (p.brand || '').trim().toLowerCase();
-                const isMatch = (pb === bn) ||
-                                (bn === 'kleaner' && pb === 'cleaner') ||
-                                (bn === 'cleaner' && pb === 'kleaner');
-                if (isMatch) {
-                    p.active = isChecked;
-                    affected++;
-                }
-            });
-            await saveAdminProducts();
-            if (typeof renderProducts === 'function') renderProducts();
-            if (typeof updateStats === 'function') updateStats();
+        if (brandName) {
+            if (!Array.isArray(adminProducts) || adminProducts.length === 0) {
+                await syncLiveProducts();
+            }
+            if (Array.isArray(adminProducts)) {
+                const bn = brandName.toLowerCase();
+                adminProducts.forEach(p => {
+                    const pb = (p.brand || '').trim().toLowerCase();
+                    const isMatch = (pb === bn) ||
+                                    (bn === 'kleaner' && pb === 'cleaner') ||
+                                    (bn === 'cleaner' && pb === 'kleaner');
+                    if (isMatch) {
+                        p.active = isChecked;
+                        affected++;
+                    }
+                });
+                await saveAdminProducts();
+                if (typeof renderProducts === 'function') renderProducts();
+                if (typeof updateStats === 'function') updateStats();
+            }
         }
         
         await this.save(true);

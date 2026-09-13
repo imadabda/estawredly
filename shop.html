@@ -411,15 +411,26 @@
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        touch-action: pan-x pan-y;
         padding-bottom: 6px;
         gap: 8px !important;
-        scrollbar-width: thin;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .category-brands-list::-webkit-scrollbar,
+      .category-subcats-list::-webkit-scrollbar {
+        display: none;
       }
       .cat-brand-chip, .subcat-chip {
         flex-shrink: 0 !important;
         white-space: nowrap !important;
         font-size: 12px !important;
         padding: 6px 12px !important;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
       }
     }
   </style>
@@ -714,7 +725,6 @@
         <div style="display:flex;gap:20px;font-size:13px;">
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-weight:600;">من نحن</a>
           <a href="contact.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-weight:600;">تواصل معنا</a>
-          <a href="containers.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-weight:600;">شحن الحاويات</a>
         </div>
         <div class="payment-icons">
           <span class="pay-icon">💳 Visa</span>
@@ -787,7 +797,7 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-  <script src="store.js?v=20260913_v1"></script>
+  <script src="store.js?v=20260913_v2"></script>
   <script src="auth.js?v=20260904_v2"></script>
 <script src="main.js?v=20260904_v2"></script>
   <script>
@@ -802,11 +812,50 @@
 
     // Load products from Store and handle URL params
     let activeCategoryBrand = '';
+    let shopBaseFilteredProducts = [];
     let currentShopProducts = [];
     let totalShopProductsCount = 0;
     let currentSortMode = 'popular';
     let currentViewMode = localStorage.getItem('estawredli_shop_view') || 'grid';
     let isToolbarInitialized = false;
+
+    // Fast in-memory caching to eliminate lag and prevent mobile freeze
+    let _cachedBrands = null;
+    let _cachedNav = null;
+    let _cachedHomeCats = null;
+
+    async function fetchBrandsCached() {
+      if (_cachedBrands) return _cachedBrands;
+      try {
+        const res = await fetch('api/get_brands.php?t=' + Date.now());
+        _cachedBrands = await res.json();
+      } catch (e) {
+        _cachedBrands = [];
+      }
+      return _cachedBrands;
+    }
+
+    async function fetchNavCached() {
+      if (_cachedNav) return _cachedNav;
+      try {
+        const res = await fetch('api/get_nav.php?t=' + Date.now());
+        _cachedNav = await res.json();
+      } catch (e) {
+        _cachedNav = [];
+      }
+      return _cachedNav;
+    }
+
+    async function fetchHomeCatsCached() {
+      if (_cachedHomeCats) return _cachedHomeCats;
+      try {
+        const res = await fetch('api/get_homepage_categories.php?t=' + Date.now());
+        _cachedHomeCats = await res.json();
+      } catch (e) {
+        _cachedHomeCats = [];
+      }
+      return _cachedHomeCats;
+    }
 
     function sortProductsList(list, sortType) {
       const sorted = [...list];
@@ -915,8 +964,7 @@
       // Filter out inactive products and products of disabled brands
       products = products.filter(p => p && p.active !== false);
       try {
-        const bRes = await fetch('api/get_brands.php?t=' + Date.now());
-        const bList = await bRes.json();
+        const bList = await fetchBrandsCached();
         if (Array.isArray(bList)) {
           const disabledBrands = bList.filter(b => b && b.active === false).map(b => (b.name || '').trim().toLowerCase());
           if (disabledBrands.length > 0) {
@@ -1068,8 +1116,7 @@
         // 0. Check if cat is an icon from homepage categories with linkedCategory
         let targetCategoryName = decodedCat;
         try {
-          const homeCatsRes = await fetch('api/get_homepage_categories.php?t=' + Date.now());
-          const homeCats = await homeCatsRes.json();
+          const homeCats = await fetchHomeCatsCached();
           if (Array.isArray(homeCats)) {
             const matchedIcon = homeCats.find(c => c.id === decodedCat || normAr(c.title) === normAr(decodedCat));
             if (matchedIcon) {
@@ -1101,8 +1148,7 @@
 
         // 1. Check if targetCategoryName or cat matches a parent category in nav.json
         try {
-          const navRes = await fetch('api/get_nav.php?t=' + Date.now());
-          const navData = await navRes.json();
+          const navData = await fetchNavCached();
           
           if (Array.isArray(navData)) {
             const matchedParentNav = navData.find(item => 
@@ -1252,8 +1298,7 @@
           const subcatsList = document.getElementById('category-subcats-list');
           if (subcatsContainer && subcatsList) {
               try {
-                  const navRes = await fetch('api/get_nav.php?t=' + Date.now());
-                  const navData = await navRes.json();
+                  const navData = await fetchNavCached();
                   const brandCats = Array.isArray(navData) ? navData.filter(n => n.title && n.title !== 'الرئيسية') : [];
                   
                   const isAllActive = !cat;
@@ -1288,8 +1333,7 @@
           
           if (filtered.length > 0 && brandsContainer && brandsList) {
               try {
-                  const brandsRes = await fetch('api/get_brands.php?t=' + Date.now());
-                  const allBrands = await brandsRes.json();
+                  const allBrands = await fetchBrandsCached();
                   const activeBrands = Array.isArray(allBrands) ? allBrands.filter(b => b.active !== false) : [];
                   const registeredBrandNames = activeBrands.map(b => (typeof b === 'string' ? b : (b.name || '')).trim()).filter(Boolean);
                   const normalizedBrands = activeBrands.map(b => {
@@ -1317,21 +1361,26 @@
                           brandsTitle.textContent = cat ? '🏷️ أبرز الماركات في هذا القسم:' : '🏷️ تصفح حسب الماركة:';
                       }
 
-                      brandsList.innerHTML = uniqueBrandNames.map(bName => {
-                          const brandObj = normalizedBrands.find(b => b.name.toLowerCase() === bName.toLowerCase());
-                          const logoUrl = (brandObj && brandObj.logo) ? brandObj.logo : '';
-                          const isActive = activeCategoryBrand.toLowerCase() === bName.toLowerCase();
-                          const imgHtml = logoUrl 
-                              ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #e2e8f0;display:inline-block;" />`
-                              : `<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--p-light,#eef2ff);color:var(--p,#3b82f6);font-size:11px;font-weight:bold;">${bName.slice(0,2).toUpperCase()}</span>`;
+                      // Only update innerHTML if brand list actually changed (prevents horizontal scroll reset!)
+                      const currentKey = uniqueBrandNames.slice().sort().join('|');
+                      if (brandsList.getAttribute('data-rendered-key') !== currentKey) {
+                          brandsList.setAttribute('data-rendered-key', currentKey);
+                          brandsList.innerHTML = uniqueBrandNames.map(bName => {
+                              const brandObj = normalizedBrands.find(b => b.name.toLowerCase() === bName.toLowerCase());
+                              const logoUrl = (brandObj && brandObj.logo) ? brandObj.logo : '';
+                              const isActive = activeCategoryBrand && activeCategoryBrand.toLowerCase() === bName.toLowerCase();
+                              const imgHtml = logoUrl 
+                                  ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #e2e8f0;display:inline-block;pointer-events:none;" />`
+                                  : `<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--p-light,#eef2ff);color:var(--p,#3b82f6);font-size:11px;font-weight:bold;pointer-events:none;">${bName.slice(0,2).toUpperCase()}</span>`;
 
-                          return `
-                              <button class="cat-brand-chip ${isActive ? 'active' : ''}" onclick="toggleCategoryBrand('${bName.replace(/'/g, "\\'")}')" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;border:1px solid ${isActive ? 'var(--p,#2563eb)' : '#e2e8f0'};background:${isActive ? 'var(--p,#2563eb)' : '#fff'};color:${isActive ? '#fff' : '#1e293b'};font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s ease;">
-                                  ${imgHtml}
-                                  <span>${bName}</span>
-                              </button>
-                          `;
-                      }).join('');
+                              return `
+                                  <button type="button" class="cat-brand-chip ${isActive ? 'active' : ''}" data-brand="${bName.replace(/"/g, '&quot;')}" onclick="toggleCategoryBrand('${bName.replace(/'/g, "\\'")}')" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;border:1px solid ${isActive ? 'var(--p,#2563eb)' : '#e2e8f0'};background:${isActive ? 'var(--p,#2563eb)' : '#fff'};color:${isActive ? '#fff' : '#1e293b'};font-size:12.5px;font-weight:700;cursor:pointer;transition:background .15s ease, color .15s ease, border-color .15s ease;">
+                                      ${imgHtml}
+                                      <span style="pointer-events:none;">${bName}</span>
+                                  </button>
+                              `;
+                          }).join('');
+                      }
                       brandsContainer.style.display = 'block';
                   } else {
                       brandsContainer.style.display = 'none';
@@ -1361,24 +1410,17 @@
                   subcatsContainer.style.display = 'none';
               }
           }
-
-          // Filter by active category brand if selected
-          if (activeCategoryBrand) {
-              filtered = filtered.filter(p => {
-                  let pb = (p.brand || '').trim();
-                  if (pb.toUpperCase() === 'CLEANER') pb = 'KLEANER';
-                  return pb.toLowerCase() === activeCategoryBrand.toLowerCase();
-              });
-          }
       }
+
+      // Save base filtered products for instant in-memory filtering
+      shopBaseFilteredProducts = filtered;
+      totalShopProductsCount = products.length;
 
       // Initialize Toolbar (Sort dropdown & View buttons)
       initToolbar();
 
-      // Render products with sorting and view mode applied
-      totalShopProductsCount = products.length;
-      currentShopProducts = filtered;
-      renderShopProducts();
+      // Apply active category brand filter immediately without full page reload or network lag
+      applyActiveCategoryBrandFilter();
 
       // Update search input if query present and bind live search
       const searchInput = document.getElementById('search-input');
@@ -1405,13 +1447,44 @@
       }
     }
 
+    function applyActiveCategoryBrandFilter() {
+        let list = shopBaseFilteredProducts || [];
+        if (activeCategoryBrand) {
+            list = list.filter(p => {
+                let pb = (p.brand || '').trim();
+                if (pb.toUpperCase() === 'CLEANER') pb = 'KLEANER';
+                return pb.toLowerCase() === activeCategoryBrand.toLowerCase();
+            });
+        }
+        currentShopProducts = list;
+        renderShopProducts();
+
+        // Update button visual state immediately without rebuilding innerHTML or losing horizontal scroll
+        const brandButtons = document.querySelectorAll('.cat-brand-chip');
+        brandButtons.forEach(btn => {
+            const bName = btn.getAttribute('data-brand') || '';
+            const isActive = activeCategoryBrand && bName.toLowerCase() === activeCategoryBrand.toLowerCase();
+            if (isActive) {
+                btn.classList.add('active');
+                btn.style.background = 'var(--p,#2563eb)';
+                btn.style.color = '#fff';
+                btn.style.borderColor = 'var(--p,#2563eb)';
+            } else {
+                btn.classList.remove('active');
+                btn.style.background = '#fff';
+                btn.style.color = '#1e293b';
+                btn.style.borderColor = '#e2e8f0';
+            }
+        });
+    }
+
     window.toggleCategoryBrand = (brandName) => {
-        if (activeCategoryBrand.toLowerCase() === brandName.toLowerCase()) {
+        if (activeCategoryBrand && activeCategoryBrand.toLowerCase() === brandName.toLowerCase()) {
             activeCategoryBrand = '';
         } else {
             activeCategoryBrand = brandName;
         }
-        loadShopData();
+        applyActiveCategoryBrandFilter();
     };
 
     document.addEventListener('DOMContentLoaded', loadShopData);

@@ -29,8 +29,23 @@ const Store = (() => {
     })
     .catch(e => console.error('Error loading currency settings:', e));
 
+  // Disabled brands handling to hide them globally across the entire store
+  let disabledBrands = _get('estawredli_disabled_brands', []);
+  const brandsPromise = fetch('api/get_brands.php?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        disabledBrands = data
+          .filter(b => b && b.active === false)
+          .map(b => (typeof b === 'string' ? b : (b.name || '')).trim().toLowerCase())
+          .filter(Boolean);
+        _set('estawredli_disabled_brands', disabledBrands);
+      }
+    })
+    .catch(e => console.error('Error loading brands settings in store.js:', e));
+
   function ensureReady() {
-    return currencyPromise;
+    return Promise.all([currencyPromise, brandsPromise]);
   }
 
   function _get(key, fallback = null) {
@@ -46,7 +61,6 @@ const Store = (() => {
   }
 
   // PRODUCTS
-  // PRODUCTS
   
   function getProducts() {
     let list = [];
@@ -59,7 +73,16 @@ const Store = (() => {
 
     const isAdminPage = window.location.pathname.endsWith('admin.php') || (typeof adminProducts !== 'undefined');
     if (!isAdminPage) {
-      list = list.filter(p => p.active !== false);
+      list = list.filter(p => {
+        if (p.active === false) return false;
+        if (disabledBrands && disabledBrands.length > 0) {
+          const pb = (p.brand || '').trim().toLowerCase();
+          if (disabledBrands.includes(pb)) return false;
+          if (pb === 'cleaner' && disabledBrands.includes('kleaner')) return false;
+          if (pb === 'kleaner' && disabledBrands.includes('cleaner')) return false;
+        }
+        return true;
+      });
     }
     if (!isAdminPage && currencySettings.enabled && currencySettings.base_rate > 0) {
       const multiplier = currencySettings.current_rate / currencySettings.base_rate;

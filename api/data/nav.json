@@ -14,20 +14,20 @@
         "type": "dropdown",
         "subLinks": [
             {
-                "title": "ممسحة بعصارة مدمجة",
-                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%A8%D8%B9%D8%B5%D8%A7%D8%B1%D8%A9%20%D9%85%D8%AF%D9%85%D8%AC%D8%A9"
+                "title": "مماسح مسطحة",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%B3%D8%B7%D8%AD%D8%A9"
             },
             {
-                "title": "ممسحة رذاذ (Spray)",
-                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%B1%D8%B0%D8%A7%D8%B0%20%28Spray%29"
+                "title": "ممسحة رذاذ (سبراي)",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%B1%D8%B0%D8%A7%D8%B0%20(%D8%B3%D8%A8%D8%B1%D8%A7%D9%8A)"
             },
             {
-                "title": "مماسح مسطحة عادية",
-                "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%B3%D8%B7%D8%AD%D8%A9%20%D8%B9%D8%A7%D8%AF%D9%8A%D8%A9"
+                "title": "رؤوس مماسح مسطحة بديلة",
+                "url": "shop.html?cat=%D8%B1%D8%A4%D9%88%D8%B3%20%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%B3%D8%B7%D8%AD%D8%A9%20%D8%A8%D8%AF%D9%8A%D9%84%D8%A9"
             },
             {
-                "title": "مماسح مايكرو فايبر",
-                "url": "shop.html?cat=%D9%85%D9%85%D8%A7%D8%B3%D8%AD%20%D9%85%D8%A7%D9%8A%D9%83%D8%B1%D9%88%20%D9%81%D8%A7%D9%8A%D8%A8%D8%B1"
+                "title": "ممسحة أرضية احترافية",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%A3%D8%B1%D8%B6%D9%8A%D8%A9%20%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A%D8%A9"
             },
             {
                 "title": "اسفنجات جلي",
@@ -104,6 +104,34 @@
             {
                 "title": "رف حمّام زاوية",
                 "url": "shop.html?cat=%D8%B1%D9%81%20%D8%AD%D9%85%D9%91%D8%A7%D9%85%20%D8%B2%D8%A7%D9%88%D9%8A%D8%A9"
+            },
+            {
+                "title": "رؤوس ممسحة أرضية بديلة",
+                "url": "shop.html?cat=%D8%B1%D8%A4%D9%88%D8%B3%20%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%A3%D8%B1%D8%B6%D9%8A%D8%A9%20%D8%A8%D8%AF%D9%8A%D9%84%D8%A9"
+            },
+            {
+                "title": "ممسحة إسفنجية PVA",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%A5%D8%B3%D9%81%D9%86%D8%AC%D9%8A%D8%A9%20PVA"
+            },
+            {
+                "title": "ممسحة دوارة (تورنيدو) مع دلو",
+                "url": "shop.html?cat=%D9%85%D9%85%D8%B3%D8%AD%D8%A9%20%D8%AF%D9%88%D8%A7%D8%B1%D8%A9%20(%D8%AA%D9%88%D8%B1%D9%86%D9%8A%D8%AF%D9%88)%20%D9%85%D8%B9%20%D8%AF%D9%84%D9%88"
+            },
+            {
+                "title": "إكسسوارات مماسح",
+                "url": "shop.html?cat=%D8%A5%D9%83%D8%B3%D8%B3%D9%88%D8%A7%D8%B1%D8%A7%D8%AA%20%D9%85%D9%85%D8%A7%D8%B3%D8%AD"
+            },
+            {
+                "title": "فرشات ارضيات",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D8%AA%20%D8%A7%D8%B1%D8%B6%D9%8A%D8%A7%D8%AA"
+            },
+            {
+                "title": "قفازات يد قماش ",
+                "url": "shop.html?cat=%D9%82%D9%81%D8%A7%D8%B2%D8%A7%D8%AA%20%D9%8A%D8%AF%20%D9%82%D9%85%D8%A7%D8%B4%20"
+            },
+            {
+                "title": "فرشاه تنظيف عامه ",
+                "url": "shop.html?cat=%D9%81%D8%B1%D8%B4%D8%A7%D9%87%20%D8%AA%D9%86%D8%B8%D9%8A%D9%81%20%D8%B9%D8%A7%D9%85%D9%87%20"
             }
         ]
     },
@@ -220,6 +248,18 @@
             {
                 "title": "رول إزالة الوبر",
                 "url": "shop.html?cat=%D8%B1%D9%88%D9%84%20%D8%A5%D8%B2%D8%A7%D9%84%D8%A9%20%D8%A7%D9%84%D9%88%D8%A8%D8%B1"
+            },
+            {
+                "title": "ماسك قدور",
+                "url": "shop.html?cat=%D9%85%D8%A7%D8%B3%D9%83%20%D9%82%D8%AF%D9%88%D8%B1"
+            },
+            {
+                "title": "معطرات ومزيلات روائح",
+                "url": "shop.html?cat=%D9%85%D8%B9%D8%B7%D8%B1%D8%A7%D8%AA%20%D9%88%D9%85%D8%B2%D9%8A%D9%84%D8%A7%D8%AA%20%D8%B1%D9%88%D8%A7%D8%A6%D8%AD"
+            },
+            {
+                "title": "مناديل ورقية",
+                "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D8%AF%D9%8A%D9%84%20%D9%88%D8%B1%D9%82%D9%8A%D8%A9"
             }
         ]
     },
@@ -252,6 +292,10 @@
             {
                 "title": "مناشف و بشاكير",
                 "url": "shop.html?cat=%D9%85%D9%86%D8%A7%D8%B4%D9%81%20%D9%88%20%D8%A8%D8%B4%D8%A7%D9%83%D9%8A%D8%B1"
+            },
+            {
+                "title": "بونيه",
+                "url": "shop.html?cat=%D8%A8%D9%88%D9%86%D9%8A%D9%87"
             }
         ]
     },
@@ -264,6 +308,18 @@
             {
                 "title": "علاقة ملابس",
                 "url": "shop.html?cat=%D8%B9%D9%84%D8%A7%D9%82%D8%A9%20%D9%85%D9%84%D8%A7%D8%A8%D8%B3"
+            },
+            {
+                "title": "ستائر حمام",
+                "url": "shop.html?cat=%D8%B3%D8%AA%D8%A7%D8%A6%D8%B1%20%D8%AD%D9%85%D8%A7%D9%85"
+            },
+            {
+                "title": "سلال وحاويات منزلية",
+                "url": "shop.html?cat=%D8%B3%D9%84%D8%A7%D9%84%20%D9%88%D8%AD%D8%A7%D9%88%D9%8A%D8%A7%D8%AA%20%D9%85%D9%86%D8%B2%D9%84%D9%8A%D8%A9"
+            },
+            {
+                "title": "سجادة حمام",
+                "url": "shop.html?cat=%D8%B3%D8%AC%D8%A7%D8%AF%D8%A9%20%D8%AD%D9%85%D8%A7%D9%85"
             }
         ]
     },

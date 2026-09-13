@@ -13,3 +13,6 @@ RewriteRule ^(.*)$ https://estawredli.com/$1 [L,R=301]
 
 RewriteCond %{HTTP_HOST} ^estawredly\.com$ [NC]
 RewriteRule ^(.*)$ https://estawredli.com/$1 [L,R=301]
+
+# Redirect deleted containers page to homepage
+RewriteRule ^containers(\.html)?$ / [R=301,L]

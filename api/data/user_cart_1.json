@@ -1,8 +1,17 @@
-[
-    {
-        "id": 1,
-        "name": "تجربة",
-        "price": 100,
-        "qty": 2
-    }
-]
+{
+    "user_id": 1,
+    "cart": [
+        {
+            "id": 19,
+            "name": "ممسحة قطنية احترافية 60سم",
+            "price": 17.66,
+            "img": "product_images\/image29.png",
+            "qty": 1,
+            "pieces_per_carton": 12,
+            "product_code": "GSA011",
+            "factory_code": "E01"
+        }
+    ],
+    "count": 1,
+    "updated_at": 1789249426
+}

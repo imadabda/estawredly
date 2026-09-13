@@ -30,6 +30,10 @@ build/
 .cache/
 *.zip
 
-# Databases
+# Databases & Backups
 *.sqlite
 api/*.sqlite
+*.sql
+*.tar.gz
+*.tar
+backups/

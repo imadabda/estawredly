@@ -1,0 +1,39 @@
+[
+    {
+        "id": 1788527268884,
+        "name": "عبوة عائلية – ليف إسفنجي ملوّن",
+        "price": 5.8,
+        "qty": 1,
+        "img": "product_images\/prod_img_1788527268884_0.jpg"
+    },
+    {
+        "id": 19,
+        "name": "ممسحة قطنية احترافية 60سم",
+        "price": 17.63,
+        "img": "product_images\/image29.png",
+        "qty": 1,
+        "pieces_per_carton": 12,
+        "product_code": "GSA011",
+        "factory_code": "E01"
+    },
+    {
+        "id": 20,
+        "name": "رأس ممسحة قطنية بديل 60سم",
+        "price": 7.56,
+        "img": "product_images\/image86.png",
+        "qty": 1,
+        "pieces_per_carton": 48,
+        "product_code": "GSR-A011",
+        "factory_code": "E01"
+    },
+    {
+        "id": 26,
+        "name": "ممسحة ملتوية (تويست) 300 جم",
+        "price": 12.6,
+        "img": "product_images\/image205.jpeg",
+        "qty": 1,
+        "pieces_per_carton": 12,
+        "product_code": "K19024",
+        "factory_code": "E01"
+    }
+]

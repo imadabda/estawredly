@@ -749,9 +749,52 @@ function initAuth() {
 
 // MOBILE MENU IS HANDLED VIA INLINE ONCLICK
 
-// PROMO FORM
-function initPromo() {
-  document.getElementById('promo-form')?.addEventListener('submit',e=>{
+// PROMO FORM & DISCOUNT BOX
+async function initPromo() {
+  const promoSection = document.getElementById('promo-banner-section') || document.querySelector('.promo-banner');
+  
+  if (promoSection) {
+    try {
+      const res = await fetch('api/get_discount_box.php?t=' + Date.now());
+      if (res.ok) {
+        const data = await res.json();
+        if (data) {
+          const isEnabled = data.enabled === true || data.enabled === "1" || data.enabled === 1 || data.enabled === "true";
+          if (!isEnabled) {
+            promoSection.style.display = 'none';
+          } else {
+            promoSection.style.display = '';
+            
+            const tagEl = document.getElementById('promo-tag') || promoSection.querySelector('.promo-tag');
+            if (tagEl) {
+              tagEl.textContent = data.tag || '';
+              tagEl.style.display = data.tag ? 'inline-block' : 'none';
+            }
+            
+            const titleEl = document.getElementById('promo-title') || promoSection.querySelector('h2');
+            if (titleEl && data.title) {
+              titleEl.innerHTML = data.title.replace(/\n/g, '<br/>');
+            }
+            
+            const subEl = document.getElementById('promo-subtitle') || promoSection.querySelector('p');
+            if (subEl && data.subtitle !== undefined) {
+              subEl.textContent = data.subtitle;
+              subEl.style.display = data.subtitle ? 'block' : 'none';
+            }
+            
+            const btnEl = document.getElementById('promo-btn-text') || promoSection.querySelector('button[type="submit"]');
+            if (btnEl && data.btn_text) {
+              btnEl.textContent = data.btn_text;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Could not load discount box config:", e);
+    }
+  }
+
+  document.getElementById('promo-form')?.addEventListener('submit', e => {
     e.preventDefault();
     toast('✅ تم الاشتراك! كود الخصم: WELCOME15 🎉');
     e.target.reset();
@@ -961,8 +1004,8 @@ async function initPopupBanner() {
             return; // NEVER show on shop.html, product.html, checkout.html, etc.
         }
         
-        // If user already explicitly closed the banner in this session, don't reopen
-        if (!isTest && (sessionStorage.getItem('pb_dismissed_now') === '1' || localStorage.getItem('pb_dismissed_stamp'))) {
+        // If user already explicitly closed any popup in this session, don't reopen
+        if (!isTest && sessionStorage.getItem('pb_dismissed_now') === '1') {
             return;
         }
         
@@ -974,6 +1017,23 @@ async function initPopupBanner() {
         const isEnabled = config.enabled === true || config.enabled === "1" || config.enabled === 1 || config.enabled === "true";
         if (!isEnabled && !isTest) return;
         if (!config.title && !config.message) return;
+        
+        // Build a unique signature for this specific banner content
+        const bannerSignature = 'pb_' + (config.updated_at || ((config.title || '') + '_' + (config.message || '')).replace(/\s+/g, '_').slice(0, 45));
+        
+        if (!isTest) {
+            // Check if dismissed in this browser session
+            if (sessionStorage.getItem(bannerSignature) === '1') {
+                return;
+            }
+            // Check if dismissed persistently on this device (show_once is active or default)
+            const isShowOnce = config.show_once !== false && config.show_once !== "false" && config.show_once !== 0 && config.show_once !== "0";
+            if (isShowOnce) {
+                if (localStorage.getItem('pb_dismissed_' + bannerSignature) === '1' || localStorage.getItem('pb_dismissed_stamp') === bannerSignature) {
+                    return;
+                }
+            }
+        }
         
         // Inject foolproof popup modal styles directly if not already present
         if (!document.getElementById('pb-dynamic-styles')) {
@@ -1160,34 +1220,50 @@ async function initPopupBanner() {
         
         document.body.appendChild(modal);
         
-        // Dismiss function - stores in sessionStorage ONLY when user explicitly closes it
-        function dismissPopup() {
+        // Dismiss function - stores both in sessionStorage and persistently in localStorage
+        function dismissPopup(isCta = false) {
             modal.style.opacity = '0';
             modal.style.visibility = 'hidden';
             modal.style.pointerEvents = 'none';
             modal.classList.remove('active');
             try {
+                // Session suppression
                 sessionStorage.setItem('pb_dismissed_now', '1');
+                sessionStorage.setItem(bannerSignature, '1');
+                
+                // Persistent suppression on this device
+                localStorage.setItem('pb_dismissed_stamp', bannerSignature);
+                localStorage.setItem('pb_dismissed_' + bannerSignature, '1');
+                localStorage.setItem('pb_last_dismissed_time', Date.now().toString());
             } catch(e){}
-            setTimeout(() => {
-                if (modal.parentNode) modal.parentNode.removeChild(modal);
-            }, 250);
+            
+            if (!isCta) {
+                setTimeout(() => {
+                    if (modal.parentNode) modal.parentNode.removeChild(modal);
+                }, 250);
+            }
         }
         
         // Attach click listeners to dismiss elements
         const closeBtn = document.getElementById('pb-close-btn-el');
-        if (closeBtn) closeBtn.addEventListener('click', dismissPopup);
+        if (closeBtn) closeBtn.addEventListener('click', () => dismissPopup(false));
         
         const backdrop = document.getElementById('pb-backdrop-el');
-        if (backdrop) backdrop.addEventListener('click', dismissPopup);
+        if (backdrop) backdrop.addEventListener('click', () => dismissPopup(false));
         
         const dismissLink = document.getElementById('pb-dismiss-link-el');
-        if (dismissLink) dismissLink.addEventListener('click', dismissPopup);
+        if (dismissLink) dismissLink.addEventListener('click', () => dismissPopup(false));
+        
+        // Also suppress when user clicks the CTA button
+        const ctaBtn = modal.querySelector('.pb-btn-cta');
+        if (ctaBtn) {
+            ctaBtn.addEventListener('click', () => dismissPopup(true));
+        }
         
         // Dismiss on ESC key
         document.addEventListener('keydown', function escHandler(e) {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
-                dismissPopup();
+                dismissPopup(false);
                 document.removeEventListener('keydown', escHandler);
             }
         });

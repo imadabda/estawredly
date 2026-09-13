@@ -47,7 +47,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="preload" as="image" href="assets/hero_banner_import_mobile.webp" media="(max-width: 768px)"/>
   <link rel="preload" as="image" href="assets/hero_banner_import.webp" media="(min-width: 769px)"/>
-  <link rel="stylesheet" href="style.css?v=20260820_v3"/>
+  <link rel="stylesheet" href="style.css?v=20260913_v1"/>
   <link rel="stylesheet" href="enhancements.css?v=1785802153537"/>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3b82f6" />
@@ -230,15 +230,8 @@
   <div class="container">
     <div class="flash-header">
       <div class="flash-title">
-        <span class="flash-icon">⚡</span>
-        <h2>عروض اليوم</h2>
-      </div>
-      <div class="flash-timer" id="flash-timer">
-        <div class="timer-unit"><span id="t-h">05</span><small>ساعة</small></div>
-        <div class="timer-sep">:</div>
-        <div class="timer-unit"><span id="t-m">30</span><small>دقيقة</small></div>
-        <div class="timer-sep">:</div>
-        <div class="timer-unit"><span id="t-s">00</span><small>ثانية</small></div>
+        <span class="flash-icon">🔥</span>
+        <h2>المنتجات الأكثر مبيعاً</h2>
       </div>
       <a href="shop.html" class="view-all-link">عرض الكل ←</a>
     </div>
@@ -705,15 +698,15 @@
   </div>
 </section>
 
-<section class="promo-banner">
+<section class="promo-banner" id="promo-banner-section">
   <div class="promo-inner">
     <div class="promo-content">
-      <span class="promo-tag">عضوية مميزة</span>
-      <h2>احصل على خصم 15%<br/>على أول طلب!</h2>
-      <p>سجّل الآن واحصل على كود خصم خاص على أول عملية شراء</p>
+      <span class="promo-tag" id="promo-tag">عضوية مميزة</span>
+      <h2 id="promo-title">احصل على خصم 15%<br/>على أول طلب!</h2>
+      <p id="promo-subtitle">سجّل الآن واحصل على كود خصم خاص على أول عملية شراء</p>
       <form class="promo-form" id="promo-form">
-        <input type="email" placeholder="بريدك الإلكتروني" class="promo-input"/>
-        <button type="submit" class="btn btn-white">احصل على الكود</button>
+        <input type="email" placeholder="بريدك الإلكتروني" class="promo-input" id="promo-email"/>
+        <button type="submit" class="btn btn-white" id="promo-btn-text">احصل على الكود</button>
       </form>
     </div>
   </div>
@@ -756,10 +749,13 @@
     <div class="container footer-grid">
       <div class="footer-brand-col">
         <a href="index.html" class="logo footer-logo">
-          <div class="logo-mark" style="width:28px;height:28px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;">
+          <div class="logo-mark" style="width:32px;height:32px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;">
             <img src="logo.jpg" alt="إستوردلي" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;transform:scale(1.2);"/>
           </div>
-          <span class="logo-ar">إستوردلي</span>
+          <div class="logo-name">
+            <span class="logo-ar">إستوردلي</span>
+            <span class="logo-en">ESTAWREDLI</span>
+          </div>
         </a>
         <p id="footer-about-text">متجرك المفضل لكل شيء. نقدم آلاف المنتجات بأفضل الأسعار مع توصيل سريع وخدمة عملاء استثنائية.</p>
         <div class="social-row">
@@ -794,7 +790,6 @@
         <a href="shop.html">كافة المنتجات</a>
         <a href="shop.html?sale=true">العروض الخاصة</a>
         <a href="shop.html">وصل حديثاً</a>
-        <a href="containers.html">شحن الحاويات</a>
       </div>
 
       <div class="footer-col">
@@ -802,13 +797,12 @@
         <a href="about.html">من نحن</a>
         <a href="contact.html">تواصل معنا</a>
         <a href="shop.html">المتجر</a>
-        <a href="containers.html">طلب حاوية خاصة</a>
       </div>
 
       <div class="footer-col">
         <h4>تواصل معنا</h4>
         <div class="contact-item"><span>📞</span> <a href="tel:+970595996998" dir="ltr" style="unicode-bidi: plaintext;">+970 595 996 998</a></div>
-        <div class="contact-item"><span>✉️</span> <a href="mailto:hello@estawredli.com">hello@estawredli.com</a></div>
+        <div class="contact-item"><span>✉️</span> <a href="mailto:contact@estawredli.com">contact@estawredli.com</a></div>
         <div class="contact-item"><span>💬</span> <a href="https://wa.me/970595996998" target="_blank" rel="noopener noreferrer">محادثة واتساب</a></div>
         <div class="contact-item"><span>🕐</span> <span>24/7 متاحون دائمًا</span></div>
         <div class="pay-methods">
@@ -893,9 +887,9 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>document.write("\x3cscript src=\x22products_db.js?v=" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-<script src="store.js?v=20260913_v1"></script>
+<script src="store.js?v=20260913_v2"></script>
 <script src="auth.js?v=20260904_v2"></script>
-<script src="main.js?v=20260904_v2"></script>
+<script src="main.js?v=20260913_popupfix"></script>
 <script src="enhancements.js?v=1785802153537"></script>
 <script>
   if ('serviceWorker' in navigator) {

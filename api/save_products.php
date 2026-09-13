@@ -155,6 +155,15 @@ try {
         }
         unset($item);
 
+    } elseif (($action === "batch" || $action === "save_all") && isset($payload["products"]) && is_array($payload["products"])) {
+        // حفظ دفعة كاملة من لوحة الإدارة
+        foreach ($payload["products"] as &$item) {
+            sanitizeProductImage($item, $imgDir);
+            sanitizeProductCategory($item);
+        }
+        unset($item);
+        $currentProducts = $payload["products"];
+
     } elseif (is_array($payload) && !isset($payload["action"])) {
         // مصفوفة كاملة مباشرة
         foreach ($payload as &$item) {

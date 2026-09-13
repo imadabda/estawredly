@@ -12,7 +12,7 @@ if not match:
 globals_html = match.group(0)
 print(f"Extracted {len(globals_html)} bytes of globals")
 
-targets = ['shop.html', 'product.html', 'checkout.html', 'containers.html']
+targets = ['shop.html', 'product.html', 'checkout.html']
 for t in targets:
     if not os.path.exists(t):
         continue

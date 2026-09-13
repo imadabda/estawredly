@@ -1,0 +1,17 @@
+{
+    "user_id": 4,
+    "cart": [
+        {
+            "id": 1788543324209,
+            "name": "عبوة عائلية – أكواب بلاستيك 50حبة，200مل，6.76أونصة 2.48غم\/حبة",
+            "price": 4.02,
+            "img": "product_images\/img_1788543324209_2589.jpg",
+            "qty": 1,
+            "pieces_per_carton": 40,
+            "product_code": "4762",
+            "factory_code": "E16"
+        }
+    ],
+    "count": 1,
+    "updated_at": 1789067858
+}
