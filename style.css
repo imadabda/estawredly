@@ -893,8 +893,8 @@ input,select,textarea{font-family:inherit}
 .footer-body{padding:64px 0 48px}
 .footer-grid{
   display:grid;
-  grid-template-columns:1.8fr 1fr 1fr 1fr 1.3fr;
-  gap:48px
+  grid-template-columns:2fr 1.2fr 1.2fr 1.6fr;
+  gap:40px
 }
 .footer-brand-col p{font-size:13px;color:rgba(255,255,255,.45);line-height:1.8;margin:16px 0 24px}
 .social-row{display:flex;gap:8px;margin-bottom:24px}
