@@ -58,6 +58,9 @@ const Store = (() => {
     }
 
     const isAdminPage = window.location.pathname.endsWith('admin.php') || (typeof adminProducts !== 'undefined');
+    if (!isAdminPage) {
+      list = list.filter(p => p.active !== false);
+    }
     if (!isAdminPage && currencySettings.enabled && currencySettings.base_rate > 0) {
       const multiplier = currencySettings.current_rate / currencySettings.base_rate;
       if (multiplier !== 1.0) {

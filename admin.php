@@ -5637,18 +5637,65 @@ const adminBrands = {
             let rawBrands = await res.json();
             if (!Array.isArray(rawBrands)) rawBrands = [];
             
-            // Normalize old format [ "Name1", "Name2" ] to [ { name: "Name1", logo: "" } ]
+            // Normalize old format [ "Name1", "Name2" ] to [ { name: "Name1", logo: "", active: true } ]
             this.brands = rawBrands.map(b => {
                 if (typeof b === 'string') {
-                    return { name: b, logo: '' };
+                    return { name: b, logo: '', active: true };
                 }
-                return { name: b.name || '', logo: b.logo || '' };
+                return {
+                    name: b.name || '',
+                    logo: b.logo || '',
+                    active: b.active !== false
+                };
             });
             
             this.render();
         } catch (e) {
             console.error("Error loading brands:", e);
         }
+    },
+
+    getProductCount(brandName) {
+        if (!brandName || !Array.isArray(adminProducts)) return 0;
+        const bn = brandName.trim().toLowerCase();
+        return adminProducts.filter(p => {
+            const pb = (p.brand || '').trim().toLowerCase();
+            return pb === bn ||
+                   (bn === 'kleaner' && pb === 'cleaner') ||
+                   (bn === 'cleaner' && pb === 'kleaner');
+        }).length;
+    },
+
+    async toggleActive(index, isChecked) {
+        if (!this.brands[index]) return;
+        this.brands[index].active = isChecked;
+        const brandName = (this.brands[index].name || '').trim();
+        
+        // Match brand products and toggle active status
+        let affected = 0;
+        if (brandName && Array.isArray(adminProducts)) {
+            const bn = brandName.toLowerCase();
+            adminProducts.forEach(p => {
+                const pb = (p.brand || '').trim().toLowerCase();
+                const isMatch = (pb === bn) ||
+                                (bn === 'kleaner' && pb === 'cleaner') ||
+                                (bn === 'cleaner' && pb === 'kleaner');
+                if (isMatch) {
+                    p.active = isChecked;
+                    affected++;
+                }
+            });
+            await saveAdminProducts();
+            if (typeof renderProducts === 'function') renderProducts();
+            if (typeof updateStats === 'function') updateStats();
+        }
+        
+        await this.save(true);
+        showToast(isChecked 
+            ? `✅ تم تشغيل ماركة "${brandName}" وإظهار جميع منتجاتها (${affected} منتج) في المتجر`
+            : `⛔ تم إطفاء ماركة "${brandName}" وإخفاء جميع منتجاتها (${affected} منتج) من المتجر`
+        );
+        this.render();
     },
     
     render() {
@@ -5662,8 +5709,10 @@ const adminBrands = {
         
         container.innerHTML = this.brands.map((b, i) => {
             const logoSrc = b.logo || 'https://via.placeholder.com/60?text=LOGO';
+            const prodCount = this.getProductCount(b.name);
+            const isActive = b.active !== false;
             return `
-                <div style="background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:15px; display:flex; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:10px;">
+                <div style="background:var(--bg3); border:1px solid ${isActive ? 'var(--border)' : 'rgba(239,68,68,0.4)'}; border-radius:12px; padding:15px; display:flex; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:10px; opacity:${isActive ? '1' : '0.85'};">
                     <span style="font-weight:bold; color:var(--text3); min-width:30px;">#${i+1}</span>
                     
                     <!-- Logo Preview -->
@@ -5674,18 +5723,34 @@ const adminBrands = {
                     <input type="file" id="brand-file-input-${i}" accept="image/*" style="display:none;" onchange="adminBrands.handleLogoUpload(${i}, this)">
                     
                     <!-- Name Input -->
-                    <div style="flex:1; min-width:200px; display:flex; flex-direction:column; gap:4px;">
+                    <div style="flex:1; min-width:180px; display:flex; flex-direction:column; gap:4px;">
                         <label style="font-size:11px; color:var(--text3); font-weight:bold;">اسم الماركة</label>
                         <input type="text" value="${b.name}" onchange="adminBrands.updateName(${i}, this.value)" placeholder="اسم الماركة التجارية" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
                     </div>
                     
                     <!-- Logo URL Input -->
-                    <div style="flex:1.5; min-width:250px; display:flex; flex-direction:column; gap:4px;">
-                        <label style="font-size:11px; color:var(--text3); font-weight:bold;">رابط الشعار (أو رفعه بالضغط على الصورة)</label>
+                    <div style="flex:1.2; min-width:200px; display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:11px; color:var(--text3); font-weight:bold;">رابط الشعار</label>
                         <input type="text" value="${b.logo}" onchange="adminBrands.updateLogo(${i}, this.value)" placeholder="رابط صورة الشعار (URL)" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit;">
                     </div>
+
+                    <!-- Active / Inactive Toggle -->
+                    <div style="display:flex; align-items:center; gap:10px; background:var(--bg2); padding:8px 14px; border-radius:8px; border:1px solid var(--border); min-width:190px;">
+                        <label class="toggle" title="${isActive ? 'الماركة نشطة (تظهر بالمتجر)' : 'الماركة معطلة (مخفية عن المتجر)'}">
+                            <input type="checkbox" ${isActive ? 'checked' : ''} onchange="adminBrands.toggleActive(${i}, this.checked)" />
+                            <div class="toggle-slider"></div>
+                        </label>
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-size:12px; font-weight:800; color:${isActive ? 'var(--green)' : 'var(--red)'};">
+                                ${isActive ? '🟢 نشطة (ظاهرة)' : '🔴 معطلة (مخفية)'}
+                            </span>
+                            <span style="font-size:11px; color:var(--text3);">
+                                ${prodCount} منتج مرتبط
+                            </span>
+                        </div>
+                    </div>
                     
-                    <button class="btn" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; margin-top:15px;" onclick="adminBrands.delete(${i})">🗑️ حذف</button>
+                    <button class="btn" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="adminBrands.delete(${i})">🗑️ حذف</button>
                 </div>
             `;
         }).join('');
@@ -5714,16 +5779,18 @@ const adminBrands = {
     },
     
     add() {
-        this.brands.push({ name: "ماركة جديدة", logo: "" });
+        this.brands.push({ name: "ماركة جديدة", logo: "", active: true });
         this.render();
     },
     
     delete(index) {
+        if (!confirm(`هل أنت متأكد من حذف ماركة "${this.brands[index].name}"؟`)) return;
         this.brands.splice(index, 1);
         this.render();
+        this.save();
     },
     
-    async save() {
+    async save(silent = false) {
         try {
             const res = await fetch('api/save_brands.php', {
                 method: 'POST',
@@ -5732,7 +5799,7 @@ const adminBrands = {
             });
             const data = await res.json();
             if (data.success) {
-                showToast('✅ تم حفظ قائمة الماركات بنجاح!');
+                if (!silent) showToast('✅ تم حفظ قائمة الماركات بنجاح!');
                 this.load();
             } else {
                 showToast('❌ فشل في حفظ الماركات: ' + data.message, 'error');

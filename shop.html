@@ -509,7 +509,7 @@
       <!-- Search -->
       <div class="search-wrap">
         <div class="search-box">
-          <input type="text" id="search-input" class="search-input" placeholder="ابحث عن أي منتج..."/>
+          <input type="text" id="search-input" class="search-input" placeholder="ابحث بالاسم، الماركة، كود SKU، كود المصنع..."/>
           <button class="search-btn" id="search-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           </button>
@@ -782,7 +782,7 @@
 <button class="btt-btn" id="btt-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
-  <script src="store.js?v=20260820_v3"></script>
+  <script src="store.js?v=20260913_v1"></script>
   <script src="auth.js?v=20260904_v2"></script>
 <script src="main.js?v=20260904_v2"></script>
   <script>
@@ -907,6 +907,27 @@
         products = Store.getProducts();
       }
 
+      // Filter out inactive products and products of disabled brands
+      products = products.filter(p => p && p.active !== false);
+      try {
+        const bRes = await fetch('api/get_brands.php?t=' + Date.now());
+        const bList = await bRes.json();
+        if (Array.isArray(bList)) {
+          const disabledBrands = bList.filter(b => b && b.active === false).map(b => (b.name || '').trim().toLowerCase());
+          if (disabledBrands.length > 0) {
+            products = products.filter(p => {
+              const pb = (p.brand || '').trim().toLowerCase();
+              if (disabledBrands.includes(pb)) return false;
+              if (pb === 'cleaner' && disabledBrands.includes('kleaner')) return false;
+              if (pb === 'kleaner' && disabledBrands.includes('cleaner')) return false;
+              return true;
+            });
+          }
+        }
+      } catch (e) {
+        console.warn("Could not check brands status:", e);
+      }
+
       let filtered = products;
       let parentSubLinks = [];
 
@@ -946,14 +967,61 @@
           `).join('');
       }
 
-      // === Filter by search query ===
+      // === Filter by search query (Comprehensive search: Name, Brand, SKU, Factory Code, Category, Description) ===
       if (q) {
-        const ql = q.toLowerCase();
-        filtered = products.filter(p =>
-          p.name.toLowerCase().includes(ql) ||
-          (p.desc && p.desc.toLowerCase().includes(ql)) ||
-          (p.cat  && p.cat.toLowerCase().includes(ql))
-        );
+        function normSearch(s) {
+          if (!s) return '';
+          return String(s)
+            .toLowerCase()
+            .trim()
+            .replace(/[أإآ]/g, 'ا')
+            .replace(/ة/g, 'ه')
+            .replace(/ى/g, 'ي')
+            .replace(/[\u064B-\u065F\u0670]/g, '')
+            .replace(/\s+/g, ' ');
+        }
+        const ql = normSearch(q);
+        
+        filtered = filtered.filter(p => {
+          const name = normSearch(p.name);
+          const brand = normSearch(p.brand);
+          const sku = normSearch(p.product_code);
+          const factory = normSearch(p.factory_code);
+          const cat = normSearch(p.cat);
+          const desc = normSearch(p.desc);
+          const ref = normSearch(p.ref_note);
+          const id = String(p.id || '');
+
+          // Direct match across all fields
+          if (name.includes(ql) ||
+              brand.includes(ql) ||
+              sku.includes(ql) ||
+              factory.includes(ql) ||
+              cat.includes(ql) ||
+              desc.includes(ql) ||
+              ref.includes(ql) ||
+              id === ql) {
+            return true;
+          }
+
+          // Variants match (sku, name, factory_code)
+          if (Array.isArray(p.variants)) {
+            for (const v of p.variants) {
+              if (normSearch(v.name).includes(ql) ||
+                  normSearch(v.sku).includes(ql) ||
+                  normSearch(v.factory_code).includes(ql)) {
+                return true;
+              }
+            }
+          }
+
+          // Special alias match (cleaner <-> kleaner)
+          if ((ql === 'cleaner' || ql === 'كلينر') && brand.includes('kleaner')) {
+            return true;
+          }
+
+          return false;
+        });
       }
       
       if (cat) {
@@ -1217,11 +1285,12 @@
               try {
                   const brandsRes = await fetch('api/get_brands.php?t=' + Date.now());
                   const allBrands = await brandsRes.json();
-                  const registeredBrandNames = Array.isArray(allBrands) ? allBrands.map(b => (typeof b === 'string' ? b : (b.name || '')).trim()).filter(Boolean) : [];
-                  const normalizedBrands = Array.isArray(allBrands) ? allBrands.map(b => {
-                      if (typeof b === 'string') return { name: b, logo: '' };
-                      return { name: b.name || '', logo: b.logo || '' };
-                  }) : [];
+                  const activeBrands = Array.isArray(allBrands) ? allBrands.filter(b => b.active !== false) : [];
+                  const registeredBrandNames = activeBrands.map(b => (typeof b === 'string' ? b : (b.name || '')).trim()).filter(Boolean);
+                  const normalizedBrands = activeBrands.map(b => {
+                      if (typeof b === 'string') return { name: b, logo: '', active: true };
+                      return { name: b.name || '', logo: b.logo || '', active: b.active !== false };
+                  });
                   
                   // Normalize brand names from products
                   let uniqueBrandNames = [...new Set(filtered.map(p => {
@@ -1230,7 +1299,7 @@
                       return b;
                   }).filter(b => b && b.length > 0))];
                   
-                  // Only show brands that are registered in admin brands
+                  // Only show brands that are registered and active
                   if (registeredBrandNames.length > 0) {
                       uniqueBrandNames = uniqueBrandNames.filter(bName => 
                           registeredBrandNames.some(rb => rb.toLowerCase() === bName.toLowerCase())
@@ -1250,12 +1319,12 @@
                           const imgHtml = logoUrl 
                               ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #e2e8f0;display:inline-block;" />`
                               : `<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--p-light,#eef2ff);color:var(--p,#3b82f6);font-size:11px;font-weight:bold;">${bName.slice(0,2).toUpperCase()}</span>`;
-                          
+
                           return `
-                              <div class="cat-brand-chip ${isActive ? 'active' : ''}" onclick="toggleCategoryBrand('${bName}')" style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:50px;border:1.5px solid ${isActive ? 'var(--p,#2563eb)' : '#e2e8f0'};background:${isActive ? 'var(--p,#2563eb)' : '#fff'};color:${isActive ? '#fff' : 'inherit'};cursor:pointer;transition:all 0.2s ease;">
+                              <button class="cat-brand-chip ${isActive ? 'active' : ''}" onclick="toggleCategoryBrand('${bName.replace(/'/g, "\\'")}')" style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;border:1px solid ${isActive ? 'var(--p,#2563eb)' : '#e2e8f0'};background:${isActive ? 'var(--p,#2563eb)' : '#fff'};color:${isActive ? '#fff' : '#1e293b'};font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s ease;">
                                   ${imgHtml}
-                                  <span style="font-weight:600;font-size:13px;color:${isActive ? '#fff' : 'inherit'};">${bName}</span>
-                              </div>
+                                  <span>${bName}</span>
+                              </button>
                           `;
                       }).join('');
                       brandsContainer.style.display = 'block';
@@ -1306,9 +1375,29 @@
       currentShopProducts = filtered;
       renderShopProducts();
 
-      // Update search input if query present
+      // Update search input if query present and bind live search
       const searchInput = document.getElementById('search-input');
-      if (searchInput && q) searchInput.value = q;
+      if (searchInput) {
+        if (q) searchInput.value = q;
+        if (!searchInput.dataset.liveSearchBound) {
+          searchInput.dataset.liveSearchBound = "true";
+          let liveSearchTimer = null;
+          searchInput.addEventListener('input', (e) => {
+            clearTimeout(liveSearchTimer);
+            liveSearchTimer = setTimeout(() => {
+              const query = e.target.value.trim();
+              const url = new URL(window.location);
+              if (query) {
+                url.searchParams.set('q', query);
+              } else {
+                url.searchParams.delete('q');
+              }
+              window.history.replaceState({}, '', url);
+              loadShopData();
+            }, 250);
+          });
+        }
+      }
     }
 
     window.toggleCategoryBrand = (brandName) => {
