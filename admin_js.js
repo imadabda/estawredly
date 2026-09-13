@@ -1,7 +1,3 @@
-">
-
-
-
 
 function toggleAdminSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
@@ -588,22 +584,76 @@ function renderProducts(list) {
   }).join('');
 }
 
+function normStr(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[\u064B-\u065F]/g, '');
+}
+
 function filterProducts() {
-  const q = document.getElementById('prod-search').value.toLowerCase();
-  const cat = document.getElementById('cat-filter').value;
-  const badge = document.getElementById('badge-filter').value;
-  const filtered = adminProducts.filter(p =>
-    (!q || p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)) &&
-    (!cat || p.cat === cat) &&
-    (!badge || p.badge === badge)
-  );
+  const searchInput = document.getElementById('prod-search');
+  const q = normStr(searchInput ? searchInput.value : '');
+  const cat = document.getElementById('cat-filter')?.value || '';
+  const brand = document.getElementById('brand-filter')?.value || '';
+  const badge = document.getElementById('badge-filter')?.value || '';
+
+  const filtered = adminProducts.filter(p => {
+    if (cat && (p.cat || '').trim() !== cat.trim()) return false;
+    if (brand && (p.brand || '').trim() !== brand.trim()) return false;
+    if (badge && p.badge !== badge) return false;
+    if (!q) return true;
+
+    const name = normStr(p.name);
+    const pBrand = normStr(p.brand);
+    const pCat = normStr(p.cat);
+    const pSku = normStr(p.product_code);
+    const pFactory = normStr(p.factory_code);
+    const pRef = normStr(p.ref_note);
+    const pDesc = normStr(p.desc);
+    const pId = String(p.id || '');
+
+    if (name.includes(q) ||
+        pBrand.includes(q) ||
+        pCat.includes(q) ||
+        pSku.includes(q) ||
+        pFactory.includes(q) ||
+        pRef.includes(q) ||
+        pDesc.includes(q) ||
+        pId.includes(q)) {
+      return true;
+    }
+
+    if (Array.isArray(p.variants)) {
+      for (const v of p.variants) {
+        if (normStr(v.name).includes(q) ||
+            normStr(v.sku).includes(q) ||
+            normStr(v.factory_code).includes(q)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  });
+
   renderProducts(filtered);
 }
 
 function globalSearch(q) {
   if (!q) return;
-  const hits = adminProducts.filter(p => p.name.toLowerCase().includes(q.toLowerCase())).length;
-  if (hits) showToast(`🔍 وجدت ${hits} نتيجة`);
+  if (!document.getElementById('page-products').classList.contains('active')) {
+    showPage('products', null);
+  }
+  const prodSearch = document.getElementById('prod-search');
+  if (prodSearch) {
+    prodSearch.value = q;
+    filterProducts();
+  }
 }
 
 

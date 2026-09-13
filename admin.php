@@ -1404,13 +1404,13 @@ tr:last-child td{border-bottom:none}
             <button class="btn-add" onclick="openModal()">+ إضافة منتج</button>
           </div>
         </div>
-        <div class="toolbar">
-          <input type="text" class="search-field" placeholder="🔍 بحث بالاسم أو التصنيف..." id="prod-search" oninput="filterProducts()"/>
+        <div class="toolbar" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <input type="text" class="search-field" placeholder="🔍 بحث شامل (الاسم، الماركة، التصنيف، SKU، كود المصنع)..." id="prod-search" oninput="filterProducts()" style="flex:1; min-width:260px;"/>
           <select class="select-field" id="cat-filter" onchange="filterProducts()">
             <option value="">كل التصنيفات</option>
-            <option>عروض خاصة</option><option>مماسح مسطحة</option><option>مماسح مايكروفايبر</option>
-            <option>أحذية رياضية</option><option>حقائب فاخرة</option><option>مماسح بخاخ منزلي</option>
-            <option>أجهزة مطبخ</option><option>مجوهرات وساعات</option><option>عطور رجالية</option>
+          </select>
+          <select class="select-field" id="brand-filter" onchange="filterProducts()">
+            <option value="">كل الماركات</option>
           </select>
           <select class="select-field" id="badge-filter" onchange="filterProducts()">
             <option value="">كل الشارات</option>
@@ -1418,6 +1418,7 @@ tr:last-child td{border-bottom:none}
             <option value="hot">رائج</option><option value="best">مميز</option>
           </select>
           <button class="btn-outline" onclick="exportProducts()">📥 تصدير Excel / CSV</button>
+          <div id="products-count-badge" style="font-size:12.5px; font-weight:700; color:var(--text2); white-space:nowrap; padding:5px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:8px;"></div>
         </div>
         <div class="prod-admin-grid" id="products-grid"></div>
       </div>
@@ -2664,6 +2665,7 @@ async function syncLiveProducts() {
           adminProducts = data.products;
           if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = data.products;
           if (typeof Store !== 'undefined') Store.saveProducts(data.products);
+          if (typeof populateProductFilters === 'function') populateProductFilters();
           renderProducts();
           updateStats();
           if (typeof updateCatsDatalist === 'function') updateCatsDatalist();
@@ -3304,11 +3306,62 @@ async function saveInventory() {
   }
 }
 
+function normStr(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[\u064B-\u065F]/g, ''); // remove Arabic tashkeel
+}
+
+function populateProductFilters() {
+  const catFilter = document.getElementById('cat-filter');
+  const brandFilter = document.getElementById('brand-filter');
+  
+  if (catFilter) {
+    const currentCat = catFilter.value;
+    const catCounts = {};
+    adminProducts.forEach(p => {
+      const c = (p.cat || 'بدون تصنيف').trim();
+      catCounts[c] = (catCounts[c] || 0) + 1;
+    });
+    const sortedCats = Object.keys(catCounts).sort((a, b) => a.localeCompare(b, 'ar'));
+    catFilter.innerHTML = '<option value="">كل التصنيفات (' + adminProducts.length + ')</option>' +
+      sortedCats.map(c => `<option value="${c}" ${c === currentCat ? 'selected' : ''}>${c} (${catCounts[c]})</option>`).join('');
+  }
+
+  if (brandFilter) {
+    const currentBrand = brandFilter.value;
+    const brandCounts = {};
+    adminProducts.forEach(p => {
+      const b = (p.brand || '').trim();
+      if (b) {
+        brandCounts[b] = (brandCounts[b] || 0) + 1;
+      }
+    });
+    const sortedBrands = Object.keys(brandCounts).sort((a, b) => a.localeCompare(b, 'ar'));
+    brandFilter.innerHTML = '<option value="">كل الماركات</option>' +
+      sortedBrands.map(b => `<option value="${b}" ${b === currentBrand ? 'selected' : ''}>${b} (${brandCounts[b]})</option>`).join('');
+  }
+}
+
 function renderProducts(list) {
   list = list || adminProducts;
   const grid = document.getElementById('products-grid');
   if (!grid) return;
-  if (!list.length) { grid.innerHTML='<div class="empty-state"><div class="es-icon">📦</div><p>لا توجد منتجات</p></div>'; return; }
+
+  const countBadge = document.getElementById('products-count-badge');
+  if (countBadge) {
+    countBadge.innerHTML = `عرض <strong>${list.length}</strong> من أصل <strong>${adminProducts.length}</strong> منتج`;
+  }
+
+  if (!list.length) {
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1; padding:60px 20px; text-align:center;"><div class="es-icon" style="font-size:48px;">🔍</div><h3 style="margin-top:10px;">لا توجد نتائج تطابق بحثك</h3><p style="color:var(--text3); font-size:13px; margin-top:4px;">جرّب البحث باسم آخر، كود SKU، كود المصنع، الماركة، أو إزالة عوامل التصفية</p></div>';
+    return;
+  }
   
   let multiplier = 1;
   if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
@@ -3324,7 +3377,7 @@ function renderProducts(list) {
     return `
       <div class="prod-admin-card">
         <div class="pac-img">
-          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=📦'"/>
+          <img src="${p.img || 'https://via.placeholder.com/300x200?text=📦'}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=📦'"/>
           ${p.badge?`<div class="pac-badge badge-${p.badge}" style="padding:3px 10px;border-radius:8px;font-size:10px;font-weight:800;background:rgba(0,0,0,.5);color:#fff">${badgeNames[p.badge]||p.badge}</div>`:''}
           <div class="pac-overlay">
             <button class="pac-action" onclick="editProduct(${p.id})" title="تعديل">✏️</button>
@@ -3333,8 +3386,16 @@ function renderProducts(list) {
           </div>
         </div>
         <div class="pac-info">
-          <div class="pac-cat">${p.cat}</div>
-          <div class="pac-name">${p.name}</div>
+          <div class="pac-cat" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span>${p.cat || 'عام'}</span>
+            ${p.brand ? `<span style="background:rgba(99,102,241,0.14); color:var(--p); padding:2px 8px; border-radius:6px; font-size:10.5px; font-weight:700;">🏷️ ${p.brand}</span>` : ''}
+          </div>
+          <div class="pac-name" title="${p.name}">${p.name}</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; font-size:11px; margin:4px 0 8px;">
+            ${p.product_code ? `<span style="background:var(--bg3); color:var(--text2); padding:2px 6px; border-radius:4px; border:1px solid var(--border); font-family:monospace;">SKU: <strong style="color:var(--text);">${p.product_code}</strong></span>` : ''}
+            ${p.factory_code ? `<span style="background:var(--bg3); color:var(--text2); padding:2px 6px; border-radius:4px; border:1px solid var(--border); font-family:monospace;">مصنع: <strong style="color:var(--text);">${p.factory_code}</strong></span>` : ''}
+            ${p.ref_note ? `<span style="background:rgba(234,179,8,0.1); color:#ca8a04; padding:2px 6px; border-radius:4px; font-size:10.5px;" title="${p.ref_note}">📌 ${p.ref_note}</span>` : ''}
+          </div>
           <div class="pac-price">
             <span class="pac-price-main">₪${finalPrice}</span>
             ${finalOldPrice?`<span class="pac-price-old">₪${finalOldPrice}</span>`:''}
@@ -3359,21 +3420,65 @@ function renderProducts(list) {
 }
 
 function filterProducts() {
-  const q = document.getElementById('prod-search').value.toLowerCase();
-  const cat = document.getElementById('cat-filter').value;
-  const badge = document.getElementById('badge-filter').value;
-  const filtered = adminProducts.filter(p =>
-    (!q || p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)) &&
-    (!cat || p.cat === cat) &&
-    (!badge || p.badge === badge)
-  );
+  const searchInput = document.getElementById('prod-search');
+  const q = normStr(searchInput ? searchInput.value : '');
+  const cat = document.getElementById('cat-filter')?.value || '';
+  const brand = document.getElementById('brand-filter')?.value || '';
+  const badge = document.getElementById('badge-filter')?.value || '';
+
+  const filtered = adminProducts.filter(p => {
+    if (cat && (p.cat || '').trim() !== cat.trim()) return false;
+    if (brand && (p.brand || '').trim() !== brand.trim()) return false;
+    if (badge && p.badge !== badge) return false;
+    if (!q) return true;
+
+    // Search fields
+    const name = normStr(p.name);
+    const pBrand = normStr(p.brand);
+    const pCat = normStr(p.cat);
+    const pSku = normStr(p.product_code);
+    const pFactory = normStr(p.factory_code);
+    const pRef = normStr(p.ref_note);
+    const pDesc = normStr(p.desc);
+    const pId = String(p.id || '');
+
+    if (name.includes(q) ||
+        pBrand.includes(q) ||
+        pCat.includes(q) ||
+        pSku.includes(q) ||
+        pFactory.includes(q) ||
+        pRef.includes(q) ||
+        pDesc.includes(q) ||
+        pId.includes(q)) {
+      return true;
+    }
+
+    if (Array.isArray(p.variants)) {
+      for (const v of p.variants) {
+        if (normStr(v.name).includes(q) ||
+            normStr(v.sku).includes(q) ||
+            normStr(v.factory_code).includes(q)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  });
+
   renderProducts(filtered);
 }
 
 function globalSearch(q) {
   if (!q) return;
-  const hits = adminProducts.filter(p => p.name.toLowerCase().includes(q.toLowerCase())).length;
-  if (hits) showToast(`🔍 وجدت ${hits} نتيجة`);
+  if (!document.getElementById('page-products').classList.contains('active')) {
+    showPage('products', null);
+  }
+  const prodSearch = document.getElementById('prod-search');
+  if (prodSearch) {
+    prodSearch.value = q;
+    filterProducts();
+  }
 }
 
 
