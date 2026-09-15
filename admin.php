@@ -1424,6 +1424,7 @@ tr:last-child td{border-bottom:none}
           <div id="products-count-badge" style="font-size:12.5px; font-weight:700; color:var(--text2); white-space:nowrap; padding:5px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:8px;"></div>
         </div>
         <div class="prod-admin-grid" id="products-grid"></div>
+        <div id="products-pagination" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:24px; padding:12px; flex-wrap:wrap;"></div>
       </div>
 
       <!-- ══ INVENTORY PAGE ══ -->
@@ -2809,7 +2810,12 @@ function showPage(id, el) {
     });
   }
   // Lazy render
-  if (id === 'products') { syncLiveProducts(); renderProducts(); }
+  if (id === 'products') {
+    renderProducts();
+    if (!adminProducts || adminProducts.length === 0) {
+      syncLiveProducts();
+    }
+  }
   if (id === 'inventory') renderInventory();
   if (id === 'orders')   renderOrders(getAdminOrders());
   if (id === 'customers') renderCustomers();
@@ -3445,8 +3451,65 @@ function populateProductFilters() {
   }
 }
 
-function renderProducts(list) {
+let currentAdminPage = 1;
+const adminPageSize = 36;
+let lastFilteredProducts = null;
+
+function renderAdminPagination(totalItems, currentPage) {
+  const container = document.getElementById('products-pagination');
+  if (!container) return;
+  const totalPages = Math.ceil(totalItems / adminPageSize);
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = `
+    <button class="btn-outline" style="padding:6px 14px; font-size:13px; font-weight:700; ${currentPage <= 1 ? 'opacity:0.4; pointer-events:none;' : ''}" onclick="changeAdminPage(${currentPage - 1})">← السابق</button>
+  `;
+
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 2);
+  if (currentPage <= 3) endPage = Math.min(totalPages, 5);
+  if (currentPage >= totalPages - 2) startPage = Math.max(1, totalPages - 4);
+
+  if (startPage > 1) {
+    html += `<button class="btn-outline" style="padding:6px 12px; font-size:13px;" onclick="changeAdminPage(1)">1</button>`;
+    if (startPage > 2) html += `<span style="color:var(--text3); padding:0 4px;">...</span>`;
+  }
+
+  for (let p = startPage; p <= endPage; p++) {
+    const isActive = p === currentPage;
+    html += `
+      <button class="${isActive ? 'btn' : 'btn-outline'}" 
+        style="padding:6px 12px; font-size:13px; font-weight:700; ${isActive ? 'background:var(--p); color:#fff; border-color:var(--p);' : ''}" 
+        onclick="changeAdminPage(${p})">${p}</button>
+    `;
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<span style="color:var(--text3); padding:0 4px;">...</span>`;
+    html += `<button class="btn-outline" style="padding:6px 12px; font-size:13px;" onclick="changeAdminPage(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `
+    <button class="btn-outline" style="padding:6px 14px; font-size:13px; font-weight:700; ${currentPage >= totalPages ? 'opacity:0.4; pointer-events:none;' : ''}" onclick="changeAdminPage(${currentPage + 1})">التالي →</button>
+    <span style="color:var(--text2); font-size:12.5px; margin-right:8px;">صفحة <strong>${currentPage}</strong> من <strong>${totalPages}</strong></span>
+  `;
+
+  container.innerHTML = html;
+}
+
+function changeAdminPage(newPage) {
+  renderProducts(lastFilteredProducts, newPage);
+  const grid = document.getElementById('products-grid');
+  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderProducts(list, page = 1) {
   list = list || adminProducts;
+  lastFilteredProducts = list;
+  currentAdminPage = page;
   const grid = document.getElementById('products-grid');
   if (!grid) return;
 
@@ -3457,6 +3520,7 @@ function renderProducts(list) {
 
   if (!list.length) {
     grid.innerHTML='<div class="empty-state" style="grid-column:1/-1; padding:60px 20px; text-align:center;"><div class="es-icon" style="font-size:48px;">🔍</div><h3 style="margin-top:10px;">لا توجد نتائج تطابق بحثك</h3><p style="color:var(--text3); font-size:13px; margin-top:4px;">جرّب البحث باسم آخر، كود SKU، كود المصنع، الماركة، أو إزالة عوامل التصفية</p></div>';
+    renderAdminPagination(0, 1);
     return;
   }
   
@@ -3465,7 +3529,13 @@ function renderProducts(list) {
       multiplier = adminCurrency.settings.current_rate / adminCurrency.settings.base_rate;
   }
 
-  grid.innerHTML = list.map(p => {
+  const totalPages = Math.max(1, Math.ceil(list.length / adminPageSize));
+  const validPage = Math.max(1, Math.min(page, totalPages));
+  currentAdminPage = validPage;
+  const startIdx = (validPage - 1) * adminPageSize;
+  const pageItems = list.slice(startIdx, startIdx + adminPageSize);
+
+  grid.innerHTML = pageItems.map(p => {
     const finalPrice = parseFloat((p.price * multiplier).toFixed(2));
     const finalOldPrice = p.oldPrice ? parseFloat((p.oldPrice * multiplier).toFixed(2)) : null;
     const finalCostPrice = p.costPrice ? parseFloat((p.costPrice * multiplier).toFixed(2)) : 0;
@@ -3474,7 +3544,7 @@ function renderProducts(list) {
     return `
       <div class="prod-admin-card">
         <div class="pac-img">
-          <img src="${p.img || 'https://via.placeholder.com/300x200?text=📦'}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=📦'"/>
+          <img src="${p.img || 'https://via.placeholder.com/300x200?text=📦'}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.src='https://via.placeholder.com/300x200?text=📦'"/>
           ${p.badge?`<div class="pac-badge badge-${p.badge}" style="padding:3px 10px;border-radius:8px;font-size:10px;font-weight:800;background:rgba(0,0,0,.5);color:#fff">${badgeNames[p.badge]||p.badge}</div>`:''}
           <div class="pac-overlay">
             <button class="pac-action" onclick="editProduct(${p.id})" title="تعديل">✏️</button>
@@ -3514,6 +3584,8 @@ function renderProducts(list) {
       </div>
     `;
   }).join('');
+
+  renderAdminPagination(list.length, validPage);
 }
 
 function filterProducts() {
@@ -3563,7 +3635,7 @@ function filterProducts() {
     return false;
   });
 
-  renderProducts(filtered);
+  renderProducts(filtered, 1);
 }
 
 function globalSearch(q) {
