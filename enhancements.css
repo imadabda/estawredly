@@ -641,3 +641,4 @@ body:has(.cart-drawer.open) #announce-bar {
 }
 .qty-ctrl:hover { transform: scale(1.15) !important; }
 .qty-ctrl:active { transform: scale(.9) !important; }
+

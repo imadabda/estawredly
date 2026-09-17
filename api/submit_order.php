@@ -35,9 +35,13 @@ $subtotal = floatval($input['subtotal'] ?? 0);
 $shipping_cost = floatval($input['shipping_cost'] ?? 0);
 $total = floatval($input['total'] ?? 0);
 
-// التحقق من أن رقم الهاتف والاسم والتوصيل موجودين
-if (empty($name) || empty($phone) || empty($zone) || empty($items)) {
-    echo json_encode(['success' => false, 'message' => 'الاسم، رقم الهاتف، ومنطقة التوصيل حقول إجبارية.']);
+if (empty($zone)) {
+    $zone = 'توصيل مجاني';
+}
+
+// التحقق من أن رقم الهاتف والاسم والمنتجات موجودة
+if (empty($name) || empty($phone) || empty($items)) {
+    echo json_encode(['success' => false, 'message' => 'الاسم ورقم الهاتف حقول إجبارية.']);
     exit;
 }
 

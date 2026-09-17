@@ -64,9 +64,9 @@
           <label>رقم الهاتف <span style="color:var(--red)">*</span></label>
           <input type="tel" id="co-phone" required placeholder="ضروري جداً للتواصل معك" />
         </div>
-        <div class="form-group" id="co-zone-group">
+        <div class="form-group" id="co-zone-group" style="display:none;">
           <label>منطقة التوصيل <span style="color:var(--red)">*</span></label>
-          <select id="co-zone" required onchange="updateTotalWithShipping()">
+          <select id="co-zone" onchange="updateTotalWithShipping()">
             <option value="" data-price="0">اختر منطقة التوصيل</option>
           </select>
         </div>
@@ -140,19 +140,24 @@
   <script src="auth.js?v=20260904_v2"></script>
   <script src="main.js?v=20260904_v2"></script>
   <script>
-    window.addEventListener('authLoaded', async () => {
-      if (typeof Store !== 'undefined') {
-        await Store.ensureReady();
+    let hasActiveZones = false;
+    let currentShipping = 0;
+
+    async function initCheckout() {
+      // Ensure Store is ready if available
+      if (typeof Store !== 'undefined' && typeof Store.ensureReady === 'function') {
+        try { await Store.ensureReady(); } catch(e) {}
       }
-      // 0. Check if user is active
-      if (!window.authUser || window.authUser.status !== 'active') {
+
+      // Check if user is active (if auth checked)
+      if (window.authUser && window.authUser.status && window.authUser.status !== 'active') {
         alert('يرجى تسجيل الدخول بعضوية مفعلة لإتمام الطلب.');
         window.location = 'index.html';
         return;
       }
 
       // 1. Check if cart is empty
-      const cart = state.cart;
+      const cart = (typeof state !== 'undefined' && state.cart) ? state.cart : [];
       if (!cart || cart.length === 0) {
         alert('السلة فارغة! سيتم إعادتك للمتجر.');
         window.location = 'index.html';
@@ -161,59 +166,88 @@
       
       // 2. Render items
       const itemsContainer = document.getElementById('co-items');
-      itemsContainer.innerHTML = cart.map(i => {
-        const qty = i.qty || 1;
-        const pcs = i.pieces_per_carton || 1;
-        return `
-          <div class="ci-row" style="align-items: flex-start;">
-            <div>
-              ${i.name} <strong>(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</strong>
-              ${pcs > 1 ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
+      if (itemsContainer) {
+        itemsContainer.innerHTML = cart.map(i => {
+          const qty = i.qty || 1;
+          const pcs = i.pieces_per_carton || 1;
+          return `
+            <div class="ci-row" style="align-items: flex-start;">
+              <div>
+                ${i.name} <strong>(x${qty} ${pcs > 1 ? 'كرتونة' : 'قطعة'})</strong>
+                ${pcs > 1 ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;">(كرتونة تحتوي على ${pcs} قطع - إجمالي: ${qty * pcs} قطعة)</div>` : ''}
+              </div>
+              <div>₪${(i.price * qty * pcs).toLocaleString()}</div>
             </div>
-            <div>₪${(i.price * qty * pcs).toLocaleString()}</div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
       
-      let currentShipping = 0;
+      // 3. Fetch latest delivery zones directly from API for 100% accuracy
+      let isDeliveryEnabled = true;
+      let zones = [];
+      try {
+        const res = await fetch('api/get_delivery_zones.php?t=' + Date.now());
+        const data = await res.json();
+        if (data && typeof data === 'object') {
+          isDeliveryEnabled = (data.enabled !== false);
+          zones = Array.isArray(data.zones) ? data.zones : [];
+          if (typeof Store !== 'undefined' && typeof Store.saveDeliveryZones === 'function') {
+            try { localStorage.setItem('estawrdly_delivery', JSON.stringify(data)); } catch(e){}
+          }
+        }
+      } catch (err) {
+        if (typeof Store !== 'undefined') {
+          isDeliveryEnabled = Store.isDeliveryFeeEnabled();
+          zones = Store.getDeliveryZones();
+        }
+      }
+
+      hasActiveZones = isDeliveryEnabled && zones.length > 0;
       const zoneSelect = document.getElementById('co-zone');
       const zoneGroup = document.getElementById('co-zone-group');
-      const isDeliveryEnabled = typeof Store !== 'undefined' ? Store.isDeliveryFeeEnabled() : true;
-      const zones = typeof Store !== 'undefined' ? Store.getDeliveryZones() : [];
-      const hasActiveZones = isDeliveryEnabled && zones.length > 0;
 
       if (!hasActiveZones) {
         if (zoneGroup) zoneGroup.style.display = 'none';
-        zoneSelect.removeAttribute('required');
-        zoneSelect.innerHTML = '<option value="توصيل مجاني" data-price="0" selected>توصيل مجاني</option>';
+        if (zoneSelect) {
+          zoneSelect.removeAttribute('required');
+          zoneSelect.innerHTML = '<option value="توصيل مجاني" data-price="0" selected>توصيل مجاني</option>';
+        }
         currentShipping = 0;
-        document.getElementById('co-shipping').innerHTML = '<span style="color:var(--success, #22c55e);font-weight:bold;">مجاني 🎉 (₪0)</span>';
-        document.getElementById('co-total').textContent = '₪' + state.cartTotal().toLocaleString();
+        const shipEl = document.getElementById('co-shipping');
+        if (shipEl) shipEl.innerHTML = '<span style="color:var(--success, #22c55e);font-weight:bold;">مجاني 🎉 (₪0)</span>';
+        const totEl = document.getElementById('co-total');
+        if (totEl) totEl.textContent = '₪' + (typeof state !== 'undefined' ? state.cartTotal().toLocaleString() : '0');
       } else {
         if (zoneGroup) zoneGroup.style.display = 'block';
-        zoneSelect.setAttribute('required', 'required');
-        zoneSelect.innerHTML = '<option value="" data-price="0">اختر منطقة التوصيل</option>';
-        zones.forEach(z => {
-          const opt = document.createElement('option');
-          opt.value = z.name;
-          opt.dataset.price = z.price;
-          opt.textContent = `${z.name} (+₪${z.price})`;
-          zoneSelect.appendChild(opt);
-        });
+        if (zoneSelect) {
+          zoneSelect.setAttribute('required', 'required');
+          zoneSelect.innerHTML = '<option value="" data-price="0">اختر منطقة التوصيل</option>';
+          zones.forEach(z => {
+            const opt = document.createElement('option');
+            opt.value = z.name;
+            opt.dataset.price = z.price;
+            opt.textContent = `${z.name} (+₪${z.price})`;
+            zoneSelect.appendChild(opt);
+          });
+        }
       }
 
       window.updateTotalWithShipping = function() {
         if (!hasActiveZones) {
           currentShipping = 0;
-          document.getElementById('co-shipping').innerHTML = '<span style="color:var(--success, #22c55e);font-weight:bold;">مجاني 🎉 (₪0)</span>';
-          document.getElementById('co-total').textContent = '₪' + state.cartTotal().toLocaleString();
+          const shipEl = document.getElementById('co-shipping');
+          if (shipEl) shipEl.innerHTML = '<span style="color:var(--success, #22c55e);font-weight:bold;">مجاني 🎉 (₪0)</span>';
+          const totEl = document.getElementById('co-total');
+          if (totEl) totEl.textContent = '₪' + state.cartTotal().toLocaleString();
           return;
         }
-        const opt = zoneSelect.options[zoneSelect.selectedIndex];
+        const opt = zoneSelect ? zoneSelect.options[zoneSelect.selectedIndex] : null;
         currentShipping = opt ? parseFloat(opt.dataset.price) || 0 : 0;
-        document.getElementById('co-shipping').textContent = '₪' + currentShipping.toLocaleString();
+        const shipEl = document.getElementById('co-shipping');
+        if (shipEl) shipEl.textContent = '₪' + currentShipping.toLocaleString();
         const newTotal = state.cartTotal() + currentShipping;
-        document.getElementById('co-total').textContent = '₪' + newTotal.toLocaleString();
+        const totEl = document.getElementById('co-total');
+        if (totEl) totEl.textContent = '₪' + newTotal.toLocaleString();
       };
       
       updateTotalWithShipping(); // Init
@@ -229,8 +263,6 @@
         }
       }
 
-      // 3. (تم إزالة التحقق من تسجيل الدخول - يمكن لأي شخص الطلب)
-
       // 4. Handle Submit
       if (!window.checkoutSubmitAttached) {
         window.checkoutSubmitAttached = true;
@@ -243,7 +275,7 @@
           return;
         }
         
-        if (hasActiveZones && !zoneSelect.value) {
+        if (hasActiveZones && zoneSelect && !zoneSelect.value) {
           alert('❌ يرجى اختيار منطقة التوصيل!');
           return;
         }
@@ -315,7 +347,14 @@
         });
       });
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCheckout);
+    } else {
+      initCheckout();
+    }
+    window.addEventListener('authLoaded', initCheckout);
   </script>
 <script>
   if ('serviceWorker' in navigator) {

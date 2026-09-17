@@ -3,9 +3,8 @@
         "id": "nav_home",
         "title": "الرئيسية",
         "url": "index.html",
-        "type": "dropdown",
-        "active": true,
-        "subLinks": []
+        "type": "link",
+        "active": true
     },
     {
         "id": "nav_flat",

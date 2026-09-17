@@ -1025,15 +1025,24 @@ async function loadNavigation() {
         
         const navLists = document.querySelectorAll('.nav-list');
         if (!navLists.length || !navData.length) return;
+
+        const curPath = window.location.pathname.toLowerCase();
+        const curSearch = window.location.search.toLowerCase();
+        const isOffersActive = curPath.includes('shop.html') && curSearch.includes('sale=true');
+        const isAboutActive = curPath.includes('about.html');
+        const isContactActive = curPath.includes('contact.html');
         
         let html = '';
-        navData.forEach(item => {
+        navData.forEach((item, index) => {
             const isActive = item.active || window.location.pathname.includes(item.url) ? 'active' : '';
             const badge = item.badge ? ` ${item.badge} ` : '';
             const cssClass = item.cssClass ? ` ${item.cssClass}` : '';
             
-            if (item.type === 'link') {
-                html += `<li><a href="${item.url}" class="nav-a ${isActive}${cssClass}">${badge}${item.title}</a></li>`;
+            const hasSubLinks = (item.subLinks && item.subLinks.length > 0) || 
+                                (item.columns && item.columns.some(col => col.links && col.links.length > 0));
+
+            if (item.type === 'link' || !hasSubLinks) {
+                html += `<li><a href="${item.url || '#'}" class="nav-a ${isActive}${cssClass}">${badge}${item.title}</a></li>`;
             } else if (item.type === 'dropdown') {
                 let dropdownHtml = '<div class="dd-col">'; // Unified single column for simplicity
                 if (item.subLinks) {
@@ -1059,9 +1068,22 @@ async function loadNavigation() {
                   </div>
                 </li>`;
             }
+
+            // Insert mobile-only essential links right after Home (الرئيسية)
+            if (index === 0) {
+                html += `
+                <li class="mobile-only-link"><a href="shop.html?sale=true" class="nav-a ${isOffersActive ? 'active' : ''}">🔥 العروض والخصومات</a></li>
+                <li class="mobile-only-link"><a href="about.html" class="nav-a ${isAboutActive ? 'active' : ''}">ℹ️ من نحن</a></li>
+                <li class="mobile-only-link"><a href="contact.html" class="nav-a ${isContactActive ? 'active' : ''}">📞 اتصل بنا</a></li>
+                <li class="mobile-only-link" style="padding:10px 16px 6px; font-size:12px; font-weight:800; color:#64748b; border-top:1px dashed var(--gray2, #e2e8f0); margin-top:6px;">أقسام وتصنيفات المتجر</li>
+                `;
+            }
         });
         
-        html += '<li class="mobile-only-link"><hr></li>';
+        html += `
+        <li class="mobile-only-link"><hr style="border:none; border-top:1px solid var(--gray2, #e2e8f0); margin:12px 14px;"></li>
+        <li class="mobile-only-link"><a href="contact.html" class="nav-a ${isContactActive ? 'active' : ''}" style="color:var(--primary, #2563eb); font-weight:700;">📞 تواصل مع خدمة العملاء</a></li>
+        `;
         
         navLists.forEach(list => {
             list.innerHTML = html;
