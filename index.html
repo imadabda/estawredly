@@ -276,13 +276,13 @@
       const grid = document.getElementById('banners-grid');
       if (banners && banners.length > 0) {
         grid.innerHTML = banners.map(b => `
-          <a href="${b.link || '#'}" class="banner-card ${b.is_big ? 'big' : ''}" style="background-image:url('${b.image}'); color:${b.text_color || '#1f2937'};">
+          <a href="${b.link || '#'}" class="banner-card ${b.is_big ? 'big' : ''}" style="background-image:url('${b.image}');">
             <div class="banner-overlay"></div>
             <div class="banner-content">
-              ${b.tag ? `<span class="banner-tag" style="color:${b.text_color || '#1f2937'}; border-color:${b.text_color || '#1f2937'}">${b.tag}</span>` : ''}
-              <h3 style="color:${b.text_color || '#1f2937'}">${b.title}</h3>
-              ${b.desc ? `<p style="color:${b.text_color || '#1f2937'}">${b.desc}</p>` : ''}
-              ${b.btn_text ? `<span class="banner-btn" style="color:${b.text_color || '#1f2937'}">${b.btn_text}</span>` : ''}
+              ${b.tag ? `<span class="banner-tag">${b.tag}</span>` : ''}
+              <h3>${b.title}</h3>
+              ${b.desc ? `<p>${b.desc}</p>` : ''}
+              ${b.btn_text ? `<span class="banner-btn">${b.btn_text} ←</span>` : ''}
             </div>
           </a>
         `).join('');
