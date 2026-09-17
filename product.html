@@ -1051,13 +1051,107 @@ function render() {
   // Wish button
   updateWishBtn();
 
-  // Related
-  const related = ALL_PRODUCTS.filter(p => p.tab===product.tab && p.id!==product.id).slice(0,4);
-  document.getElementById('related-grid').innerHTML = related.map(p => makeCard(p)).join('');
+  // Related Products (منتجات مشابهة لنفس التصنيف مع أولوية المنتجات الرائجة)
+  renderRelatedProducts();
 
   // Update cart UI
   updateCartUI();
   updateWishUI();
+}
+
+function renderRelatedProducts() {
+  const currentCat = (product && product.cat) ? String(product.cat).trim() : '';
+  const currentBrand = (product && product.brand) ? String(product.brand).trim() : '';
+  const currentId = product ? product.id : null;
+
+  // 1. استبعاد المنتج الحالي وأي منتج غير نشط
+  const candidates = ALL_PRODUCTS.filter(p => p.id !== currentId && p.active !== false);
+
+  // 2. تصفية المنتجات التابعة لنفس التصنيف تماماً (Same Category)
+  let exactCatProducts = [];
+  if (currentCat) {
+    exactCatProducts = candidates.filter(p => (p.cat || '').trim().toLowerCase() === currentCat.toLowerCase());
+  }
+
+  // فرز منتجات نفس التصنيف بحيث تظهر المنتجات الموسومة بـ "رائج" (badge === 'hot' أو hot === true) أولاً
+  exactCatProducts.sort((a, b) => {
+    const aHot = (a.badge === 'hot' || a.hot) ? 1 : 0;
+    const bHot = (b.badge === 'hot' || b.hot) ? 1 : 0;
+    if (aHot !== bHot) return bHot - aHot;
+    return (b.reviews || 0) - (a.reviews || 0);
+  });
+
+  const selectedRelated = [...exactCatProducts];
+  const selectedIds = new Set(selectedRelated.map(p => p.id));
+
+  // 3. إذا كان عدد منتجات نفس التصنيف أقل من 4، نبحث عن منتجات قريبة في التصنيف أو الماركة
+  if (selectedRelated.length < 4 && currentCat) {
+    const catWords = currentCat
+      .replace(/[()\-_\/]/g, ' ')
+      .split(/\s+/)
+      .map(w => w.trim())
+      .filter(w => w.length > 2 && !['بدون', 'عامة', 'أخرى', 'مع'].includes(w));
+
+    if (catWords.length > 0) {
+      const keywordMatches = candidates.filter(p => {
+        if (selectedIds.has(p.id)) return false;
+        const pCat = (p.cat || '').trim();
+        const pName = (p.name || '').trim();
+        return catWords.some(k => pCat.includes(k) || pName.includes(k));
+      });
+
+      keywordMatches.sort((a, b) => {
+        const aHot = (a.badge === 'hot' || a.hot) ? 1 : 0;
+        const bHot = (b.badge === 'hot' || b.hot) ? 1 : 0;
+        return bHot - aHot;
+      });
+
+      for (const p of keywordMatches) {
+        if (selectedRelated.length >= 4) break;
+        selectedRelated.push(p);
+        selectedIds.add(p.id);
+      }
+    }
+  }
+
+  // 4. إذا ما زال أقل من 4 وكان للمنتج ماركة، إكمال النقص من نفس الماركة إن وجدت
+  if (selectedRelated.length < 4 && currentBrand) {
+    const brandMatches = candidates.filter(p => !selectedIds.has(p.id) && (p.brand || '').trim() === currentBrand);
+    for (const p of brandMatches) {
+      if (selectedRelated.length >= 4) break;
+      selectedRelated.push(p);
+      selectedIds.add(p.id);
+    }
+  }
+
+  // عرض 4 منتجات كحد أقصى للحفاظ على تنسيق الشبكة
+  const displayRelated = selectedRelated.slice(0, 4);
+
+  // تحديث رابط "عرض الكل" ليوجه الزائر إلى نفس التصنيف مباشرة في المتجر
+  const viewAllLink = document.querySelector('.related-sec .view-all-link');
+  if (viewAllLink) {
+    if (currentCat) {
+      viewAllLink.href = `shop.html?cat=${encodeURIComponent(currentCat)}`;
+      viewAllLink.innerHTML = `عرض كل ${currentCat} ←`;
+    } else {
+      viewAllLink.href = 'shop.html';
+    }
+  }
+
+  // تحديث العنوان الفرعي لتوضيح القسم
+  const secSub = document.querySelector('.related-sec .sec-sub');
+  if (secSub && currentCat) {
+    secSub.textContent = `منتجات أخرى من تصنيف: ${currentCat}`;
+  }
+
+  const grid = document.getElementById('related-grid');
+  if (grid) {
+    if (displayRelated.length > 0) {
+      grid.innerHTML = displayRelated.map(p => makeCard(p)).join('');
+    } else {
+      grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text3); padding:20px;">لا توجد منتجات أخرى في هذا القسم حالياً.</p>';
+    }
+  }
 }
 
 function selectThumb(el, src) {
