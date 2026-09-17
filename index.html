@@ -468,8 +468,35 @@
           }
         }
       }
+    // 5. Load Trust Strip dynamically
+    try {
+      const res = await fetch('api/get_trust_bar.php?t=' + Date.now());
+      const trustData = await res.json();
+      const stripEl = document.getElementById('trust-strip-sec');
+      const itemsContainer = document.getElementById('trust-strip-items');
+      if (stripEl && trustData) {
+        if (trustData.enabled === false) {
+          stripEl.style.display = 'none';
+        } else {
+          stripEl.style.display = '';
+          if (Array.isArray(trustData.items) && trustData.items.length > 0 && itemsContainer) {
+            const activeItems = trustData.items.filter(it => it.enabled !== false);
+            if (activeItems.length === 0) {
+              stripEl.style.display = 'none';
+            } else {
+              itemsContainer.innerHTML = activeItems.map((it, idx) => `
+                <div class="trust-item">
+                  <div class="trust-icon-wrap"><span>${it.icon || '✨'}</span></div>
+                  <div><strong>${it.title || ''}</strong><small>${it.desc || ''}</small></div>
+                </div>
+                ${idx < activeItems.length - 1 ? '<div class="trust-sep"></div>' : ''}
+              `).join('');
+            }
+          }
+        }
+      }
     } catch (e) {
-      console.error('Error loading import sections:', e);
+      console.error('Error loading trust bar:', e);
     }
   });
 </script>
@@ -654,8 +681,8 @@
   </div>
 </section>
 
-<div class="trust-strip">
-  <div class="container trust-items">
+<div class="trust-strip" id="trust-strip-sec">
+  <div class="container trust-items" id="trust-strip-items">
     <div class="trust-item">
       <div class="trust-icon-wrap"><span>🚚</span></div>
       <div><strong>توصيل مجاني</strong><small>للطلبات فوق $50</small></div>

@@ -1222,6 +1222,9 @@ tr:last-child td{border-bottom:none}
         <button class="sb-item" onclick="showPage('discount-box',this)">
           <span class="sb-icon">🎁</span> بوكس الخصم (15%)
         </button>
+        <button class="sb-item" onclick="showPage('trust-bar',this)">
+          <span class="sb-icon">🛡️</span> شريط المميزات والثقة
+        </button>
         <button class="sb-item" onclick="showPage('icons',this)">
           <span class="sb-icon">🖼️</span> أيقونات الرئيسية
         </button>
@@ -2266,6 +2269,70 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
 
+      <!-- ================= PAGE: TRUST BAR (شريط المميزات والثقة) ================= -->
+      <div class="page" id="page-trust-bar">
+        <div class="page-hdr">
+          <div>
+            <div class="breadcrumb-admin">المحتوى <span>›</span> شريط المميزات والثقة</div>
+            <h1 class="page-title">إدارة شريط المميزات والضمانات (Trust Bar)</h1>
+            <p class="page-sub">التحكم في إظهار أو إخفاء شريط المميزات بالكامل من الصفحة الرئيسية، وتعديل أيقونات وعناوين ونصوص كل ميزة أو إضافة مميزات جديدة.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-add" onclick="adminTrustBar.resetDefault()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text);">🔄 استعادة الافتراضي</button>
+            <button class="btn-add" onclick="adminTrustBar.addItem()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text);">+ إضافة ميزة جديدة</button>
+            <button class="btn-add" onclick="adminTrustBar.save()" style="background:var(--blue); font-weight:800;">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:25px; margin-top:20px;">
+          <!-- 1. Items & Settings Editor -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:18px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">⚙️ إعدادات ومميزات الشريط</h3>
+              <span style="font-size:12px; color:var(--text3);">تعديل النصوص والأيقونات</span>
+            </div>
+
+            <!-- Master Enable / Disable Switch -->
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--bg3); border-radius:10px; border:1px solid var(--border);">
+              <div>
+                <strong style="display:block; font-size:14px; color:var(--text);">حالة شريط المميزات بالمتجر</strong>
+                <small style="color:var(--text3); font-size:12px;">إظهار أو إخفاء شريط المميزات بالكامل من الصفحة الرئيسية (On / Off)</small>
+              </div>
+              <label style="position:relative; display:inline-block; width:50px; height:26px; cursor:pointer;">
+                <input type="checkbox" id="atb-enabled" onchange="adminTrustBar.updateLivePreview()" style="opacity:0; width:0; height:0;">
+                <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:var(--blue); border:1px solid var(--border2); transition:.3s; border-radius:34px;" id="atb-enabled-slider"></span>
+              </label>
+            </div>
+
+            <!-- Items List -->
+            <div id="atb-items-container" style="display:flex; flex-direction:column; gap:12px;">
+              <!-- Dynamic Item Cards rendered by JS -->
+            </div>
+          </div>
+
+          <!-- 2. Live Preview -->
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:18px;">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--blue);">👁️ معاينة حية ومباشرة</h3>
+              <div id="atb-mock-status" style="font-size:12px;"></div>
+            </div>
+
+            <!-- Mock Preview Box Matching Site Design -->
+            <div id="atb-mock-box" style="background:#fff; border-radius:14px; padding:20px 15px; border:1px solid #e2e8f0; box-shadow:0 4px 16px rgba(0,0,0,0.05); transition:all 0.3s ease;">
+              <div id="atb-mock-items" style="display:flex; flex-direction:column; gap:14px;">
+                <!-- Rendered by updateLivePreview() -->
+              </div>
+            </div>
+
+            <small style="color:var(--text3); font-size:12px; line-height:1.6;">
+              💡 <strong>ملاحظة:</strong><br/>
+              • في الصفحة الرئيسية للمتجر تظهر هذه المميزات في صف أفقي أنيق ومريح للعين.<br/>
+              • عند إيقاف مفتاح الحالة، سيختفي الشريط فوراً ولن يترك أي فراغ في الصفحة.
+            </small>
+          </div>
+        </div>
+      </div>
+
       <!-- ══ CATEGORIES ══ -->
       <div class="page" id="page-categories">
         <div class="page-header">
@@ -2866,6 +2933,7 @@ function showPage(id, el) {
   if (id === 'banners')  adminBanners.load();
   if (id === 'popup-banner') adminPopupBanner.load();
   if (id === 'discount-box') adminDiscountBox.load();
+  if (id === 'trust-bar') adminTrustBar.load();
   if (id === 'brands')  adminBrands.load();
   if (id === 'factory-codes') adminFactoryCodes.load();
   if (id === 'pages-content') adminPagesContent.load();
@@ -5902,6 +5970,195 @@ const adminDiscountBox = {
             }
         } catch (e) {
             alert('❌ فشل الاتصال بالخادم لحفظ إعدادات الصندوق!');
+        }
+    }
+};
+
+const adminTrustBar = {
+    data: null,
+    async load() {
+        try {
+            const res = await fetch('api/get_trust_bar.php?t=' + Date.now());
+            this.data = await res.json();
+            if (!this.data || !Array.isArray(this.data.items)) {
+                this.resetDefault(false);
+            } else {
+                this.populate();
+            }
+        } catch (e) {
+            console.error("Error loading trust bar settings:", e);
+            this.resetDefault(false);
+        }
+    },
+    populate() {
+        if (!this.data) return;
+        const enEl = document.getElementById('atb-enabled');
+        if (enEl) enEl.checked = this.data.enabled !== false;
+
+        this.renderItems();
+        this.updateLivePreview();
+    },
+    renderItems() {
+        const container = document.getElementById('atb-items-container');
+        if (!container) return;
+        if (!this.data || !Array.isArray(this.data.items)) this.data = { enabled: true, items: [] };
+
+        container.innerHTML = this.data.items.map((item, index) => `
+            <div class="atb-item-card" data-index="${index}" style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:10px; position:relative;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:13px; font-weight:800; color:var(--blue);">ميزة #${index + 1}</span>
+                        <label style="display:inline-flex; align-items:center; gap:5px; font-size:12px; cursor:pointer; color:var(--text2);">
+                            <input type="checkbox" class="atb-item-enabled" ${item.enabled !== false ? 'checked' : ''} onchange="adminTrustBar.updateItemState(${index}, this.checked)" />
+                            تفعيل
+                        </label>
+                    </div>
+                    <button type="button" onclick="adminTrustBar.removeItem(${index})" style="background:rgba(239,68,68,0.1); color:#ef4444; border:none; padding:4px 8px; border-radius:6px; font-size:12px; cursor:pointer; font-weight:700;" title="حذف الميزة">🗑️ حذف</button>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 80px 1fr; gap:10px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text3); display:block; margin-bottom:4px;">الأيقونة</label>
+                        <input type="text" class="atb-item-icon" value="${item.icon || ''}" placeholder="🚚" oninput="adminTrustBar.updateItemField(${index}, 'icon', this.value)" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text); text-align:center; font-size:16px;" />
+                    </div>
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text3); display:block; margin-bottom:4px;">العنوان الرئيسي</label>
+                        <input type="text" class="atb-item-title" value="${item.title || ''}" placeholder="توصيل مجاني" oninput="adminTrustBar.updateItemField(${index}, 'title', this.value)" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text); font-weight:700; font-size:13px;" />
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:11px; font-weight:700; color:var(--text3); display:block; margin-bottom:4px;">النص التوضيحي (الوصف الفرعي)</label>
+                    <input type="text" class="atb-item-desc" value="${item.desc || ''}" placeholder="للطلبات فوق $50" oninput="adminTrustBar.updateItemField(${index}, 'desc', this.value)" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text); font-size:12px;" />
+                </div>
+            </div>
+        `).join('');
+    },
+    updateItemField(index, field, value) {
+        if (this.data && this.data.items && this.data.items[index]) {
+            this.data.items[index][field] = value;
+            this.updateLivePreview();
+        }
+    },
+    updateItemState(index, isChecked) {
+        if (this.data && this.data.items && this.data.items[index]) {
+            this.data.items[index].enabled = !!isChecked;
+            this.updateLivePreview();
+        }
+    },
+    addItem() {
+        if (!this.data) this.data = { enabled: true, items: [] };
+        if (!Array.isArray(this.data.items)) this.data.items = [];
+        this.data.items.push({
+            id: Date.now(),
+            icon: '✨',
+            title: 'ميزة جديدة',
+            desc: 'وصف توضيحي للميزة',
+            enabled: true
+        });
+        this.renderItems();
+        this.updateLivePreview();
+    },
+    removeItem(index) {
+        if (!confirm('هل أنت متأكد من حذف هذه الميزة؟')) return;
+        if (this.data && Array.isArray(this.data.items)) {
+            this.data.items.splice(index, 1);
+            this.renderItems();
+            this.updateLivePreview();
+        }
+    },
+    updateLivePreview() {
+        const enabled = document.getElementById('atb-enabled') ? document.getElementById('atb-enabled').checked : true;
+        const mockStatus = document.getElementById('atb-mock-status');
+        const mockBox = document.getElementById('atb-mock-box');
+        const mockItems = document.getElementById('atb-mock-items');
+        const enSlider = document.getElementById('atb-enabled-slider');
+
+        if (enSlider) {
+            enSlider.style.background = enabled ? 'var(--blue)' : 'var(--bg)';
+        }
+
+        if (mockStatus) {
+            if (enabled) {
+                mockStatus.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;color:#10b981;font-weight:700;">🟢 مفعل وظاهر بالمتجر</span>';
+            } else {
+                mockStatus.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;color:#ef4444;font-weight:700;">🔴 مخفي من المتجر حالياً</span>';
+            }
+        }
+
+        if (mockBox) {
+            mockBox.style.opacity = enabled ? '1' : '0.45';
+            mockBox.style.filter = enabled ? 'none' : 'grayscale(0.6)';
+        }
+
+        if (mockItems && this.data && Array.isArray(this.data.items)) {
+            const activeItems = this.data.items.filter(it => it.enabled !== false);
+            if (activeItems.length === 0) {
+                mockItems.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:13px;">لا توجد مميزات مضافة أو مفعلة.</div>';
+            } else {
+                mockItems.innerHTML = activeItems.map(it => `
+                    <div style="display:flex; align-items:center; gap:12px; padding:10px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+                        <div style="width:38px; height:38px; min-width:38px; background:#eff6ff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px;">
+                            ${it.icon || '✨'}
+                        </div>
+                        <div>
+                            <strong style="display:block; font-size:13.5px; color:#0f172a; font-weight:800;">${it.title || 'ميزة بدون عنوان'}</strong>
+                            <small style="color:#64748b; font-size:12px;">${it.desc || ''}</small>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    },
+    resetDefault(updateUi = true) {
+        if (updateUi && !confirm('هل أنت متأكد من استعادة الإعدادات الافتراضية لشريط المميزات؟')) return;
+        this.data = {
+            enabled: true,
+            items: [
+                { id: 1, icon: '🚚', title: 'توصيل مجاني', desc: 'للطلبات فوق $50', enabled: true },
+                { id: 2, icon: '↩️', title: 'إرجاع سهل', desc: 'خلال 30 يوم', enabled: true },
+                { id: 3, icon: '🔒', title: 'دفع آمن', desc: 'حماية 100%', enabled: true },
+                { id: 4, icon: '🎧', title: 'دعم 24/7', desc: 'نحن دائمًا هنا', enabled: true },
+                { id: 5, icon: '🏆', title: 'ضمان الجودة', desc: 'منتجات أصلية 100%', enabled: true }
+            ]
+        };
+        this.populate();
+        const toast = document.getElementById('admin-toast');
+        if (toast && updateUi) {
+            toast.textContent = '🔄 تمت استعادة الإعدادات الافتراضية';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    },
+    async save() {
+        const isEnabled = document.getElementById('atb-enabled') ? document.getElementById('atb-enabled').checked : true;
+        const payload = {
+            enabled: isEnabled,
+            items: (this.data && Array.isArray(this.data.items)) ? this.data.items : []
+        };
+
+        try {
+            const res = await fetch('api/save_trust_bar.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.data = payload;
+                const toast = document.getElementById('admin-toast');
+                if (toast) {
+                    toast.textContent = '✅ ' + data.message;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                } else {
+                    alert('✅ ' + data.message);
+                }
+            } else {
+                alert('❌ ' + (data.message || 'حدث خطأ أثناء الحفظ'));
+            }
+        } catch (e) {
+            alert('❌ فشل الاتصال بالخادم لحفظ إعدادات الشريط!');
         }
     }
 };
