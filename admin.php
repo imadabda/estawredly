@@ -2630,10 +2630,19 @@ tr:last-child td{border-bottom:none}
           </div>
           
           <div class="setting-card">
-            <h3>🚚 مناطق وأسعار التوصيل</h3>
-            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">أضف المناطق التي توصل إليها مع تحديد تكلفة التوصيل لكل منطقة، ليختار منها الزبون عند الطلب.</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h3 style="margin:0;">🚚 مناطق وأسعار التوصيل</h3>
+              <label class="toggle" title="تفعيل أو تعطيل رسوم التوصيل">
+                <input type="checkbox" id="sett-delivery-enabled" onchange="toggleDeliveryZonesActive()"/>
+                <div class="toggle-slider"></div>
+              </label>
+            </div>
+            <div id="dz-status-badge" style="font-size:12px; margin-bottom:10px;"></div>
+            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">
+              أضف المناطق وتكلفة التوصيل لكل منها، أو أوقف المفتاح لجعل التوصيل مجانياً بالكامل (₪0) لجميع الزبائن.
+            </p>
             <div id="delivery-zones-container" style="display:flex;flex-direction:column;gap:10px;"></div>
-            <button class="btn" style="margin-top:10px;border:1px dashed var(--border);width:100%;background:transparent" onclick="addDeliveryZone()">➕ إضافة منطقة جديدة</button>
+            <button class="btn" id="btn-add-zone" style="margin-top:10px;border:1px dashed var(--border);width:100%;background:transparent" onclick="addDeliveryZone()">➕ إضافة منطقة جديدة</button>
             <button class="btn btn-primary" style="margin-top:10px;width:100%" onclick="saveDeliveryZonesUI()">💾 حفظ مناطق التوصيل</button>
           </div>
 
@@ -5032,39 +5041,123 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-function renderDeliveryZonesUI() {
+let currentDeliverySettings = { enabled: true, zones: [] };
+
+async function renderDeliveryZonesUI() {
   const container = document.getElementById('delivery-zones-container');
-  if(!container) return;
-  const zones = (typeof Store !== 'undefined') ? Store.getDeliveryZones() : [];
-  container.innerHTML = zones.map((z) => `
-    <div style="display:flex; gap:10px" class="dz-row">
-      <input type="text" class="dz-name" value="${z.name}" placeholder="اسم المنطقة" style="flex:2" />
-      <input type="number" class="dz-price" value="${z.price}" placeholder="السعر" style="flex:1" />
-      <button class="btn" style="background:var(--red);color:#fff;padding:0 12px" onclick="this.parentElement.remove()">✕</button>
-    </div>
-  `).join('');
+  if (!container) return;
+
+  try {
+    const res = await fetch('api/get_delivery_zones.php?t=' + Date.now());
+    currentDeliverySettings = await res.json();
+  } catch (e) {
+    if (typeof Store !== 'undefined' && typeof Store.getDeliverySettings === 'function') {
+      currentDeliverySettings = Store.getDeliverySettings();
+    }
+  }
+
+  const enabledSwitch = document.getElementById('sett-delivery-enabled');
+  if (enabledSwitch) {
+    enabledSwitch.checked = currentDeliverySettings.enabled !== false;
+  }
+
+  updateDeliveryBadge();
+
+  const zones = Array.isArray(currentDeliverySettings.zones) ? currentDeliverySettings.zones : [];
+  if (zones.length === 0) {
+    container.innerHTML = '<div id="dz-empty-msg" style="text-align:center; padding:16px; background:var(--bg3); border-radius:8px; color:var(--text3); font-size:12.5px;">لا توجد مناطق توصيل مضافة (التوصيل مجاني 0 ₪ لجميع المناطق). يمكنك الضغط على "➕ إضافة منطقة جديدة" بالأسفل لإضافة منطقة.</div>';
+  } else {
+    container.innerHTML = zones.map((z, idx) => `
+      <div style="display:flex; gap:10px; align-items:center;" class="dz-row">
+        <input type="text" class="dz-name" value="${z.name || ''}" placeholder="اسم المنطقة (مثال: الضفة)" style="flex:2" />
+        <input type="number" class="dz-price" value="${z.price !== undefined ? z.price : 0}" placeholder="السعر" style="flex:1" />
+        <button type="button" class="btn" style="background:var(--red);color:#fff;padding:0 12px;height:38px;border-radius:6px;" onclick="this.parentElement.remove(); checkDeliveryEmpty();">✕</button>
+      </div>
+    `).join('');
+  }
+}
+
+function checkDeliveryEmpty() {
+  const container = document.getElementById('delivery-zones-container');
+  if (!container) return;
+  const rows = container.querySelectorAll('.dz-row');
+  if (rows.length === 0) {
+    container.innerHTML = '<div id="dz-empty-msg" style="text-align:center; padding:16px; background:var(--bg3); border-radius:8px; color:var(--text3); font-size:12.5px;">لا توجد مناطق توصيل مضافة (التوصيل مجاني 0 ₪ لجميع المناطق). يمكنك الضغط على "➕ إضافة منطقة جديدة" بالأسفل لإضافة منطقة.</div>';
+  }
+}
+
+function toggleDeliveryZonesActive() {
+  const enabledSwitch = document.getElementById('sett-delivery-enabled');
+  currentDeliverySettings.enabled = enabledSwitch ? enabledSwitch.checked : true;
+  updateDeliveryBadge();
+}
+
+function updateDeliveryBadge() {
+  const badge = document.getElementById('dz-status-badge');
+  const enabledSwitch = document.getElementById('sett-delivery-enabled');
+  const isEnabled = enabledSwitch ? enabledSwitch.checked : true;
+  if (badge) {
+    if (isEnabled) {
+      badge.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;color:#10b981;font-weight:700;">🟢 رسوم التوصيل مفعلة بحسب المناطق أدناه</span>';
+    } else {
+      badge.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;color:#ef4444;font-weight:700;">🔴 رسوم التوصيل معطلة (التوصيل مجاني 0 ₪ لجميع الزبائن)</span>';
+    }
+  }
 }
 
 function addDeliveryZone() {
-  document.getElementById('delivery-zones-container').insertAdjacentHTML('beforeend', `
-    <div style="display:flex; gap:10px" class="dz-row">
-      <input type="text" class="dz-name" value="" placeholder="اسم المنطقة" style="flex:2" />
+  const container = document.getElementById('delivery-zones-container');
+  if (!container) return;
+  const emptyMsg = document.getElementById('dz-empty-msg');
+  if (emptyMsg) emptyMsg.remove();
+
+  container.insertAdjacentHTML('beforeend', `
+    <div style="display:flex; gap:10px; align-items:center;" class="dz-row">
+      <input type="text" class="dz-name" value="" placeholder="اسم المنطقة (مثال: القدس)" style="flex:2" />
       <input type="number" class="dz-price" value="0" placeholder="السعر" style="flex:1" />
-      <button class="btn" style="background:var(--red);color:#fff;padding:0 12px" onclick="this.parentElement.remove()">✕</button>
+      <button type="button" class="btn" style="background:var(--red);color:#fff;padding:0 12px;height:38px;border-radius:6px;" onclick="this.parentElement.remove(); checkDeliveryEmpty();">✕</button>
     </div>
   `);
 }
 
-function saveDeliveryZonesUI() {
+async function saveDeliveryZonesUI() {
   const container = document.getElementById('delivery-zones-container');
+  const enabledSwitch = document.getElementById('sett-delivery-enabled');
+  const isEnabled = enabledSwitch ? enabledSwitch.checked : true;
+
   const zones = [];
-  container.querySelectorAll('.dz-row').forEach((div, i) => {
-    const name = div.querySelector('.dz-name').value.trim();
-    const price = parseFloat(div.querySelector('.dz-price').value) || 0;
-    if(name) zones.push({id: i+1, name, price});
-  });
-  if(typeof Store !== 'undefined') Store.saveDeliveryZones(zones);
-  showToast('✅ تم حفظ مناطق التوصيل بنجاح!');
+  if (container) {
+    container.querySelectorAll('.dz-row').forEach((div, i) => {
+      const nameEl = div.querySelector('.dz-name');
+      const priceEl = div.querySelector('.dz-price');
+      const name = nameEl ? nameEl.value.trim() : '';
+      const price = priceEl ? parseFloat(priceEl.value) || 0 : 0;
+      if (name) zones.push({ id: i + 1, name, price });
+    });
+  }
+
+  const payload = {
+    enabled: isEnabled,
+    zones: zones
+  };
+
+  currentDeliverySettings = payload;
+  if (typeof Store !== 'undefined' && typeof Store.saveDeliveryZones === 'function') {
+    Store.saveDeliveryZones(payload);
+  } else {
+    try {
+      await fetch('api/save_delivery_zones.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.error('Error saving delivery zones:', e);
+    }
+  }
+
+  showToast('✅ تم حفظ مناطق وأسعار التوصيل بنجاح!');
+  updateDeliveryBadge();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

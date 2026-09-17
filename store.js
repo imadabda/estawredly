@@ -59,8 +59,17 @@ const Store = (() => {
     })
     .catch(e => console.error('Error loading factory codes in store.js:', e));
 
+  const deliveryPromise = fetch('api/get_delivery_zones.php?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      if (data && typeof data === 'object') {
+        _set(KEYS.DELIVERY, data);
+      }
+    })
+    .catch(e => console.error('Error loading delivery zones in store.js:', e));
+
   function ensureReady() {
-    return Promise.all([currencyPromise, brandsPromise, factoryCodesPromise]);
+    return Promise.all([currencyPromise, brandsPromise, factoryCodesPromise, deliveryPromise]);
   }
 
   function _get(key, fallback = null) {
@@ -236,21 +245,63 @@ const Store = (() => {
     return true;
   }
 
-  function getDeliveryZones() {
+  function getDeliverySettings() {
     const stored = _get(KEYS.DELIVERY);
-    if (stored && stored.length > 0) return stored;
-    // Default zones
-    const defaultZones = [
-      { id: 1, name: 'الضفة', price: 20 },
-      { id: 2, name: 'القدس', price: 30 },
-      { id: 3, name: 'الداخل', price: 70 }
-    ];
-    _set(KEYS.DELIVERY, defaultZones);
-    return defaultZones;
+    if (stored !== null && stored !== undefined) {
+      if (Array.isArray(stored)) {
+        return { enabled: true, zones: stored };
+      }
+      if (typeof stored === 'object') {
+        return {
+          enabled: stored.enabled !== false,
+          zones: Array.isArray(stored.zones) ? stored.zones : []
+        };
+      }
+    }
+    return {
+      enabled: true,
+      zones: [
+        { id: 1, name: 'الضفة', price: 20 },
+        { id: 2, name: 'القدس', price: 30 },
+        { id: 3, name: 'الداخل', price: 70 }
+      ]
+    };
   }
 
-  function saveDeliveryZones(zones) {
-    return _set(KEYS.DELIVERY, zones);
+  function getDeliveryZones() {
+    const config = getDeliverySettings();
+    if (!config || config.enabled === false) return [];
+    return Array.isArray(config.zones) ? config.zones : [];
+  }
+
+  function isDeliveryFeeEnabled() {
+    const config = getDeliverySettings();
+    return config ? (config.enabled !== false) : true;
+  }
+
+  function saveDeliveryZones(settingsOrZones) {
+    let payload = null;
+    if (Array.isArray(settingsOrZones)) {
+      const current = getDeliverySettings();
+      payload = { enabled: current ? current.enabled : true, zones: settingsOrZones };
+    } else if (typeof settingsOrZones === 'object' && settingsOrZones !== null) {
+      payload = {
+        enabled: settingsOrZones.enabled !== false,
+        zones: Array.isArray(settingsOrZones.zones) ? settingsOrZones.zones : []
+      };
+    } else {
+      payload = { enabled: true, zones: [] };
+    }
+    _set(KEYS.DELIVERY, payload);
+
+    // Save to server
+    fetch('api/save_delivery_zones.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(e => console.error('Error saving delivery zones to server:', e));
+
+    return true;
   }
 
   // USERS / AUTH
@@ -417,7 +468,7 @@ const Store = (() => {
     // Orders
     getOrders, addOrder, updateOrderStatus, getOrderById, deleteOrder,
     // Delivery
-    getDeliveryZones, saveDeliveryZones,
+    getDeliveryZones, saveDeliveryZones, getDeliverySettings, isDeliveryFeeEnabled,
     // Users / Auth
     registerUser, loginUser, loginWithGoogle,
     logout, getCurrentUser, isLoggedIn, isAdmin, getUserById, getUsers,

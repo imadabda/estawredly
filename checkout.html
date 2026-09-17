@@ -64,7 +64,7 @@
           <label>رقم الهاتف <span style="color:var(--red)">*</span></label>
           <input type="tel" id="co-phone" required placeholder="ضروري جداً للتواصل معك" />
         </div>
-        <div class="form-group">
+        <div class="form-group" id="co-zone-group">
           <label>منطقة التوصيل <span style="color:var(--red)">*</span></label>
           <select id="co-zone" required onchange="updateTotalWithShipping()">
             <option value="" data-price="0">اختر منطقة التوصيل</option>
@@ -177,11 +177,22 @@
       
       let currentShipping = 0;
       const zoneSelect = document.getElementById('co-zone');
-      
-      // Populate Zones
-      zoneSelect.innerHTML = '<option value="" data-price="0">اختر منطقة التوصيل</option>';
-      if (typeof Store !== 'undefined') {
-        const zones = Store.getDeliveryZones();
+      const zoneGroup = document.getElementById('co-zone-group');
+      const isDeliveryEnabled = typeof Store !== 'undefined' ? Store.isDeliveryFeeEnabled() : true;
+      const zones = typeof Store !== 'undefined' ? Store.getDeliveryZones() : [];
+      const hasActiveZones = isDeliveryEnabled && zones.length > 0;
+
+      if (!hasActiveZones) {
+        if (zoneGroup) zoneGroup.style.display = 'none';
+        zoneSelect.removeAttribute('required');
+        zoneSelect.innerHTML = '<option value="توصيل مجاني" data-price="0" selected>توصيل مجاني</option>';
+        currentShipping = 0;
+        document.getElementById('co-shipping').innerHTML = '<span style="color:var(--success, #22c55e);font-weight:bold;">مجاني 🎉 (₪0)</span>';
+        document.getElementById('co-total').textContent = '₪' + state.cartTotal().toLocaleString();
+      } else {
+        if (zoneGroup) zoneGroup.style.display = 'block';
+        zoneSelect.setAttribute('required', 'required');
+        zoneSelect.innerHTML = '<option value="" data-price="0">اختر منطقة التوصيل</option>';
         zones.forEach(z => {
           const opt = document.createElement('option');
           opt.value = z.name;
@@ -192,6 +203,12 @@
       }
 
       window.updateTotalWithShipping = function() {
+        if (!hasActiveZones) {
+          currentShipping = 0;
+          document.getElementById('co-shipping').innerHTML = '<span style="color:var(--success, #22c55e);font-weight:bold;">مجاني 🎉 (₪0)</span>';
+          document.getElementById('co-total').textContent = '₪' + state.cartTotal().toLocaleString();
+          return;
+        }
         const opt = zoneSelect.options[zoneSelect.selectedIndex];
         currentShipping = opt ? parseFloat(opt.dataset.price) || 0 : 0;
         document.getElementById('co-shipping').textContent = '₪' + currentShipping.toLocaleString();
@@ -202,14 +219,15 @@
       updateTotalWithShipping(); // Init
 
       if (window.authUser) {
-        if (!document.getElementById(co-name).value && window.authUser.name) {
-          document.getElementById(co-name).value = window.authUser.name;
+        const nameInput = document.getElementById('co-name');
+        const phoneInput = document.getElementById('co-phone');
+        if (nameInput && !nameInput.value && window.authUser.name) {
+          nameInput.value = window.authUser.name;
         }
-        if (!document.getElementById(co-phone).value && window.authUser.phone) {
-          document.getElementById(co-phone).value = window.authUser.phone;
+        if (phoneInput && !phoneInput.value && window.authUser.phone) {
+          phoneInput.value = window.authUser.phone;
         }
       }
-
 
       // 3. (تم إزالة التحقق من تسجيل الدخول - يمكن لأي شخص الطلب)
 
@@ -225,7 +243,7 @@
           return;
         }
         
-        if (!zoneSelect.value) {
+        if (hasActiveZones && !zoneSelect.value) {
           alert('❌ يرجى اختيار منطقة التوصيل!');
           return;
         }
@@ -233,10 +251,10 @@
         const name = document.getElementById('co-name').value.trim();
         const address = document.getElementById('co-address').value.trim();
         const notes = document.getElementById('co-notes').value.trim();
-        const zone = zoneSelect.value;
+        const zone = hasActiveZones ? zoneSelect.value : 'توصيل مجاني';
         
-        if (!name || !phone || !zone) {
-          alert('❌ يرجى تعبئة الحقول الأساسية: الاسم، رقم الهاتف، ومنطقة التوصيل.');
+        if (!name || !phone) {
+          alert('❌ يرجى تعبئة الحقول الأساسية: الاسم ورقم الهاتف.');
           return;
         }
 
