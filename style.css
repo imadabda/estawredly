@@ -940,28 +940,31 @@ input,select,textarea{font-family:inherit}
    ════════════════════════════════════════ */
 .drawer-mask{
   position:fixed;inset:0;background:rgba(0,0,0,.5);
-  backdrop-filter:blur(4px);z-index:400;
+  backdrop-filter:blur(4px);z-index:99998 !important;
   opacity:0;visibility:hidden;transition:var(--t)
 }
 .drawer-mask.open{opacity:1;visibility:visible}
 .cart-drawer{
   position:fixed;top:0;left:0;bottom:0;width:420px;max-width:100%;
-  background:#fff;z-index:401;
+  background:#fff;z-index:99999 !important;
   display:flex;flex-direction:column;
   transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
 }
 .cart-drawer.open{transform:translateX(0)}
-.wish-drawer{right:0;left:auto;transform:translateX(100%)}
+.wish-drawer{right:0;left:auto;transform:translateX(100%);z-index:99999 !important;}
 .wish-drawer.open{transform:translateX(0)}
 .drawer-header{
-  padding:18px 20px;border-bottom:1px solid var(--gray2);
-  display:flex;justify-content:space-between;align-items:center
+  padding:max(18px, env(safe-area-inset-top, 18px)) 20px 18px;
+  border-bottom:1px solid var(--gray2);
+  display:flex;justify-content:space-between;align-items:center;
+  position:relative;z-index:2;
 }
 .drawer-header h3{font-size:18px;font-weight:800}
 .drawer-close{
-  width:34px;height:34px;border-radius:10px;
+  width:38px;height:38px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;
-  font-size:18px;color:var(--gray5);transition:var(--t)
+  font-size:20px;color:var(--gray5);transition:var(--t);
+  cursor:pointer;touch-action:manipulation;
 }
 .drawer-close:hover{background:var(--gray1);color:var(--gray9)}
 .drawer-body{flex:1;overflow-y:auto;padding:20px}
@@ -1353,7 +1356,7 @@ input,select,textarea{font-family:inherit}
   align-items: center;
   overflow: hidden;
   position: relative;
-  z-index: 1001;
+  z-index: 30;
   border-bottom: 1px solid rgba(0,0,0,0.1);
   direction: ltr;
 }

@@ -964,10 +964,9 @@ tr:last-child td{border-bottom:none}
             <datalist id="cats-list"></datalist>
           </div>
           <div class="field">
-            <label>الماركة التجارية <span style="color:var(--text3);font-size:12px;font-weight:400;">(اختياري)</span></label>
-            <select id="f-brand">
-              <option value="">بدون ماركة (اختياري)</option>
-            </select>
+            <label>الماركة التجارية <span style="color:var(--text3);font-size:12px;font-weight:400;">(اختياري - اترك فارغاً إذا لم تكن له ماركة)</span></label>
+            <input type="text" id="f-brand" list="brands-list" placeholder="اكتب أو اختر الماركة التجارية (اختياري)..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1);">
+            <datalist id="brands-list"></datalist>
           </div>
           <div class="field full" style="margin-top:12px">
             <label>📋 ملاحظات الرقم المرجعي (تظهر فقط في الفاتورة للطباعة والمعاينة)</label>
@@ -977,9 +976,9 @@ tr:last-child td{border-bottom:none}
             <label>الشارة الإعلانية</label>
             <select id="f-badge">
               <option value="">بدون شارة</option>
-              <option value="new">🆕 جديد</option>
+              <option value="hot">⚡ رائج (يظهر في مقدمة القسم وقسم الرائج بالرئيسية)</option>
               <option value="sale">🔥 تخفيض</option>
-              <option value="hot">⚡ رائج</option>
+              <option value="new">🆕 جديد</option>
               <option value="best">⭐ مميز</option>
             </select>
           </div>
@@ -1019,8 +1018,13 @@ tr:last-child td{border-bottom:none}
             <input type="text" id="f-product-code" placeholder="كود المنتج الفريد" required/>
           </div>
           <div class="field">
-            <label>كود المصنع <span style="color:var(--red)">*</span></label>
-            <input type="text" id="f-factory-code" placeholder="كود المصنع" required/>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+              <label style="margin:0;">كود المصنع <span style="color:var(--red)">*</span></label>
+              <button type="button" onclick="quickAddFactoryCode()" style="background:var(--p); color:#fff; border:none; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer; font-weight:bold;">+ كود جديد</button>
+            </div>
+            <select id="f-factory-code" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text1); font-family:inherit; font-size:14px;" onchange="if(this.value==='__ADD_NEW__'){this.value='';quickAddFactoryCode();}" required>
+              <option value="">-- اختر كود المصنع --</option>
+            </select>
           </div>
         </div>
       </div>
@@ -1142,6 +1146,7 @@ tr:last-child td{border-bottom:none}
                 <th style="padding:10px 12px;">السعر</th>
                 <th style="padding:10px 12px;">الكرتونة</th>
                 <th style="padding:10px 12px;">كود SKU</th>
+                <th style="padding:10px 12px;">كود المصنع</th>
               </tr>
             </thead>
             <tbody id="import-preview-tbody"></tbody>
@@ -1228,6 +1233,9 @@ tr:last-child td{border-bottom:none}
         </button>
         <button class="sb-item" onclick="showPage('brands',this)">
           <span class="sb-icon">🏷️</span> إدارة الماركات
+        </button>
+        <button class="sb-item" onclick="showPage('factory-codes',this)">
+          <span class="sb-icon">🏭</span> أكواد المصانع
         </button>
         <button class="sb-item" onclick="showPage('import-sections',this)">
           <span class="sb-icon">🌐</span> أقسام الاستيراد
@@ -1414,6 +1422,9 @@ tr:last-child td{border-bottom:none}
           </select>
           <select class="select-field" id="brand-filter" onchange="filterProducts()">
             <option value="">كل الماركات</option>
+          </select>
+          <select class="select-field" id="factory-filter" onchange="filterProducts()">
+            <option value="">كل أكواد المصانع</option>
           </select>
           <select class="select-field" id="badge-filter" onchange="filterProducts()">
             <option value="">كل الشارات</option>
@@ -2352,6 +2363,34 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
 
+      <!-- ══ FACTORY CODES MANAGER ══ -->
+      <div class="page" id="page-factory-codes">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb-admin">المتجر <span>›</span> إدارة أكواد المصانع</div>
+            <h1 class="page-title">إدارة أكواد المصانع</h1>
+            <p class="page-sub">تعريف أكواد المصانع، وإمكانية تفعيل أو إخفاء منتجات أي كود مصنع بنقرة واحدة (On / Off)</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn-add" onclick="adminFactoryCodes.add()" style="background:var(--p);">➕ إضافة كود مصنع جديد</button>
+            <button class="btn-add" onclick="adminFactoryCodes.syncFromProducts()" style="background:var(--bg3); border:1px solid var(--border); color:var(--text);" title="استيراد وتحديث الأكواد من المنتجات الحالية">🔄 مزامنة من المنتجات</button>
+            <button class="btn-add" onclick="adminFactoryCodes.save()" style="background:var(--blue);">💾 حفظ التغييرات</button>
+          </div>
+        </div>
+        
+        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:20px;">
+          <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="font-size:13px; color:var(--text2);">
+              💡 <strong>توضيح:</strong> إيقاف تشغيل كود المصنع (وضع Off) يقوم بإخفاء جميع المنتجات التابعة له فوراً من المتجر دون حذفها.
+            </div>
+            <input type="text" id="fc-search" placeholder="🔍 بحث في أكواد المصانع..." oninput="adminFactoryCodes.filter(this.value)" style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; width:220px;" />
+          </div>
+          <div id="admin-factory-codes-builder" style="display:flex; flex-direction:column; gap:10px; max-width: 800px;">
+            <div style="text-align:center; padding:40px; color:var(--text3)">جاري تحميل أكواد المصانع...</div>
+          </div>
+        </div>
+      </div>
+
       <!-- ══ PAGES CONTENT (ABOUT & CONTACT) ══ -->
       <div class="page" id="page-pages-content">
         <div class="page-header">
@@ -2766,6 +2805,7 @@ async function syncLiveProducts() {
           renderProducts();
           updateStats();
           if (typeof updateCatsDatalist === 'function') updateCatsDatalist();
+          if (typeof updateBrandsDatalist === 'function') updateBrandsDatalist();
       }
   } catch(e) {
       console.warn("Could not sync live products:", e);
@@ -2827,6 +2867,7 @@ function showPage(id, el) {
   if (id === 'popup-banner') adminPopupBanner.load();
   if (id === 'discount-box') adminDiscountBox.load();
   if (id === 'brands')  adminBrands.load();
+  if (id === 'factory-codes') adminFactoryCodes.load();
   if (id === 'pages-content') adminPagesContent.load();
   if (id === 'settings') {
       adminPolicies.load();
@@ -3449,6 +3490,21 @@ function populateProductFilters() {
     brandFilter.innerHTML = '<option value="">كل الماركات</option>' +
       sortedBrands.map(b => `<option value="${b}" ${b === currentBrand ? 'selected' : ''}>${b} (${brandCounts[b]})</option>`).join('');
   }
+
+  const factoryFilter = document.getElementById('factory-filter');
+  if (factoryFilter) {
+    const currentFactory = factoryFilter.value;
+    const factoryCounts = {};
+    adminProducts.forEach(p => {
+      const f = (p.factory_code || '').trim();
+      if (f) {
+        factoryCounts[f] = (factoryCounts[f] || 0) + 1;
+      }
+    });
+    const sortedFactories = Object.keys(factoryCounts).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+    factoryFilter.innerHTML = '<option value="">كل أكواد المصانع</option>' +
+      sortedFactories.map(f => `<option value="${f}" ${f === currentFactory ? 'selected' : ''}>كود المصنع: ${f} (${factoryCounts[f]})</option>`).join('');
+  }
 }
 
 let currentAdminPage = 1;
@@ -3593,11 +3649,13 @@ function filterProducts() {
   const q = normStr(searchInput ? searchInput.value : '');
   const cat = document.getElementById('cat-filter')?.value || '';
   const brand = document.getElementById('brand-filter')?.value || '';
+  const factory = document.getElementById('factory-filter')?.value || '';
   const badge = document.getElementById('badge-filter')?.value || '';
 
   const filtered = adminProducts.filter(p => {
     if (cat && (p.cat || '').trim() !== cat.trim()) return false;
     if (brand && (p.brand || '').trim() !== brand.trim()) return false;
+    if (factory && (p.factory_code || '').trim().toLowerCase() !== factory.trim().toLowerCase()) return false;
     if (badge && p.badge !== badge) return false;
     if (!q) return true;
 
@@ -3819,6 +3877,26 @@ function updateCatsDatalist() {
   datalist.innerHTML = sorted.map(c => `<option value="${c}">`).join('');
 }
 
+function updateBrandsDatalist() {
+  const datalist = document.getElementById('brands-list');
+  if (!datalist) return;
+  const brandsSet = new Set();
+  if (typeof adminBrands !== 'undefined' && Array.isArray(adminBrands.brands)) {
+    adminBrands.brands.forEach(b => {
+      const name = typeof b === 'string' ? b : (b.name || '');
+      if (name && name.trim()) brandsSet.add(name.trim());
+    });
+  }
+  if (Array.isArray(adminProducts)) {
+    adminProducts.forEach(p => {
+      const b = (p.brand || '').trim();
+      if (b) brandsSet.add(b);
+    });
+  }
+  const sortedBrands = [...brandsSet].sort((a, b) => a.localeCompare('ar'));
+  datalist.innerHTML = sortedBrands.map(b => `<option value="${b}">`).join('');
+}
+
 function openModal(p) {
   editingId = p ? p.id : null;
   document.getElementById('modal-title').textContent = p ? '✏️ تعديل المنتج' : '➕ إضافة منتج جديد';
@@ -3827,6 +3905,9 @@ function openModal(p) {
   
   // Populate Category Datalist cleanly from all products & nav
   updateCatsDatalist();
+
+  // Populate Brands Datalist cleanly
+  updateBrandsDatalist();
 
   // Find if product belongs to any icon
   let mappedIcon = '';
@@ -3853,20 +3934,16 @@ function openModal(p) {
   document.getElementById('f-reviews').value = p?.reviews || '';
   document.getElementById('f-stock').value = (p && p.stock !== undefined) ? p.stock : '';
   
-  // Populate Brand Select Options
-  const brandSelect = document.getElementById('f-brand');
-  if (brandSelect) {
-      brandSelect.innerHTML = '<option value="">بدون ماركة (اختياري)</option>' +
-          (adminBrands.brands || []).map(b => {
-              const name = typeof b === 'string' ? b : (b.name || '');
-              return `<option value="${name}">${name}</option>`;
-          }).join('');
-  }
+  // Brand value (completely optional)
   document.getElementById('f-brand').value = p?.brand || '';
 
   document.getElementById('f-pieces-per-carton').value = (p && p.pieces_per_carton) ? p.pieces_per_carton : '';
   document.getElementById('f-product-code').value = p?.product_code || '';
-  document.getElementById('f-factory-code').value = p?.factory_code || '';
+  if (typeof updateFactoryCodesSelect === 'function') {
+    updateFactoryCodesSelect(p?.factory_code || '');
+  } else {
+    document.getElementById('f-factory-code').value = p?.factory_code || '';
+  }
   document.getElementById('f-ref-note').value = p?.ref_note || '';
 
   document.getElementById('f-img-url').value = p?.img || '';
@@ -3929,6 +4006,16 @@ async function saveProduct() {
   };
   if (catCanonMap[cat]) cat = catCanonMap[cat];
   const brand = document.getElementById('f-brand').value.trim();
+  if (brand && typeof adminBrands !== 'undefined' && Array.isArray(adminBrands.brands)) {
+    const exists = adminBrands.brands.some(b => {
+      const bName = typeof b === 'string' ? b : (b.name || '');
+      return bName.trim().toLowerCase() === brand.toLowerCase();
+    });
+    if (!exists) {
+      adminBrands.brands.push({ name: brand, logo: '', active: true });
+      if (typeof adminBrands.save === 'function') adminBrands.save();
+    }
+  }
   
   let multiplier = 1;
   if (typeof adminCurrency !== 'undefined' && adminCurrency.settings && adminCurrency.settings.enabled && adminCurrency.settings.base_rate > 0) {
@@ -3977,9 +4064,23 @@ async function saveProduct() {
     return; 
   }
   if (!factory_code) { 
-    showToast('⚠️ يرجى إدخال كود المصنع (إجباري)!','warn'); 
+    showToast('⚠️ يرجى إدخال أو اختيار كود المصنع (إجباري)!','warn'); 
     document.getElementById('f-factory-code').focus(); 
     return; 
+  }
+
+  // مزامنة الكود تلقائياً في قائمة أكواد المصانع إذا كان جديداً
+  if (factory_code && typeof adminFactoryCodes !== 'undefined' && Array.isArray(adminFactoryCodes.codes)) {
+    const exists = adminFactoryCodes.codes.some(c => {
+      const cVal = typeof c === 'string' ? c : (c.code || '');
+      return cVal.trim().toLowerCase() === factory_code.toLowerCase();
+    });
+    if (!exists) {
+      adminFactoryCodes.codes.push({ code: factory_code, name: '', active: true });
+      adminFactoryCodes.codes.sort((a, b) => a.code.localeCompare(b.code, 'en', { numeric: true }));
+      if (typeof adminFactoryCodes.save === 'function') adminFactoryCodes.save(true);
+      if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect(factory_code);
+    }
   }
 
   const pToEdit = editingId ? adminProducts.find(x => String(x.id) === String(editingId)) : null;
@@ -4028,6 +4129,7 @@ async function saveProduct() {
         renderProducts();
         updateStats();
         updateCatsDatalist();
+        updateBrandsDatalist();
     } else {
         showToast('❌ خطأ في الحفظ: ' + (data.message || 'فشل السيرفر'), 'error');
     }
@@ -4521,6 +4623,7 @@ function openExcelModal(filename, products) {
         <td style="padding:8px 12px; font-weight:bold; color:var(--p);">₪${p.price}</td>
         <td style="padding:8px 12px; color:var(--text2);">${p.pieces_per_carton} قطع</td>
         <td style="padding:8px 12px; font-family:monospace; font-size:11px; color:var(--text3);">${p.product_code}</td>
+        <td style="padding:8px 12px; font-family:monospace; font-size:11px; color:var(--p); font-weight:bold;">${p.factory_code || '-'}</td>
       </tr>
     `).join('');
   }
@@ -4570,6 +4673,13 @@ async function confirmExcelImport() {
       adminProducts = data.products || [];
       if (typeof PRODUCTS_DB !== 'undefined') window.PRODUCTS_DB = adminProducts;
       if (typeof Store !== 'undefined') Store.saveProducts(adminProducts);
+
+      // مزامنة وتحديث أكواد المصانع المستوردة فوراً وتحديث القوائم والفلاتر
+      if (typeof adminFactoryCodes !== 'undefined') {
+        adminFactoryCodes.mergeFromProducts(true);
+        if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect();
+      }
+      if (typeof populateFilters === 'function') populateFilters();
 
       closeExcelModal();
       renderProducts();
@@ -6123,6 +6233,325 @@ const adminBrands = {
     }
 };
 
+const adminFactoryCodes = {
+    codes: [],
+    searchQuery: '',
+
+    async load() {
+        try {
+            const res = await fetch('api/get_factory_codes.php?t=' + Date.now());
+            let raw = await res.json();
+            if (!Array.isArray(raw)) raw = [];
+            this.codes = raw.map(c => {
+                if (typeof c === 'string') {
+                    return { code: c.trim(), name: '', active: true };
+                }
+                return {
+                    code: (c.code || '').trim(),
+                    name: (c.name || '').trim(),
+                    active: c.active !== false
+                };
+            }).filter(c => Boolean(c.code));
+
+            // Auto merge any factory codes from loaded products
+            this.mergeFromProducts(false);
+
+            this.render();
+            if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect();
+            if (typeof populateFilters === 'function') populateFilters();
+        } catch (e) {
+            console.error("Error loading factory codes:", e);
+        }
+    },
+
+    getProductCount(code) {
+        if (!code || !Array.isArray(adminProducts)) return 0;
+        const target = code.trim().toLowerCase();
+        return adminProducts.filter(p => (p.factory_code || '').trim().toLowerCase() === target).length;
+    },
+
+    getActiveProductCount(code) {
+        if (!code || !Array.isArray(adminProducts)) return 0;
+        const target = code.trim().toLowerCase();
+        return adminProducts.filter(p => (p.factory_code || '').trim().toLowerCase() === target && p.active !== false).length;
+    },
+
+    mergeFromProducts(shouldSave = true) {
+        if (!Array.isArray(adminProducts) || adminProducts.length === 0) return;
+        let addedCount = 0;
+        const existingSet = new Set(this.codes.map(c => c.code.toLowerCase()));
+
+        adminProducts.forEach(p => {
+            const fc = (p.factory_code || '').trim();
+            if (fc && !existingSet.has(fc.toLowerCase())) {
+                existingSet.add(fc.toLowerCase());
+                this.codes.push({
+                    code: fc,
+                    name: '',
+                    active: p.active !== false
+                });
+                addedCount++;
+            }
+        });
+
+        this.codes.sort((a, b) => a.code.localeCompare(b.code, 'en', { numeric: true }));
+
+        if (addedCount > 0 && shouldSave) {
+            this.save(true);
+        }
+    },
+
+    async syncFromProducts() {
+        if (!Array.isArray(adminProducts) || adminProducts.length === 0) {
+            if (typeof syncLiveProducts === 'function') await syncLiveProducts();
+        }
+        const beforeCount = this.codes.length;
+        this.mergeFromProducts(true);
+        this.render();
+        if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect();
+        if (typeof populateFilters === 'function') populateFilters();
+        const added = this.codes.length - beforeCount;
+        showToast(added > 0 ? `✅ تم استيراد ومزامنة ${added} كود مصنع جديد من المنتجات!` : `ℹ️ جميع الأكواد في المنتجات متزامنة بالفعل (${this.codes.length} كود)`);
+    },
+
+    async toggleActive(index, isChecked) {
+        if (!this.codes[index]) return;
+        this.codes[index].active = isChecked;
+        const code = (this.codes[index].code || '').trim();
+
+        let affected = 0;
+        if (code) {
+            if (!Array.isArray(adminProducts) || adminProducts.length === 0) {
+                if (typeof syncLiveProducts === 'function') await syncLiveProducts();
+            }
+            if (Array.isArray(adminProducts)) {
+                const target = code.toLowerCase();
+                adminProducts.forEach(p => {
+                    const pfc = (p.factory_code || '').trim().toLowerCase();
+                    if (pfc === target) {
+                        p.active = isChecked;
+                        affected++;
+                    }
+                });
+                await saveAdminProducts();
+                if (typeof renderProducts === 'function') renderProducts();
+                if (typeof updateStats === 'function') updateStats();
+                if (typeof populateFilters === 'function') populateFilters();
+            }
+        }
+
+        await this.save(true);
+        showToast(isChecked 
+            ? `✅ تم تشغيل كود المصنع "${code}" وإظهار جميع منتجاته (${affected} منتج) في المتجر`
+            : `⛔ تم إطفاء كود المصنع "${code}" وإخفاء جميع منتجاته (${affected} منتج) من المتجر`
+        );
+        this.render();
+        if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect();
+    },
+
+    filter(q) {
+        this.searchQuery = (q || '').trim().toLowerCase();
+        this.render();
+    },
+
+    render() {
+        const container = document.getElementById('admin-factory-codes-builder');
+        if (!container) return;
+
+        let list = this.codes;
+        if (this.searchQuery) {
+            list = list.filter(c => c.code.toLowerCase().includes(this.searchQuery) || (c.name || '').toLowerCase().includes(this.searchQuery));
+        }
+
+        if (this.codes.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; color:var(--text3); padding:30px;">
+                    <div style="font-size:36px; margin-bottom:10px;">🏭</div>
+                    <div>لا يوجد أكواد مصانع معرّفة حالياً.</div>
+                    <button class="btn" style="margin-top:12px; background:var(--p); color:#fff;" onclick="adminFactoryCodes.syncFromProducts()">🔄 مزامنة واستيراد الأكواد من المنتجات الحالية</button>
+                </div>
+            `;
+            return;
+        }
+
+        if (list.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:var(--text3); padding:20px;">لا توجد نتائج تطابق "${this.searchQuery}"</div>`;
+            return;
+        }
+
+        container.innerHTML = list.map((c) => {
+            const realIndex = this.codes.findIndex(x => x.code === c.code);
+            const prodCount = this.getProductCount(c.code);
+            const activeProdCount = this.getActiveProductCount(c.code);
+            const isActive = c.active !== false;
+
+            return `
+                <div style="background:var(--bg3); border:1px solid ${isActive ? 'var(--border)' : 'rgba(239,68,68,0.4)'}; border-radius:12px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:15px; flex-wrap:wrap; margin-bottom:10px; opacity:${isActive ? '1' : '0.85'}; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; align-items:center; gap:12px; min-width:260px; flex:1;">
+                        <span style="font-weight:bold; color:var(--text3); min-width:30px;">#${realIndex+1}</span>
+                        <div style="display:flex; align-items:center; gap:8px; flex:1; flex-wrap:wrap;">
+                            <span style="font-size:16px;">🏭</span>
+                            <input type="text" value="${c.code}" onchange="adminFactoryCodes.updateCode(${realIndex}, this.value)" placeholder="الكود" style="font-size:15px; font-weight:800; font-family:monospace; padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); width:110px; text-transform:uppercase;">
+                            <input type="text" value="${c.name || ''}" onchange="adminFactoryCodes.updateName(${realIndex}, this.value)" placeholder="اسم أو وصف المصنع (اختياري)..." style="font-size:13px; padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); flex:1; min-width:140px;">
+                        </div>
+                    </div>
+
+                    <!-- Active / Inactive Toggle -->
+                    <div style="display:flex; align-items:center; gap:12px; background:var(--bg2); padding:8px 14px; border-radius:8px; border:1px solid var(--border); min-width:210px;">
+                        <label class="toggle" title="${isActive ? 'الكود نشط (منتجاته تظهر بالمتجر)' : 'الكود معطل (منتجاته مخفية عن المتجر)'}">
+                            <input type="checkbox" ${isActive ? 'checked' : ''} onchange="adminFactoryCodes.toggleActive(${realIndex}, this.checked)" />
+                            <div class="toggle-slider"></div>
+                        </label>
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-size:12px; font-weight:800; color:${isActive ? 'var(--green)' : 'var(--red)'};">
+                                ${isActive ? '🟢 كود نشط (ظاهر)' : '🔴 كود معطل (مخفي)'}
+                            </span>
+                            <span style="font-size:11px; color:var(--text3);">
+                                <strong>${prodCount}</strong> منتج مرتبط (${activeProdCount} ظاهر)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <button class="btn" style="background:var(--bg); border:1px solid var(--border); color:var(--text); padding:7px 12px; border-radius:6px; font-size:12px; cursor:pointer;" onclick="filterByFactoryCode('${c.code}')" title="عرض جميع المنتجات المرتبطة بهذا الكود">🔍 عرض المنتجات</button>
+                        <button class="btn" style="background:var(--red); color:#fff; border:none; padding:7px 12px; border-radius:6px; font-size:12px; cursor:pointer;" onclick="adminFactoryCodes.delete(${realIndex})" title="حذف الكود">🗑️ حذف</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    updateCode(index, value) {
+        const val = value.trim().toUpperCase();
+        if (!val) {
+            showToast('⚠️ لا يمكن ترك كود المصنع فارغاً!', 'warn');
+            this.render();
+            return;
+        }
+        this.codes[index].code = val;
+        if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect();
+    },
+
+    updateName(index, value) {
+        this.codes[index].name = value.trim();
+    },
+
+    add() {
+        const newCode = prompt('أدخل كود المصنع الجديد (مثال: A15 أو E35):');
+        if (!newCode || !newCode.trim()) return;
+        const code = newCode.trim().toUpperCase();
+        if (this.codes.some(c => c.code.toLowerCase() === code.toLowerCase())) {
+            showToast(`⚠️ الكود "${code}" موجود بالفعل مسبقاً!`, 'warn');
+            return;
+        }
+        this.codes.push({ code, name: '', active: true });
+        this.codes.sort((a, b) => a.code.localeCompare(b.code, 'en', { numeric: true }));
+        this.render();
+        this.save();
+        if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect(code);
+        if (typeof populateFilters === 'function') populateFilters();
+    },
+
+    delete(index) {
+        const item = this.codes[index];
+        if (!item) return;
+        const count = this.getProductCount(item.code);
+        const warnText = count > 0 ? `\nتنبيه: يوجد ${count} منتج مرتبط بهذا الكود حالياً!` : '';
+        if (!confirm(`هل أنت متأكد من حذف كود المصنع "${item.code}"؟${warnText}`)) return;
+        this.codes.splice(index, 1);
+        this.render();
+        this.save();
+        if (typeof updateFactoryCodesSelect === 'function') updateFactoryCodesSelect();
+        if (typeof populateFilters === 'function') populateFilters();
+    },
+
+    async save(silent = false) {
+        try {
+            const res = await fetch('api/save_factory_codes.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.codes)
+            });
+            const data = await res.json();
+            if (data.success) {
+                if (!silent) showToast('✅ تم حفظ أكواد المصانع بنجاح!');
+            } else {
+                showToast('❌ فشل في حفظ الأكواد: ' + data.message, 'error');
+            }
+        } catch(e) {
+            showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
+        }
+    }
+};
+
+function updateFactoryCodesSelect(selectedCode = '') {
+    const select = document.getElementById('f-factory-code');
+    if (!select) return;
+
+    const currentVal = selectedCode !== undefined && selectedCode !== null && selectedCode !== '' 
+        ? String(selectedCode).trim() 
+        : select.value.trim();
+
+    const codesList = (typeof adminFactoryCodes !== 'undefined' && Array.isArray(adminFactoryCodes.codes))
+        ? adminFactoryCodes.codes
+        : [];
+
+    let optionsHtml = '<option value="">-- اختر كود المصنع --</option>';
+
+    let hasSelected = false;
+    codesList.forEach(c => {
+        const code = c.code || '';
+        const name = c.name ? ` - ${c.name}` : '';
+        const count = (typeof adminFactoryCodes !== 'undefined') ? adminFactoryCodes.getProductCount(code) : 0;
+        const isSelected = currentVal && (currentVal.toLowerCase() === code.toLowerCase());
+        if (isSelected) hasSelected = true;
+        const statusBadge = c.active === false ? ' [مخفي]' : '';
+        optionsHtml += `<option value="${code}" ${isSelected ? 'selected' : ''}>${code}${name} (${count} منتج)${statusBadge}</option>`;
+    });
+
+    if (currentVal && !hasSelected) {
+        optionsHtml += `<option value="${currentVal}" selected>${currentVal} (كود حالي للمنتج)</option>`;
+    }
+
+    optionsHtml += '<option value="__ADD_NEW__" style="color:var(--p); font-weight:bold;">➕ [ إضافة كود مصنع جديد... ]</option>';
+
+    select.innerHTML = optionsHtml;
+    if (currentVal) {
+        select.value = currentVal;
+    }
+}
+
+function quickAddFactoryCode() {
+    const newCode = prompt('أدخل كود المصنع الجديد (مثال: A15):');
+    if (!newCode || !newCode.trim()) {
+        updateFactoryCodesSelect();
+        return;
+    }
+    const code = newCode.trim().toUpperCase();
+    if (typeof adminFactoryCodes !== 'undefined') {
+        const exists = adminFactoryCodes.codes.find(c => c.code.toLowerCase() === code.toLowerCase());
+        if (!exists) {
+            adminFactoryCodes.codes.push({ code, name: '', active: true });
+            adminFactoryCodes.codes.sort((a, b) => a.code.localeCompare(b.code, 'en', { numeric: true }));
+            adminFactoryCodes.save(true);
+            adminFactoryCodes.render();
+        }
+        updateFactoryCodesSelect(code);
+        showToast(`✅ تم إضافة كود المصنع "${code}" واختياره بنجاح!`);
+    }
+}
+
+function filterByFactoryCode(code) {
+    showPage('products', null);
+    const factoryFilter = document.getElementById('factory-filter');
+    if (factoryFilter) {
+        factoryFilter.value = code;
+    }
+    const prodSearch = document.getElementById('prod-search');
+    if (prodSearch) prodSearch.value = '';
+    filterProducts();
+}
+
 const adminPagesContent = {
     data: {
         about: {},
@@ -6757,6 +7186,7 @@ window.addEventListener('DOMContentLoaded', () => {
     adminHomepageCategories.load();
     adminIcons.load();
     adminBrands.load();
+    adminFactoryCodes.load();
     adminFooterSettings.load();
     adminImportCountries.load();
 });

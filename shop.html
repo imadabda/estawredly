@@ -15,8 +15,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260820_v3" />
-  <link rel="stylesheet" href="enhancements.css?v=1785802153537" />
+  <link rel="stylesheet" href="style.css?v=20260915_drawer" />
+  <link rel="stylesheet" href="enhancements.css?v=20260915_drawer" />
   <style>
     /* Shop-specific styles */
     /* Brand Chips at the top of category pages */
@@ -449,12 +449,17 @@
       align-items: center !important;
       overflow: hidden !important;
       position: relative !important;
-      z-index: 1001 !important;
+      z-index: 30 !important;
       border-bottom: 1px solid rgba(255,255,255,0.1) !important;
       padding: 0 !important;
       margin: 0 !important;
       width: 100% !important;
       direction: ltr !important;
+    }
+    @media (max-width: 768px) {
+      .announce-bar {
+        display: none !important;
+      }
     }
     .ticker-text-container {
       width: 100% !important;
@@ -799,18 +804,12 @@
 <script>document.write("\x3cscript src=\x22products_db.js?v=1785802153537" + Date.now() + "\x22\x3e\x3c/script\x3e");</script>
   <script src="store.js?v=20260913_v2"></script>
   <script src="auth.js?v=20260904_v2"></script>
-<script src="main.js?v=20260904_v2"></script>
+<script src="main.js?v=20260915_drawer"></script>
   <script>
     // Shop-specific script
 
-    document.querySelectorAll('.page-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    // Load products from Store and handle URL params
+    const PRODUCTS_PER_PAGE = 24;
+    let currentShopPage = 1;
     let activeCategoryBrand = '';
     let shopBaseFilteredProducts = [];
     let currentShopProducts = [];
@@ -849,7 +848,7 @@
     async function fetchHomeCatsCached() {
       if (_cachedHomeCats) return _cachedHomeCats;
       try {
-        const res = await fetch('api/get_homepage_categories.php?t=' + Date.now());
+        const res = await fetch('api/get_home_categories.php?t=' + Date.now());
         _cachedHomeCats = await res.json();
       } catch (e) {
         _cachedHomeCats = [];
@@ -857,20 +856,31 @@
       return _cachedHomeCats;
     }
 
-    function sortProductsList(list, sortType) {
+    function toggleCategoryBrand(brandName) {
+      if (!brandName) return;
+      if (activeCategoryBrand.toLowerCase() === brandName.toLowerCase()) {
+        activeCategoryBrand = ''; // toggle off
+      } else {
+        activeCategoryBrand = brandName;
+      }
+      currentShopPage = 1;
+      applyActiveCategoryBrandFilter();
+    }
+
+    function sortProductsList(list, mode) {
       const sorted = [...list];
-      switch (sortType) {
+      switch (mode) {
         case 'price-asc':
-          sorted.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+          sorted.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
           break;
         case 'price-desc':
-          sorted.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+          sorted.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
           break;
         case 'newest':
-          sorted.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
+          sorted.sort((a, b) => (b.badge === 'new' ? 1 : 0) - (a.badge === 'new' ? 1 : 0) || (b.id - a.id));
           break;
         case 'rating':
-          sorted.sort((a, b) => (parseFloat(b.stars) || 0) - (parseFloat(a.stars) || 0));
+          sorted.sort((a, b) => (Number(b.stars) || 0) - (Number(a.stars) || 0));
           break;
         case 'name-asc':
           sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ar'));
@@ -878,8 +888,11 @@
         case 'popular':
         default:
           sorted.sort((a, b) => {
-            const scoreA = (a.badge === 'hot' ? 1000 : 0) + (a.badge === 'best' ? 500 : 0) + (Number(a.reviews) || 0);
-            const scoreB = (b.badge === 'hot' ? 1000 : 0) + (b.badge === 'best' ? 500 : 0) + (Number(b.reviews) || 0);
+            const isHotA = a.badge === 'hot' ? 1 : 0;
+            const isHotB = b.badge === 'hot' ? 1 : 0;
+            if (isHotA !== isHotB) return isHotB - isHotA; // ⚡ المنتجات الرائجة تظهر دائماً في أول القسم
+            const scoreA = (a.badge === 'best' ? 500 : 0) + (Number(a.reviews) || 0);
+            const scoreB = (b.badge === 'best' ? 500 : 0) + (Number(b.reviews) || 0);
             return scoreB - scoreA;
           });
           break;
@@ -905,12 +918,22 @@
       if (!grid) return;
 
       const sorted = sortProductsList(currentShopProducts, currentSortMode);
+      const totalCount = sorted.length;
+      const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
 
-      if (sorted.length > 0) {
+      if (currentShopPage > totalPages && totalPages > 0) {
+        currentShopPage = totalPages;
+      }
+      if (currentShopPage < 1) currentShopPage = 1;
+
+      if (totalCount > 0) {
+        const startIndex = (currentShopPage - 1) * PRODUCTS_PER_PAGE;
+        const pageItems = sorted.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
         if (typeof renderGrid === 'function') {
-          renderGrid('products-grid', sorted);
+          renderGrid('products-grid', pageItems);
         } else {
-          grid.innerHTML = sorted.map(p => typeof makeCard === 'function' ? makeCard(p) : '').join('');
+          grid.innerHTML = pageItems.map(p => typeof makeCard === 'function' ? makeCard(p) : '').join('');
         }
         grid.classList.toggle('list-view', currentViewMode === 'list');
       } else {
@@ -920,10 +943,86 @@
         grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray5);font-size:16px;font-weight:600;">${emptyMsg}</div>`;
       }
 
+      // Render pagination
+      renderPagination(totalCount, currentShopPage);
+
       // Update results count
       const countEl = document.querySelector('.results-count');
       if (countEl) {
-        countEl.innerHTML = `عرض <strong>${sorted.length}</strong> من <strong>${totalShopProductsCount || sorted.length}</strong> منتج`;
+        if (totalCount > 0) {
+          const from = (currentShopPage - 1) * PRODUCTS_PER_PAGE + 1;
+          const to = Math.min(currentShopPage * PRODUCTS_PER_PAGE, totalCount);
+          countEl.innerHTML = `عرض <strong>${from} - ${to}</strong> من أصل <strong>${totalCount}</strong> منتج`;
+        } else {
+          countEl.innerHTML = `عرض <strong>0</strong> منتج`;
+        }
+      }
+    }
+
+    function renderPagination(totalItems, currentPage) {
+      const pagEl = document.getElementById('shop-pagination');
+      if (!pagEl) return;
+      const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
+      if (totalPages <= 1) {
+        pagEl.innerHTML = '';
+        pagEl.style.display = 'none';
+        return;
+      }
+      pagEl.style.display = 'flex';
+
+      let html = '';
+      // Previous button
+      html += `<button type="button" class="page-btn" ${currentPage === 1 ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : ''} onclick="goToShopPage(${currentPage - 1})">‹ السابق</button>`;
+
+      // Generate page numbers with ellipsis
+      let pages = [];
+      if (totalPages <= 7) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        if (currentPage > 3) pages.push('...');
+        const start = Math.max(2, currentPage - 1);
+        const end = Math.min(totalPages - 1, currentPage + 1);
+        for (let i = start; i <= end; i++) pages.push(i);
+        if (currentPage < totalPages - 2) pages.push('...');
+        pages.push(totalPages);
+      }
+
+      pages.forEach(p => {
+        if (p === '...') {
+          html += `<span class="page-btn" style="border:none;background:transparent;cursor:default;">…</span>`;
+        } else {
+          html += `<button type="button" class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToShopPage(${p})">${p}</button>`;
+        }
+      });
+
+      // Next button
+      html += `<button type="button" class="page-btn" ${currentPage === totalPages ? 'disabled style="opacity:0.35;cursor:not-allowed;"' : ''} onclick="goToShopPage(${currentPage + 1})">التالي ›</button>`;
+
+      pagEl.innerHTML = html;
+    }
+
+    function goToShopPage(page) {
+      const totalPages = Math.ceil((currentShopProducts ? currentShopProducts.length : 0) / PRODUCTS_PER_PAGE);
+      if (page < 1 || page > totalPages) return;
+      currentShopPage = page;
+
+      try {
+        const url = new URL(window.location);
+        if (page > 1) {
+          url.searchParams.set('page', page);
+        } else {
+          url.searchParams.delete('page');
+        }
+        window.history.replaceState({}, '', url);
+      } catch (e) {}
+
+      renderShopProducts();
+
+      const mainEl = document.querySelector('.shop-main');
+      if (mainEl) {
+        const topPos = mainEl.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
       }
     }
 
@@ -954,6 +1053,9 @@
       const cat = params.get('cat') || '';
       const sale= params.get('sale')|| '';
       const brand = params.get('brand') || '';
+      const badge = params.get('badge') || '';
+      const pageParam = parseInt(params.get('page')) || 1;
+      currentShopPage = pageParam > 0 ? pageParam : 1;
 
       let products = [];
       if (typeof Store !== 'undefined') {
@@ -961,7 +1063,7 @@
         products = Store.getProducts();
       }
 
-      // Filter out inactive products and products of disabled brands
+      // Filter out inactive products and products of disabled brands / factory codes
       products = products.filter(p => p && p.active !== false);
       try {
         const bList = await fetchBrandsCached();
@@ -981,7 +1083,30 @@
         console.warn("Could not check brands status:", e);
       }
 
+      try {
+        let disabledCodes = [];
+        try {
+          const rawCodes = localStorage.getItem('estawredli_disabled_factory_codes');
+          if (rawCodes) disabledCodes = JSON.parse(rawCodes);
+        } catch(e) {}
+        if (Array.isArray(disabledCodes) && disabledCodes.length > 0) {
+          products = products.filter(p => {
+            const pfc = (p.factory_code || '').trim().toLowerCase();
+            return !disabledCodes.includes(pfc);
+          });
+        }
+      } catch (e) {
+        console.warn("Could not check factory codes status:", e);
+      }
+
       let filtered = products;
+      if (badge) {
+        filtered = filtered.filter(p => (p.badge || '').toLowerCase() === badge.toLowerCase());
+        const titleText = document.getElementById('shop-title-text');
+        if (titleText && badge.toLowerCase() === 'hot') {
+          titleText.textContent = '🔥 المنتجات الرائجة والأكثر طلباً';
+        }
+      }
       let parentSubLinks = [];
 
       function canonicalCategory(c) {

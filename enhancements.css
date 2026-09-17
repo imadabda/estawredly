@@ -435,17 +435,47 @@ img { transition: opacity .3s ease; }
 /* ══════════════════════════════════════
    CART DRAWER – polished
    ══════════════════════════════════════ */
-.cart-drawer {
+.cart-drawer,
+.wish-drawer {
+  z-index: 99999 !important;
   border-radius: 0 24px 24px 0;
   box-shadow: 12px 0 48px rgba(0,0,0,.12);
 }
+.drawer-mask {
+  z-index: 99998 !important;
+}
 .drawer-header {
   background: linear-gradient(135deg, #0f172a, #1e293b);
-  padding: 20px 22px;
+  padding: max(18px, env(safe-area-inset-top, 18px)) 22px 18px !important;
+  position: relative;
+  z-index: 2;
 }
 .drawer-header h3 { font-size: 17px; font-weight: 800; color: #fff; }
-.drawer-close { color: rgba(255,255,255,.5); border-radius: 10px; }
-.drawer-close:hover { background: rgba(255,255,255,.1); color: #fff; }
+.drawer-close {
+  color: rgba(255,255,255,.7) !important;
+  border-radius: 10px;
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+.drawer-close:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+/* Hide top announcement bar when cart/wishlist drawer or mobile drawer is open */
+body.drawer-open .announce-bar,
+body.drawer-open #announce-bar,
+body:has(.cart-drawer.open) .announce-bar,
+body:has(.cart-drawer.open) #announce-bar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
 .checkout-btn {
   background: linear-gradient(135deg, #1d4ed8, #2563eb);
   border-radius: 14px !important;

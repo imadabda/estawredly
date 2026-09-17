@@ -70,12 +70,21 @@ function sanitizeProductCategory(&$product) {
         $map = [
             'سفنجات جلي' => 'اسفنجات جلي',
             'إسفنجات جلي' => 'اسفنجات جلي',
+            'اسفنجات جلي ' => 'اسفنجات جلي',
+            'سفنجات جلي ' => 'اسفنجات جلي',
             'جاروف مع فرشاي' => 'مجرفة مع فرشاة',
             'جاروف وفرشاة' => 'مجرفة مع فرشاة',
+            'جاروف مع فرشاية' => 'مجرفة مع فرشاة',
             'جاروف ومكنسة' => 'جاروف مع مكنسه',
+            'جاروف مع مكنسه ' => 'جاروف مع مكنسه',
             'فراشي مرحاض' => 'فرشاة مرحاض',
             'مكنسة' => 'مكانس',
+            'مكانس ' => 'مكانس',
+            'مناديل ' => 'مناديل',
+            'منظف نوافذ ' => 'منظف نوافذ',
+            'مكبس مرحاض ' => 'مكبس مرحاض',
             'قفازات' => 'قفازات يد',
+            'قفازات ' => 'قفازات يد',
             'ورق المنيوم' => 'ورق المنيوم (فويل)',
             'ورق ألمنيوم' => 'ورق المنيوم (فويل)',
             'خيط أسنان (مع علبة عرض)' => 'خيط أسنان',
@@ -85,6 +94,9 @@ function sanitizeProductCategory(&$product) {
             $c = $map[$c];
         }
         $product["cat"] = $c;
+    }
+    if (isset($product["brand"]) && is_string($product["brand"])) {
+        $product["brand"] = preg_replace('/\s+/u', ' ', trim($product["brand"]));
     }
 }
 
@@ -240,6 +252,36 @@ try {
     $tempJsFile = $jsFile . ".tmp." . uniqid();
     file_put_contents($tempJsFile, $jsContent);
     rename($tempJsFile, $jsFile);
+
+    // مزامنة أي أكواد مصانع جديدة في المنتجات مع ملف data/factory_codes.json
+    $fcFile = __DIR__ . '/data/factory_codes.json';
+    if (file_exists($fcFile)) {
+        $fcRaw = @file_get_contents($fcFile);
+        $fcList = @json_decode($fcRaw, true);
+        if (is_array($fcList)) {
+            $knownCodes = [];
+            foreach ($fcList as $c) {
+                $codeStr = is_string($c) ? $c : ($c['code'] ?? '');
+                if (!empty($codeStr)) $knownCodes[strtolower(trim($codeStr))] = true;
+            }
+            $fcChanged = false;
+            foreach ($currentProducts as $p) {
+                $fc = trim(strval($p['factory_code'] ?? ''));
+                if (!empty($fc) && !isset($knownCodes[strtolower($fc)])) {
+                    $knownCodes[strtolower($fc)] = true;
+                    $fcList[] = [
+                        'code' => $fc,
+                        'name' => '',
+                        'active' => true
+                    ];
+                    $fcChanged = true;
+                }
+            }
+            if ($fcChanged) {
+                @file_put_contents($fcFile, json_encode($fcList, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            }
+        }
+    }
 
     // ضبط الصلاحيات
     @chown($dataFile, "www-data");

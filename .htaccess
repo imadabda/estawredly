@@ -16,3 +16,13 @@ RewriteRule ^(.*)$ https://estawredli.com/$1 [L,R=301]
 
 # Redirect deleted containers page to homepage
 RewriteRule ^containers(\.html)?$ / [R=301,L]
+
+# Cache Control: prevent stale HTML and JSON files
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|htm|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.json$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

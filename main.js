@@ -298,7 +298,7 @@ function makeCard(p) {
   return `
     <div class="p-card" data-id="${p.id}" onclick="window.location='product.html?id=${p.id}'" style="cursor:pointer;">
       <div class="p-card-img">
-        <img src="${p.img}" class="p-emoji" style="width:100%;height:100%;object-fit:cover;">
+        <img src="${p.img}" loading="lazy" decoding="async" class="p-emoji" style="width:100%;height:100%;object-fit:cover;">
         ${p.badge?`<span class="p-badge badge-${p.badge}">${
           p.badge==='sale'?`-${disc}%`:p.badge==='new'?'جديد':p.badge==='hot'?'رائج':'مميز'
         }</span>`:''}
@@ -340,10 +340,21 @@ function renderGrid(containerId, products) {
   const el = document.getElementById(containerId);
   if (!el) return;
   el.innerHTML = products.map(makeCard).join('');
-  // Animate in
-  el.querySelectorAll('.p-card').forEach((c,i)=>{
-    c.style.opacity='0'; c.style.transform='translateY(16px)';
-    setTimeout(()=>{c.style.transition='.3s ease'; c.style.opacity='1'; c.style.transform='translateY(0)'},i*60+50);
+  // Instant visibility without hanging timeouts or layout jumping
+  const cards = el.querySelectorAll('.p-card');
+  cards.forEach((c, i) => {
+    if (i < 8) {
+      c.style.opacity = '0';
+      c.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        c.style.transition = 'opacity .2s ease, transform .2s ease';
+        c.style.opacity = '1';
+        c.style.transform = 'translateY(0)';
+      }, i * 25 + 10);
+    } else {
+      c.style.opacity = '1';
+      c.style.transform = 'none';
+    }
   });
 }
 
@@ -406,13 +417,22 @@ function closeQV() { closeModal('qv'); }
 
 // MODALS & DRAWERS
 function openDrawer(name) {
-  document.getElementById(name+'-mask').classList.add('open');
-  document.getElementById(name+'-drawer').classList.add('open');
+  const mask = document.getElementById(name+'-mask');
+  const drawer = document.getElementById(name+'-drawer');
+  if (mask) mask.classList.add('open');
+  if (drawer) drawer.classList.add('open');
+  document.body.classList.add('drawer-open');
   document.body.style.overflow='hidden';
 }
 function closeDrawer(name) {
-  document.getElementById(name+'-mask').classList.remove('open');
-  document.getElementById(name+'-drawer').classList.remove('open');
+  const mask = document.getElementById(name+'-mask');
+  const drawer = document.getElementById(name+'-drawer');
+  if (mask) mask.classList.remove('open');
+  if (drawer) drawer.classList.remove('open');
+  const openDrawers = document.querySelectorAll('.cart-drawer.open, .wish-drawer.open');
+  if (!openDrawers || openDrawers.length === 0) {
+    document.body.classList.remove('drawer-open');
+  }
   document.body.style.overflow='';
 }
 function openModal(name) {
@@ -650,7 +670,15 @@ async function initProductTabs() {
       }
 
       const matchedNav = mainCategories.find(c => c.title === selectedCat);
-      const filtered = PRODUCTS_LIVE.filter(p => matchProductToCategory(p, selectedCat, matchedNav));
+      let filtered = PRODUCTS_LIVE.filter(p => matchProductToCategory(p, selectedCat, matchedNav));
+
+      // ⚡ إظهار المنتجات الرائجة الخاصة بهذا القسم أولاً في المقدمة
+      filtered.sort((a, b) => {
+        const isHotA = a.badge === 'hot' ? 1 : 0;
+        const isHotB = b.badge === 'hot' ? 1 : 0;
+        if (isHotA !== isHotB) return isHotB - isHotA;
+        return 0;
+      });
 
       if (filtered.length > 0) {
         renderGrid('main-grid', filtered);
@@ -853,9 +881,63 @@ window.addEventListener('authLoaded', async ()=>{
       }
     }
   }
-  const flashProds = PRODUCTS_LIVE.filter(p => p.badge === 'sale' || p.badge === 'hot').slice(0, 16);
-  const newProds   = PRODUCTS_LIVE.filter(p => p.badge === 'new').slice(0, 16);
-  renderGrid('flash-grid', flashProds.length > 0 ? flashProds : PRODUCTS_LIVE.slice(0, 16));
+  // دالة بناء خلطة المنتجات الرائجة (منتج رائج من كل صنف/قسم)
+  function getDiverseTrendingProducts(products) {
+    if (!Array.isArray(products) || products.length === 0) return [];
+    
+    const catGroups = {};
+    products.forEach(p => {
+      if (!p || p.active === false) return;
+      const c = (p.cat || 'أخرى').trim();
+      if (!catGroups[c]) catGroups[c] = [];
+      catGroups[c].push(p);
+    });
+
+    const trendingMix = [];
+    const usedIds = new Set();
+
+    // 1. أخذ منتج رائج (hot) من كل تصنيف أولاً
+    for (const cat in catGroups) {
+      const group = catGroups[cat];
+      const hotProd = group.find(p => p.badge === 'hot' && !usedIds.has(p.id));
+      if (hotProd) {
+        trendingMix.push(hotProd);
+        usedIds.add(hotProd.id);
+      }
+    }
+
+    // 2. إذا كان هناك منتجات رائجة إضافية في بعض الأقسام، نضيفها
+    for (const cat in catGroups) {
+      const group = catGroups[cat];
+      const moreHot = group.filter(p => p.badge === 'hot' && !usedIds.has(p.id));
+      for (const hp of moreHot) {
+        if (trendingMix.length >= 24) break;
+        trendingMix.push(hp);
+        usedIds.add(hp.id);
+      }
+      if (trendingMix.length >= 24) break;
+    }
+
+    // 3. استكمال التشكيلة بتنويع من باقي الأقسام لضمان ظهور 16 منتجاً متنوعاً وممتعاً
+    if (trendingMix.length < 16) {
+      for (const cat in catGroups) {
+        if (trendingMix.length >= 20) break;
+        const group = catGroups[cat];
+        const candidate = group.find(p => !usedIds.has(p.id) && (p.badge === 'sale' || p.badge === 'best'))
+                       || group.find(p => !usedIds.has(p.id));
+        if (candidate) {
+          trendingMix.push(candidate);
+          usedIds.add(candidate.id);
+        }
+      }
+    }
+
+    return trendingMix;
+  }
+
+  const trendingProds = getDiverseTrendingProducts(PRODUCTS_LIVE);
+  const newProds      = PRODUCTS_LIVE.filter(p => p.badge === 'new').slice(0, 16);
+  renderGrid('flash-grid', trendingProds.length > 0 ? trendingProds : PRODUCTS_LIVE.slice(0, 16));
   renderGrid('main-grid',  PRODUCTS_LIVE.slice(0, 24));
   renderGrid('new-grid',   newProds.length > 0 ? newProds : PRODUCTS_LIVE.slice(16, 32));
 });
@@ -921,6 +1003,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelector('.nav-close-btn')?.addEventListener('click', () => {
     document.getElementById('main-nav')?.classList.remove('open');
     document.getElementById('header')?.classList.remove('menu-open');
+  });
+
+  // Auto-close mobile drawer when tapping any navigation link
+  document.getElementById('main-nav')?.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (a && a.getAttribute('href') && a.getAttribute('href') !== 'javascript:void(0)' && !a.getAttribute('href').startsWith('#')) {
+      document.getElementById('main-nav')?.classList.remove('open');
+      document.getElementById('header')?.classList.remove('menu-open');
+    }
   });
 
   });

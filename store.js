@@ -44,8 +44,23 @@ const Store = (() => {
     })
     .catch(e => console.error('Error loading brands settings in store.js:', e));
 
+  // Disabled factory codes handling to hide their products globally across the entire store
+  let disabledFactoryCodes = _get('estawredli_disabled_factory_codes', []);
+  const factoryCodesPromise = fetch('api/get_factory_codes.php?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        disabledFactoryCodes = data
+          .filter(c => c && c.active === false)
+          .map(c => (typeof c === 'string' ? c : (c.code || '')).trim().toLowerCase())
+          .filter(Boolean);
+        _set('estawredli_disabled_factory_codes', disabledFactoryCodes);
+      }
+    })
+    .catch(e => console.error('Error loading factory codes in store.js:', e));
+
   function ensureReady() {
-    return Promise.all([currencyPromise, brandsPromise]);
+    return Promise.all([currencyPromise, brandsPromise, factoryCodesPromise]);
   }
 
   function _get(key, fallback = null) {
@@ -80,6 +95,10 @@ const Store = (() => {
           if (disabledBrands.includes(pb)) return false;
           if (pb === 'cleaner' && disabledBrands.includes('kleaner')) return false;
           if (pb === 'kleaner' && disabledBrands.includes('cleaner')) return false;
+        }
+        if (disabledFactoryCodes && disabledFactoryCodes.length > 0) {
+          const pfc = (p.factory_code || '').trim().toLowerCase();
+          if (disabledFactoryCodes.includes(pfc)) return false;
         }
         return true;
       });
