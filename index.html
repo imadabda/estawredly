@@ -468,6 +468,9 @@
           }
         }
       }
+    } catch (e) {
+      console.error('Error loading import sections:', e);
+    }
     // 5. Load Trust Strip dynamically
     try {
       const res = await fetch('api/get_trust_bar.php?t=' + Date.now());
