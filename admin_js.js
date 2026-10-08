@@ -21,6 +21,8 @@ async function fetchLiveOrders() {
         phone: o.customer_phone,
         address: o.customer_address,
         zone: o.shipping_zone,
+        container_number: o.container_number || o.container || '',
+        container: o.container_number || o.container || '',
         items: typeof o.items_json === 'string' ? JSON.parse(o.items_json) : o.items_json,
         subtotal: parseFloat(o.subtotal),
         shipping: parseFloat(o.shipping_cost),
@@ -271,7 +273,7 @@ function renderOrders(list) {
   const statusMap = {pending:'قيد الانتظار',processing:'جاري المعالجة',shipped:'تم الشحن',delivered:'تم التسليم',cancelled:'ملغي'};
   const body = document.getElementById('all-orders-body');
   if (!body) return;
-  if (!list || !list.length) { body.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:40px">لا توجد طلبيات</td></tr>`; return; }
+  if (!list || !list.length) { body.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:40px">لا توجد طلبيات</td></tr>`; return; }
   body.innerHTML = list.map(o => {
     const name = o.userName || o.customer || '-';
     const itemsCount = Array.isArray(o.items) ? o.items.length : (o.items || 0);
@@ -289,6 +291,23 @@ function renderOrders(list) {
     return `
     <tr style="${isNew ? 'background:rgba(16, 185, 129, 0.05)' : ''}">
       <td><span class="order-id">${o.id}</span><br>${newBadge}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <input type="text" 
+                 id="container-input-${o.id}"
+                 value="${o.container_number || o.container || ''}" 
+                 placeholder="أدخل رقم..." 
+                 title="أدخل رقم الكونتينر (يتم الحفظ تلقائياً)"
+                 onchange="saveOrderContainer('${o.id}', this.value)"
+                 onblur="saveOrderContainer('${o.id}', this.value)"
+                 onkeydown="if(event.key==='Enter'){this.blur();}"
+                 style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;width:105px;font-family:inherit;font-weight:700;text-align:center;transition:border-color 0.2s;"
+                 onfocus="this.style.borderColor='var(--p)'"
+                 onfocusout="this.style.borderColor='var(--border)'"
+          />
+          <span id="container-status-${o.id}" style="font-size:12px;opacity:0;transition:opacity 0.3s;min-width:16px;"></span>
+        </div>
+      </td>
       <td>
         <div class="order-customer">
           <div class="oc-av">${name[0]||'?'}</div>
@@ -325,9 +344,81 @@ function renderOrders(list) {
   }).join('');
 }
 
-function filterOrders(status) {
-  const orders = getAdminOrders();
-  renderOrders(status ? orders.filter(o=>o.status===status) : orders);
+function filterOrders() {
+  const searchInput = document.getElementById('order-search-input');
+  const statusSelect = document.getElementById('order-status-filter');
+  const q = (searchInput ? searchInput.value : '').trim().toLowerCase();
+  const status = statusSelect ? statusSelect.value : '';
+  
+  let list = getAdminOrders() || [];
+  if (status) {
+    list = list.filter(o => o.status === status);
+  }
+  if (q) {
+    list = list.filter(o => {
+      const idMatch = String(o.id || '').toLowerCase().includes(q);
+      const nameMatch = String(o.userName || o.customer || '').toLowerCase().includes(q);
+      const phoneMatch = String(o.phone || '').toLowerCase().includes(q);
+      const containerMatch = String(o.container_number || o.container || '').toLowerCase().includes(q);
+      return idMatch || nameMatch || phoneMatch || containerMatch;
+    });
+  }
+  renderOrders(list);
+}
+
+async function saveOrderContainer(orderId, containerNum) {
+  containerNum = (containerNum || '').trim();
+  const statusEl = document.getElementById(`container-status-${orderId}`);
+  if (statusEl) {
+    statusEl.textContent = '⏳';
+    statusEl.style.opacity = '1';
+  }
+  
+  if (Array.isArray(window.LIVE_ORDERS)) {
+    const ord = window.LIVE_ORDERS.find(x => String(x.id) === String(orderId));
+    if (ord) {
+      ord.container_number = containerNum;
+      ord.container = containerNum;
+    }
+  }
+  if (typeof Store !== 'undefined' && typeof Store.getOrders === 'function') {
+    const localOrders = Store.getOrders();
+    const target = localOrders.find(x => String(x.id) === String(orderId));
+    if (target) {
+      target.container_number = containerNum;
+      target.container = containerNum;
+      if (typeof Store.saveOrders === 'function') Store.saveOrders(localOrders);
+    }
+  }
+  
+  try {
+    const formData = new FormData();
+    formData.append('order_id', orderId);
+    formData.append('container_number', containerNum);
+    
+    const res = await fetch('api/update_order_container.php', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      if (statusEl) {
+        statusEl.textContent = '✅';
+        setTimeout(() => { if (statusEl) statusEl.style.opacity = '0'; }, 1500);
+      }
+      showToast('✅ تم حفظ رقم الكونتينر');
+    } else {
+      if (statusEl) {
+        statusEl.textContent = '❌';
+      }
+      showToast('❌ ' + ((data && data.message) ? data.message : 'فشل الحفظ'));
+    }
+  } catch (err) {
+    console.error('Error saving container number:', err);
+    if (statusEl) {
+      statusEl.textContent = '⚠️';
+    }
+  }
 }
 
 async function changeOrderStatus(id, newStatus) {

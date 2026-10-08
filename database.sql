@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `shipping_cost` DECIMAL(10,2) NOT NULL,
   `total_price` DECIMAL(10,2) NOT NULL,
   `status` VARCHAR(50) DEFAULT 'pending',
+  `container_number` VARCHAR(100) DEFAULT '',
   `notes` TEXT DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
